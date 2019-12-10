@@ -1,0 +1,11 @@
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.exe
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.deps.json
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.runtimeconfig.json
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.runtimeconfig.dev.json
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.dll
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\bin\Debug\netcoreapp3.0\simulationCode.pdb
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\obj\Debug\netcoreapp3.0\simulationCode.csprojAssemblyReference.cache
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\obj\Debug\netcoreapp3.0\simulationCode.AssemblyInfoInputs.cache
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\obj\Debug\netcoreapp3.0\simulationCode.AssemblyInfo.cs
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\obj\Debug\netcoreapp3.0\simulationCode.dll
+C:\Users\a450wzz\Documents\Personal\School\Thesis\simulationCode\obj\Debug\netcoreapp3.0\simulationCode.pdb
