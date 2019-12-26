@@ -16,5 +16,10 @@ namespace Core.Resources
     public string Type() { return TYPE; }
     public int EstTimeToComplete() { return EST_TIME_TO_COMPLETE; }
     public int SetupTime() { return SETUP_TIME; }
+
+    public override string ToString()
+    {
+      return "TYPE: " + Type() + " SetupTime: " + SetupTime() + " EstimatedTimeToComplete: " + EstTimeToComplete();
+    }
   }
 }
