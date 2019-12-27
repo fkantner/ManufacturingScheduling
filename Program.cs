@@ -17,15 +17,23 @@ namespace simulationCode
 
             // Create WorkOrders
             List<Op> ops = new List<Op>();
-
-            Core.Resources.Op op1 = new Core.Resources.Op("testop1", 4, 1);
-            Core.Resources.Op op2 = new Core.Resources.Op("testop2", 5, 2);
-            Core.Resources.Op op3 = new Core.Resources.Op("testop3", 7, 1);
+      
+            Op op1 = new Op("testop1", 4, 1);
+            Op op2 = new Op("testop2", 5, 2);
+            Op op3 = new Op("testop3", 7, 1);
             ops.Add(op1); ops.Add(op2); ops.Add(op3);
 
-            Workorder wo = new Workorder(1, ops);        
+            Workorder wo = new Workorder(1, ops);     
+            Console.WriteLine(wo.ToString());   
 
-            Console.WriteLine(wo.ToString());
+            Machine a = new Machine("a", new Core.Schedulers.MachineScheduler(), new List<string>{"TypeA", "TypeB"});
+            Workcenter wc = new Workcenter("wc_A", a);
+
+            Console.WriteLine(wc.ToString());
+
+            wc.Add(wo);
+
+            Console.WriteLine(wc.ToString());
 
             for(int i = 0; i < 1500; i++)
             {

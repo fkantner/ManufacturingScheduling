@@ -8,10 +8,13 @@ namespace Core.Workcenters
   {
     private List<Workorder> queue;
     private MachineScheduler scheduler;
-    private readonly string TYPE;
+    private readonly List<string> TYPE;
 
-    public Machine(MachineScheduler ms, string type)
+    private readonly string name;
+
+    public Machine(string name, MachineScheduler ms, List<string> type)
     {
+      this.name = name;
       queue = new List<Workorder>();
       scheduler = ms;
       TYPE = type;
@@ -22,5 +25,27 @@ namespace Core.Workcenters
       queue.Add(wc);
       return;
     }
+
+    public override string ToString()
+    {
+      string answer = "Name: " + name + " Types: {";
+      foreach (string type in TYPE)
+      {
+        answer += " " + type + " ";
+      }
+      answer += "}";
+
+      if(queue.Count > 0)
+      {
+        answer += "\n\tQueue:\n";
+        foreach(Workorder wc in queue)
+        {
+          answer += "\t" + wc.ToString() + "\n";
+        }
+      }
+
+      return answer;
+    }
+    
   }
 }

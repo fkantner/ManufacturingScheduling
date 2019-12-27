@@ -5,8 +5,10 @@ namespace Core.Workcenters
   public class Workcenter
   {
     private Machine machine;
-    public Workcenter(Machine machine)
+    private string name;
+    public Workcenter(string name, Machine machine)
     {
+      this.name = name;
       this.machine = machine;
     }
 
@@ -14,6 +16,11 @@ namespace Core.Workcenters
     {
       machine.Add(wc);
       return;
+    }
+
+    public override string ToString()
+    {
+      return "WC: " + name + "\n\tMachine: " + machine.ToString();
     }
   }
 }
