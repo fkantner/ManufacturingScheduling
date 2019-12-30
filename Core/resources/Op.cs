@@ -17,9 +17,5 @@ namespace Core.Resources
     public int EstTimeToComplete { get => _estTimeToComplete; }
     public int SetupTime { get => _setupTime; }
 
-    public override string ToString()
-    {
-      return "TYPE: " + Type + " SetupTime: " + SetupTime + " EstimatedTimeToComplete: " + EstTimeToComplete;
-    }
   }
 }

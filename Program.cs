@@ -24,14 +24,15 @@ namespace simulationCode
             Op op3 = new Op("testop3", 7, 1);
             ops.Add(op1); ops.Add(op2); ops.Add(op3);
 
-            Workorder wo = new Workorder(1, ops);     
+            List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
+            List<Workcenter> wc_list = SimulationSetup.GenerateWorkCenters();
 
-            Machine a = new Machine("a", new Core.Schedulers.MachineScheduler(), new List<string>{"TypeA", "TypeB"});
-            Workcenter wc = new Workcenter("wc_A", a);
-
-            WriteJson(wc);
-
-            wc.AddToQueue(wo);
+            Workcenter wc = wc_list[0];
+            
+            foreach(Workorder wo in wo_list)
+            {
+                wc.AddToQueue(wo);
+            }
 
             WriteJson(wc);
 

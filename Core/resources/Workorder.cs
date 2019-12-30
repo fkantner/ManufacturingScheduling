@@ -47,20 +47,5 @@ namespace Core.Resources
       return;
     }
 
-    public override string ToString()
-    {
-      string answer = "WorkOrder: " + Id + "\n";
-      for(int i = 0; i<_operations.Count; i++)
-      {
-        string part = "\t" + _operations[i].ToString();
-        if (i == _currentOpIndex)
-        {
-          part = part + " <= CURRENT";
-        }
-        part = part + "\n";
-        answer = answer + part;
-      }
-      return answer;
-    }
   }
 }

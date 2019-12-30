@@ -28,11 +28,6 @@ namespace Core.Workcenters
       return;
     }
 
-    public override string ToString()
-    {
-      return "WC: " + Name + "\n\tMachine: " + _machine.ToString();
-    }
-
     public void Work(DayTime dayTime)
     {
       // TODO - Implement QA part of Work Center

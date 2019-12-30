@@ -65,11 +65,6 @@ namespace Core
       }
     }
 
-    public override string ToString()
-    {
-      return "Day: " + GetDay() + " Time: " + GetTime();
-    }
-
     // PRIVATE METHODS //
 
     private string GetTime()

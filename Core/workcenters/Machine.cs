@@ -57,32 +57,6 @@ namespace Core.Workcenters
       return;
     }
 
-    public override string ToString()
-    {
-      string answer = "Name: " + Name + " Types: {";
-      foreach (string type in _type)
-      {
-        answer += " " + type + " ";
-      }
-      answer += "}";
-
-      if( CurrentWorkorder != null)
-      {
-        answer += "\n\tCurrent WO: " + CurrentWorkorder.Id;
-      }
-
-      if(_queue.Count > 0)
-      {
-        answer += "\n\tQueue:\n";
-        foreach(Workorder wc in _queue)
-        {
-          answer += "\t" + wc.ToString() + "\n";
-        }
-      }
-
-      return answer;
-    } // ToString()
-
     public Workorder Work(DayTime dayTime)
     {
       // TODO - Implement Machine Breakdown
@@ -117,7 +91,7 @@ namespace Core.Workcenters
 
       // TODO - Implement Machine Resource replacement
 
-      if (EstTimeToComplete > 1) { return null; }
+      if (EstTimeToComplete > 0) { return null; }
 
       Workorder answer = CurrentWorkorder;
       LastType = CurrentWorkorder.CurrentOpType;
