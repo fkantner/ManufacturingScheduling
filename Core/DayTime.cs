@@ -3,34 +3,64 @@ namespace Core
   public class DayTime
   {
     enum Days {Sun, Mon, Tue, Wed, Thu, Fri, Sat};
-    private int day;
-    private int time;
-
+    private int _day;
+    private int _time;    
     const int MinutesInDay = 24*60;
 
+    // CONSTRUCTORS //
     public DayTime()
     {
-      day = (int) DayTime.Days.Wed;
-      time = 0;
+      _day = (int) DayTime.Days.Wed;
+      _time = 0;
     }
 
-    public int Day() { return day; }
+    public DayTime(int setDay, int setTime)
+    {
+      _day = setDay;
+      _time = setTime;
+    }
 
-    public int Time() { return time; }
+    // PROPERTIES //
+    public int Day { get => _day; }
+    public int Time { get => _time; }
 
+    // PUBLIC METHODS //
+    public DayTime CreateTimestamp(int increment)
+    {
+      DayTime timestamp = new DayTime(Day, Time);
+
+      while(increment > 0)
+      {
+        timestamp.Next();
+        increment = increment - 1;
+      }
+
+      return timestamp;
+    }
+
+    public bool Equals(DayTime other)
+    {
+      return other.Day == this.Day && other.Time == this.Time;
+    }
+
+    public bool LessThan(DayTime other)
+    {
+      return this.Day < other.Day || (this.Day == other.Day && this.Time < other.Time);
+    }
 
     public void Next()
     {
-      time += 1;
+      
+      _time += 1;
 
-      if (time >= MinutesInDay)
+      if (_time >= MinutesInDay)
       {
-        day += 1;
-        time = 0;
+        _day += 1;
+        _time = 0;
 
-        if (day > (int)Days.Sat)
+        if (_day > (int)Days.Sat)
         {
-          day = (int) Days.Sun;
+          _day = (int) Days.Sun;
         }
       }
     }
@@ -40,16 +70,18 @@ namespace Core
       return "Day: " + GetDay() + " Time: " + GetTime();
     }
 
+    // PRIVATE METHODS //
+
     private string GetTime()
     {
-      int hour = time / 60;
-      int minutes = time % 60;
+      int hour = _time / 60;
+      int minutes = _time % 60;
       return hour + ":" + minutes;
     }
 
     private string GetDay()
     {
-      switch (day)
+      switch (_day)
       {
         case 0:
           return "Sun";

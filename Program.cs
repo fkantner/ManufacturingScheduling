@@ -31,14 +31,16 @@ namespace simulationCode
 
             Console.WriteLine(wc.ToString());
 
-            wc.Add(wo);
+            wc.AddToQueue(wo);
 
             Console.WriteLine(wc.ToString());
 
-            for(int i = 0; i < 1500; i++)
+            for(int i = 0; i < 10; i++)
             {
                 dt.Next();
-                //Console.WriteLine(dt.ToString());
+                wc.Work(dt);
+                Console.WriteLine(dt.ToString());
+                Console.WriteLine(wc.ToString());
             }
         }
     }

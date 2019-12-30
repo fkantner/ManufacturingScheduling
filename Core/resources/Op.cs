@@ -2,24 +2,24 @@ namespace Core.Resources
 {
   public class Op
   {
-    private readonly string TYPE;
-    private readonly int EST_TIME_TO_COMPLETE;
-    private readonly int SETUP_TIME;
+    private readonly string _type;
+    private readonly int _estTimeToComplete;
+    private readonly int _setupTime;
 
     public Op(string type, int completeTime, int setupTime)
     {
-      TYPE = type;
-      EST_TIME_TO_COMPLETE = completeTime;
-      SETUP_TIME = setupTime;
+      _type = type;
+      _estTimeToComplete = completeTime;
+      _setupTime = setupTime;
     }
 
-    public string Type() { return TYPE; }
-    public int EstTimeToComplete() { return EST_TIME_TO_COMPLETE; }
-    public int SetupTime() { return SETUP_TIME; }
+    public string Type { get => _type; }
+    public int EstTimeToComplete { get => _estTimeToComplete; }
+    public int SetupTime { get => _setupTime; }
 
     public override string ToString()
     {
-      return "TYPE: " + Type() + " SetupTime: " + SetupTime() + " EstimatedTimeToComplete: " + EstTimeToComplete();
+      return "TYPE: " + Type + " SetupTime: " + SetupTime + " EstimatedTimeToComplete: " + EstTimeToComplete;
     }
   }
 }

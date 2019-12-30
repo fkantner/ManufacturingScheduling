@@ -4,39 +4,56 @@ namespace Core.Resources
 
   public class Workorder
   {
-    private readonly List<Op> operations;
-
-    private int current_op_index;
-
-    private readonly int id;
+    private readonly List<Op> _operations;
+    private int _currentOpIndex;
+    private readonly int _id;
 
     public Workorder(int number, List<Op> ops)
     {
-      operations = ops;
-      current_op_index = 0;
-      id = number;
+      _operations = ops;
+      _currentOpIndex = 0;
+      _id = number;
     }
 
-    public Op CurrentOp()
+    // PROPERTIES //
+
+    public Op CurrentOp
     {
-      return operations[current_op_index];
+      get => _operations[_currentOpIndex];
     }
+
+    public int CurrentOpEstTimeToComplete
+    {
+      get => CurrentOp.EstTimeToComplete;
+    }
+
+    public int CurrentOpSetupTime
+    {
+      get => CurrentOp.SetupTime;
+    }
+
+    public string CurrentOpType
+    {
+      get => CurrentOp.Type;
+    }
+
+    public int Id { get => _id; }
+
+    // PUBLIC METHODS //
 
     public void SetNextOp()
     {
-      current_op_index++;
+      _currentOpIndex++;
       return;
     }
 
-    public int ID() { return id; }
-
     public override string ToString()
     {
-      string answer = "WorkOrder: " + ID() + "\n";
-      for(int i = 0; i<operations.Count; i++)
+      string answer = "WorkOrder: " + Id + "\n";
+      for(int i = 0; i<_operations.Count; i++)
       {
-        string part = "\t" + operations[i].ToString();
-        if (i == current_op_index)
+        string part = "\t" + _operations[i].ToString();
+        if (i == _currentOpIndex)
         {
           part = part + " <= CURRENT";
         }
