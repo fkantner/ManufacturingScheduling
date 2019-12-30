@@ -37,6 +37,7 @@ namespace Core.Workcenters
       get => _estTimeToComplete; 
       private set => _estTimeToComplete = value;
     }
+    public Queue<Workorder> InputBuffer { get => _queue; }
     public string LastType 
     { 
       get => _lastType; 

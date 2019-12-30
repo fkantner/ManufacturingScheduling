@@ -18,7 +18,9 @@ namespace Core.Workcenters
       _qa_buffer = new Queue<Workorder>();
     }
 
+    public Machine Machine { get => _machine; }
     public string Name { get => _name; }
+    public Queue<Workorder> OutputBuffer { get => _outbound_buffer; }
 
     public void AddToQueue(Workorder wc)
     {

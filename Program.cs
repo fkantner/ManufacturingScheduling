@@ -5,6 +5,7 @@ namespace simulationCode
 {
     using Core.Resources;
     using Core.Workcenters;
+    using Newtonsoft.Json;
     using System.Collections.Generic;
 
     class Program
@@ -13,7 +14,7 @@ namespace simulationCode
         {
             Console.WriteLine("Hello World!");
             DayTime dt = new DayTime();
-            Console.WriteLine(dt.ToString());
+            WriteJson(dt);
 
             // Create WorkOrders
             List<Op> ops = new List<Op>();
@@ -24,24 +25,33 @@ namespace simulationCode
             ops.Add(op1); ops.Add(op2); ops.Add(op3);
 
             Workorder wo = new Workorder(1, ops);     
-            Console.WriteLine(wo.ToString());   
 
             Machine a = new Machine("a", new Core.Schedulers.MachineScheduler(), new List<string>{"TypeA", "TypeB"});
             Workcenter wc = new Workcenter("wc_A", a);
 
-            Console.WriteLine(wc.ToString());
+            WriteJson(wc);
 
             wc.AddToQueue(wo);
 
-            Console.WriteLine(wc.ToString());
+            WriteJson(wc);
 
             for(int i = 0; i < 10; i++)
             {
                 dt.Next();
                 wc.Work(dt);
-                Console.WriteLine(dt.ToString());
-                Console.WriteLine(wc.ToString());
+                WriteJson(dt);
+                WriteJson(wc);
             }
+        }
+
+        static private string ToJson(Object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        static private void WriteJson(Object obj)
+        {
+            Console.WriteLine(ToJson(obj));
         }
     }
 }
