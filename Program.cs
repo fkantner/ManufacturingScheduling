@@ -7,12 +7,21 @@ namespace simulationCode
     using Core.Workcenters;
     using Newtonsoft.Json;
     using System.Collections.Generic;
+    using System.IO;
 
     class Program
     {
+        static private StreamWriter writer;
+        static private readonly string filename = "./simulation-ui/src/data/test.json";
+        static private bool hasWritten;
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            File.Delete(filename);
+            writer = new StreamWriter(filename);
+            hasWritten = false;
+            writer.WriteLine("[");
+
+            Console.WriteLine("Starting Simulation");
             DayTime dt = new DayTime();
             WriteJson(dt);
 
@@ -35,6 +44,11 @@ namespace simulationCode
                 WriteJson(dt);
                 WriteJson(wc);
             }
+
+            writer.WriteLine("]");
+            writer.Dispose();
+            writer.Close();
+            Console.WriteLine("Finished with Simulation");
         }
 
         static private string ToJson(Object obj)
@@ -44,7 +58,15 @@ namespace simulationCode
 
         static private void WriteJson(Object obj)
         {
-            Console.WriteLine(ToJson(obj));
+            if(hasWritten)
+            {
+                writer.WriteLine("," + ToJson(obj));
+            }
+            else
+            {
+                writer.WriteLine(ToJson(obj));
+                hasWritten = true;
+            }
         }
     }
 }
