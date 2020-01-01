@@ -16,7 +16,7 @@ namespace Core.Resources
     }
 
     // PROPERTIES //
-
+    // TODO - Implment a Count of Total ops and completed ops.
     public Op CurrentOp
     {
       get => _operations[_currentOpIndex];

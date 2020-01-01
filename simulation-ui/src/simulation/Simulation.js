@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SimulationData from '../data/test.json'
 import Day from './Day'
-import Workcenter from './Workcenter'
+import Workcenter from './workcenters/Workcenter'
 
 class Simulation extends Component {
   render () {
