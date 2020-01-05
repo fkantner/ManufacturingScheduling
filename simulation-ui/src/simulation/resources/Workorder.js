@@ -4,8 +4,8 @@ import './Workorder.css'
 
 function fullDisplay(workorder){
   return <div className='workorder'>
-  <h4>Workorder: {workorder.Id}</h4>
-  <p>Current Op: <Op op={workorder.CurrentOp} /></p>
+    <h4>Workorder: {workorder.Id}</h4>
+    <div>Current: <Op op={workorder.CurrentOp} /></div>
 </div>
 }
 

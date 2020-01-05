@@ -1,4 +1,7 @@
 .workcenter {
   border: 5px solid red;
-  display: inline-block;
+}
+
+.workcenter_body {
+  display: flex;
 }

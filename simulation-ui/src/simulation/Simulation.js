@@ -12,13 +12,13 @@ class Simulation extends Component {
           const day = simulationDetail.Day;
           if (day)
           {
-            return <div>
+            return <div key={"Day" + index}>
               <Day day={simulationDetail.Day} time={simulationDetail.Time} />
               </div>
           }
           else
           {
-            return <div>
+            return <div key={"WC" + index }>
               <Workcenter wc={simulationDetail} />
             </div>
           }
