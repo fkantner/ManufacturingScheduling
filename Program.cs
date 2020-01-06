@@ -23,7 +23,7 @@ namespace simulationCode
 
             Console.WriteLine("Starting Simulation");
             DayTime dt = new DayTime();
-            WriteJson(dt);
+            //WriteJson(dt);
 
             List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
             List<Workcenter> wc_list = SimulationSetup.GenerateWorkCenters();
@@ -35,14 +35,15 @@ namespace simulationCode
                 wc.AddToQueue(wo);
             }
 
-            WriteJson(wc);
-
+            //WriteJson(wc);
+            SimulationNode sn = new SimulationNode(dt, wc);
+            WriteJson(sn);
+            
             for(int i = 0; i < 20; i++)
             {
                 dt.Next();
                 wc.Work(dt);
-                WriteJson(dt);
-                WriteJson(wc);
+                WriteJson(sn);
             }
 
             writer.WriteLine("]");

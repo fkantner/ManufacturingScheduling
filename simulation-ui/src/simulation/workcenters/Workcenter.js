@@ -6,7 +6,7 @@ import Quality from './Quality';
 
 class Workcenter extends Component {
   render() {
-    var outputBuffer = Buffer(this.props.wc.OutputBuffer);
+    var outputBuffer = Buffer("Output Buffer:", this.props.wc.OutputBuffer);
 
     return <div className='workcenter'>
       <div className='workcenter_header'>
@@ -15,7 +15,7 @@ class Workcenter extends Component {
       <div className='workcenter_body'>
         <Machine machine={this.props.wc.Machine} />
         <Quality inspection={this.props.wc.Inspection} />
-        <p>OutputBuffer: { outputBuffer }</p>
+        { outputBuffer }
       </div>
     </div>
   }

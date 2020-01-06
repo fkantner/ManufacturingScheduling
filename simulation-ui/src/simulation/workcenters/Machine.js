@@ -6,7 +6,7 @@ import Buffer from '../resources/Buffer'
 class Machine extends Component {
   render() {
     const buffer = this.props.machine.InputBuffer;
-    var inputbuffer = Buffer(buffer);
+    var inputbuffer = Buffer("Input Buffer", buffer);
 
     return (<div className='machine'>
       <div class='machine_header'>
@@ -14,9 +14,7 @@ class Machine extends Component {
       </div>
       <div class='machine_body'>
 
-        <div class='buffer'><h5>Input Buffer</h5>
-          { inputbuffer }
-        </div>
+        { inputbuffer }
 
         <div class='machine_data'>
           <div>Setup Time: {this.props.machine.SetupTime}</div>

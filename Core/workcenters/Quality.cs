@@ -20,7 +20,8 @@ namespace Core.Workcenters
 
     public Workorder CurrentWo { get => _currentWo; }
     public int CurrentInspectionTime { get => _currentInspectionTime; }
-
+    public Queue<Workorder> Buffer { get => _buffer; }
+    
     public void AddToQueue(Workorder workorder)
     {
       _buffer.Enqueue(workorder);

@@ -1,8 +1,8 @@
 import React from 'react';
 import Workorder from '../resources/Workorder'
 
-function Buffer (buffer){
-  if (buffer.length === 0) { return <div>Empty Buffer</div> }
+function Buffer (title, buffer){
+  if (buffer.length === 0) { return <div className="buffer"><h5>Empty {title}</h5></div> }
   else {
     var inputbuffer = buffer.map((wo, index) => 
       {
@@ -12,9 +12,15 @@ function Buffer (buffer){
         }
       }
     )
-    return <ul>
-      {inputbuffer}
-    </ul>
+    return( 
+      <div className="buffer">
+        <h5>{title}</h5>
+        <ul>
+          {inputbuffer}
+        </ul>
+      </div>
+    );
+    
   }
 }
 
