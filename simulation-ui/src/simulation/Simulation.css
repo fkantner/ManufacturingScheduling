@@ -1,3 +1,7 @@
 div.node_selectors a {
   padding-left: 0.3em;
 }
+
+div.node_selectors {
+  width: 300;
+}

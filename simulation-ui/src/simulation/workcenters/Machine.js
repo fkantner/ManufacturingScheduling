@@ -9,20 +9,20 @@ class Machine extends Component {
     var inputbuffer = Buffer("Input Buffer", buffer);
 
     return (<div className='machine'>
-      <div class='machine_header'>
+      <div className='machine_header'>
         <h4>Machine Type: {this.props.machine.Name}</h4>
       </div>
-      <div class='machine_body'>
+      <div className='machine_body'>
 
         { inputbuffer }
 
-        <div class='machine_data'>
+        <div className='machine_data'>
           <div>Setup Time: {this.props.machine.SetupTime}</div>
           <div>Est Time to Complete: {this.props.machine.EstTimeToComplete}</div>
           <div>Last Op Type: {this.props.machine.LastType}</div>
         </div>
         
-        <div class='machine_current_wo'>
+        <div className='machine_current_wo'>
           <p>Current Workorder: </p><Workorder workorder={this.props.machine.CurrentWorkorder} />
         </div>
       </div>
