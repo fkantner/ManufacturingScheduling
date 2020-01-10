@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SimulationData from '../data/test.json';
 import Day from './Day';
-import Workcenter from './workcenters/Workcenter';
+import Plant from './plants/Plant';
 import './Simulation.css';
 
 function LastButton(props) {
@@ -36,7 +36,7 @@ class Simulation extends Component {
     var simulationDetail = SimulationData[index];
     
     var daytime = simulationDetail.DayTime;
-    var wc = simulationDetail.Workcenter;
+    var plants = simulationDetail.Plants;
     
     return (
       <div>
@@ -67,9 +67,14 @@ class Simulation extends Component {
             <Day day={daytime.Day} time={daytime.Time} />
           </div>
 
-          <div key={"WC" + index }>
-            <Workcenter wc={wc} />
-          </div>
+          {plants.map((plant, i) => {
+            return (
+              <div key={"Plant" + index + ":" + i}>
+                <Plant plant={plant} />
+              </div>
+            )
+          })}
+          
         </div>
   
       </div>

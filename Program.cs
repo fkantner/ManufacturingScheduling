@@ -4,6 +4,7 @@ using Core;
 namespace simulationCode
 {
     using Core.Resources;
+    using Core.Plant;
     using Core.Workcenters;
     using Newtonsoft.Json;
     using System.Collections.Generic;
@@ -25,24 +26,16 @@ namespace simulationCode
             DayTime dt = new DayTime();
             //WriteJson(dt);
 
-            List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
-            List<Workcenter> wc_list = SimulationSetup.GenerateWorkCenters();
-
-            Workcenter wc = wc_list[0];
-            
-            foreach(Workorder wo in wo_list)
-            {
-                wc.AddToQueue(wo);
-            }
+            List<Plant> plants = SimulationSetup.GeneratePlants();
 
             //WriteJson(wc);
-            SimulationNode sn = new SimulationNode(dt, wc);
+            SimulationNode sn = new SimulationNode(dt, plants);
             WriteJson(sn);
             
             for(int i = 0; i < 20; i++)
             {
                 dt.Next();
-                wc.Work(dt);
+                plants[0].Work(dt);
                 WriteJson(sn);
             }
 

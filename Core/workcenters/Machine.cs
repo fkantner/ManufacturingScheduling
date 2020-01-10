@@ -49,12 +49,17 @@ namespace Core.Workcenters
       get => _setupTime; 
       private set => _setupTime = value;
     }
-    
+
     public void AddToQueue(Workorder wc)
     {
       _queue.Enqueue(wc);
       _scheduler.Sort(_queue);
       return;
+    }
+
+    public bool ReceivesType(string type)
+    {
+      return _type.Contains(type);      
     }
 
     public Workorder Work(DayTime dayTime)

@@ -1,19 +1,20 @@
 namespace Core.Resources
 {
-  using Workcenters;
+  using Plant;
+  using System.Collections.Generic;
 
   public class SimulationNode
   {
     private DayTime _dayTime;
-    private Workcenter _workcenter;
+    private IEnumerable<Plant> _plants;
 
-    public SimulationNode(DayTime dayTime, Workcenter workcenter)
+    public SimulationNode(DayTime dayTime, IEnumerable<Plant> plants)
     {
       _dayTime = dayTime;
-      _workcenter = workcenter;
+      _plants = plants;
     }
 
     public DayTime DayTime { get => _dayTime; }
-    public Workcenter Workcenter { get => _workcenter; }
+    public IEnumerable<Plant> Plants { get => _plants; }
   }
 }

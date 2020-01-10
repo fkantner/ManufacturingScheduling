@@ -9,3 +9,13 @@ div.OpPart {
   padding-left: 5px;
   border-left: thin dotted blue;
 }
+
+div.OpPart p {
+  margin-bottom: 0.1em;
+  margin-top: 0.1em;
+}
+
+div.OpPart h5 {
+  margin-bottom: 0.4em;
+  margin-top: 0.3em;
+}

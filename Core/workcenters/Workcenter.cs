@@ -29,6 +29,11 @@ namespace Core.Workcenters
       return;
     }
 
+    public bool ReceivesType(string type)
+    {
+      return _machine.ReceivesType(type);
+    }
+    
     public void Work(DayTime dayTime)
     {
       // TODO - Implement QA part of Work Center

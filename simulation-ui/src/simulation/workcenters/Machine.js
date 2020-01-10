@@ -17,13 +17,15 @@ class Machine extends Component {
         { inputbuffer }
 
         <div className='machine_data'>
+          <h4>Operation</h4>
           <div>Setup Time: {this.props.machine.SetupTime}</div>
           <div>Est Time to Complete: {this.props.machine.EstTimeToComplete}</div>
           <div>Last Op Type: {this.props.machine.LastType}</div>
         </div>
         
         <div className='machine_current_wo'>
-          <p>Current Workorder: </p><Workorder workorder={this.props.machine.CurrentWorkorder} />
+          <h4>Current Workorder</h4>
+          <Workorder workorder={this.props.machine.CurrentWorkorder} />
         </div>
       </div>
       
