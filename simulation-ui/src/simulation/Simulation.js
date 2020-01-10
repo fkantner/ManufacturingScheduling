@@ -7,7 +7,7 @@ import './Simulation.css';
 function LastButton(props) {
   const notAtFront = props.node > 0;
   if (notAtFront){
-    return (<a href="#" key={"last"} onclick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
+    return (<a href="#" key={"last"} onClick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
   }
   else { return ''; }
 }
