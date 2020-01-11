@@ -32,7 +32,7 @@ namespace simulationCode
             SimulationNode sn = new SimulationNode(dt, plants);
             WriteJson(sn);
             
-            for(int i = 0; i < 20; i++)
+            for(int i = 0; i < 50; i++)
             {
                 dt.Next();
                 plants[0].Work(dt);

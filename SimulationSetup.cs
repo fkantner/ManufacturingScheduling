@@ -15,12 +15,13 @@ namespace simulationCode
         cncOpType1 = "cncOpType1",
         cncOpType2 = "cncOpType2",
         cncOpType3 = "cncOpType3",
-        cncOpType4 = "cncOpType4";
+        cncOpType4 = "cncOpType4",
+        shippingOpType = "shippingOp";
 
-    public static List<Workcenter> GenerateWorkCenters()
+    public static List<IAcceptWorkorders> GenerateWorkCenters()
     {
 
-      List<Workcenter> workcenters = new List<Workcenter>();
+      List<IAcceptWorkorders> workcenters = new List<IAcceptWorkorders>();
 
       Machine a = new Machine(drill, new Core.Schedulers.MachineScheduler(), new List<string>{drillOpType1, drillOpType2});
       Workcenter wc = new Workcenter("drill_WC_a", a);
@@ -31,6 +32,10 @@ namespace simulationCode
       Workcenter wc2 = new Workcenter("lathe_WC_b", b);
 
       workcenters.Add(wc2);
+
+      Dock dock = new Dock();
+
+      workcenters.Add(dock);
 
       return workcenters;
     }
@@ -47,12 +52,13 @@ namespace simulationCode
       Op cncOp2 = new Op(cncOpType2, 35, 15);
       Op cncOp3 = new Op(cncOpType3, 40, 12);
       Op cncOp4 = new Op(cncOpType4, 45, 10);
+      Op shippingOp = new Op(shippingOpType, 0, 0);
 
-      workorders.Add(new Workorder(1, new List<Op> { drillOp1, drillOp2, drillOp1 }));
-      workorders.Add(new Workorder(2, new List<Op> { drillOp2, drillOp2, drillOp1 }));
-      workorders.Add(new Workorder(3, new List<Op> { latheOp1, latheOp1 }));
-      workorders.Add(new Workorder(4, new List<Op> { latheOp2, latheOp2 }));
-      workorders.Add(new Workorder(5, new List<Op> { latheOp1, latheOp1 }));
+      workorders.Add(new Workorder(1, new List<Op> { drillOp1, drillOp2, latheOp1, shippingOp }));
+      workorders.Add(new Workorder(2, new List<Op> { drillOp2, drillOp2, drillOp1, latheOp2, shippingOp }));
+      workorders.Add(new Workorder(3, new List<Op> { latheOp1, latheOp1, shippingOp }));
+      workorders.Add(new Workorder(4, new List<Op> { latheOp2, latheOp2, drillOp1, shippingOp }));
+      workorders.Add(new Workorder(5, new List<Op> { latheOp1, latheOp1, drillOp2, shippingOp }));
 
       return workorders;
     }
@@ -62,10 +68,10 @@ namespace simulationCode
       List<Plant> plants = new List<Plant>();
       
       List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
-      List<Workcenter> wc_list = SimulationSetup.GenerateWorkCenters();
+      List<IAcceptWorkorders> wc_list = SimulationSetup.GenerateWorkCenters();
 
-      Workcenter wc1 = wc_list[0];
-      Workcenter wc2 = wc_list[1];
+      IAcceptWorkorders wc1 = wc_list[0];
+      IAcceptWorkorders wc2 = wc_list[1];
       
       foreach(Workorder wo in wo_list)
       {
@@ -83,7 +89,12 @@ namespace simulationCode
           }
       }
 
-      plants.Add(new Plant("plantA", wc_list));
+      Plant plant = new Plant("plantA", wc_list);
+
+      Transportation transport = new Transportation(wc1, new Core.Schedulers.TransportationScheduler(plant));
+      plant.InternalTransportation = transport;
+
+      plants.Add(plant);
 
       return plants;
     }

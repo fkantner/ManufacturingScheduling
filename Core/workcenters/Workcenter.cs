@@ -3,7 +3,7 @@ namespace Core.Workcenters
   using Resources;
   using System.Collections.Generic;
 
-  public class Workcenter
+  public class Workcenter : IAcceptWorkorders
   {
     private Machine _machine;
     private Quality _quality;

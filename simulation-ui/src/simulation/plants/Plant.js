@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import './Plant.css';
 import Workcenter from '../workcenters/Workcenter';
-//import Buffer from '../resources/Buffer'
+import Dock from './Dock';
 
 class Plant extends Component {
   render() {
     //var outputBuffer = Buffer("Output Buffer:", this.props.wc.OutputBuffer);
 
     var wc_list = this.props.plant.Workcenters.map((wc, index) => {
-      return(
-        <div key={"WC:" + index}>
-          <Workcenter wc={wc} />
-        </div>
-      )
+      if (wc.Name === "Shipping Dock")
+      {
+        return (
+          <div key={"Dock:" + index}>
+            <Dock dock={wc} />
+          </div>
+        )
+      }
+      else {
+        return(
+          <div key={"WC:" + index}>
+            <Workcenter wc={wc} />
+          </div>
+        )
+      }
     })
 
     return <div className='plant'>

@@ -43,7 +43,8 @@ namespace Core.Resources
 
     public void SetNextOp()
     {
-      _currentOpIndex++;
+      if(_currentOpIndex < _operations.Count - 1)
+        _currentOpIndex++;     
       return;
     }
 
