@@ -6,26 +6,29 @@ namespace Core.Plant
 
   public class Dock : IAcceptWorkorders
   {
-    private Queue<Workorder> _buffer;
+    private Queue<Workorder> _output_buffer;
+    private List<Workorder> _shipping_buffer;
     private readonly string _name;
 
     public Dock()
     {
-      _buffer = new Queue<Workorder>();
+      _output_buffer = new Queue<Workorder>();
+      _shipping_buffer = new List<Workorder>();
       _name = "Shipping Dock";
     }
 
-    public Queue<Workorder> OutputBuffer { get => _buffer; }
+    public Queue<Workorder> OutputBuffer { get => _output_buffer; }
+    public List<Workorder> ShippingBuffer { get => _shipping_buffer; }
     public string Name { get => _name; }
 
     public void AddToQueue(Workorder workorder)
     {
-      _buffer.Enqueue(workorder);
+      _shipping_buffer.Add(workorder);
     }
 
     public bool ReceivesType(string type)
     {
-      return type == "shippingOpType";
+      return type == "shippingOp";
     }
 
     public void Work(DayTime dayTime)

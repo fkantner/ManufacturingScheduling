@@ -32,6 +32,10 @@ namespace Core.Plant
     {
       if(_cargo == null && _transport_time == 0) // Pickup cargo.
       {
+        if(_destination != null){
+          _current_location = _destination;
+          _destination = null;
+        }
         _scheduler.ChooseNextCargo(_current_location);
         _cargo = _scheduler.GetCargo(_current_location);
         _destination = _scheduler.Destination;
