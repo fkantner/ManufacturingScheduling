@@ -22,13 +22,18 @@ namespace Core.Plant
       _cargo = null;
       _scheduler = ts;
     }
+
+    public string CurrentLocation { get => _current_location.Name; }
+    public int CargoNumber { get => _cargo == null ? 0 : _cargo.Id; }
+    public string Destination { get => _destination == null ? "None" : _destination.Name; }
+    public int TransportTime { get => _transport_time; }
     
     public void Work(DayTime dayTime)
     {
-      if (_cargo == null && _transport_time == 0) // Pickup cargo.
+      if(_cargo == null && _transport_time == 0) // Pickup cargo.
       {
         _scheduler.ChooseNextCargo(_current_location);
-        _cargo = _scheduler.Cargo;
+        _cargo = _scheduler.GetCargo(_current_location);
         _destination = _scheduler.Destination;
         _transport_time = _scheduler.TransportTime;
       }

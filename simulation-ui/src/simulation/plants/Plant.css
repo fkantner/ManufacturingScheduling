@@ -12,3 +12,15 @@ div.plant_body {
   padding: 0.1em;
   display: flex;
 }
+
+div.transport {
+  width: 5em;
+  background-color: lightyellow;
+  border: thin solid grey;
+  margin-left: 1em;
+}
+
+div.transport_header {
+  text-align: left;
+  font-weight: bold;
+}

@@ -9,6 +9,7 @@ namespace Core.Workcenters
     public bool ReceivesType(string type);
     public void Work(DayTime dayTime);
 
+    public string Name { get; }
     public Queue<Workorder> OutputBuffer { get; }
   }
 }

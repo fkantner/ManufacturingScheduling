@@ -33,7 +33,14 @@ namespace Core.Schedulers
       {
         _next_cargo = null;
         _destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count > 0);
-        _transport_time = 5;
+        if (_destination != null)
+        {
+          _transport_time = 5;
+        }
+        else
+        {
+          _transport_time = 0;
+        }
         return;
       }
 
@@ -47,6 +54,12 @@ namespace Core.Schedulers
       {
         _transport_time = 5;
       }
+    }
+
+    public Workorder GetCargo(IAcceptWorkorders current_location)
+    {
+      if(_next_cargo == null){ return null; }
+      return current_location.OutputBuffer.Dequeue();
     }
 
     private IAcceptWorkorders ChooseWorkcenter(string type)

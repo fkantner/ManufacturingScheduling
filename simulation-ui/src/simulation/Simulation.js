@@ -7,17 +7,17 @@ import './Simulation.css';
 function LastButton(props) {
   const notAtFront = props.node > 0;
   if (notAtFront){
-    return (<a href="#" key={"last"} onClick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
+    return (<a href="#" key={"last"} className="lastButton" onClick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
   }
-  else { return ''; }
+  else { return <a href="#" className="disabled hidden" >{"<="}</a> }
 }
 
 function NextButton(props) {
   const notAtEnd = props.node < props.length - 1;
   if (notAtEnd) {
-    return (<a href="#" key={"next"} onClick={props.onClick.bind(this, props.node + 1)}>{"=>"}</a>);
+    return (<a href="#" key={"next"} className="nextButton" onClick={props.onClick.bind(this, props.node + 1)}>{"=>"}</a>);
   }
-  else { return ''; }
+  else { return <a href="#" className="disabled hidden" >{"=>"}</a> }
 }
 
 class Simulation extends Component {
@@ -25,10 +25,15 @@ class Simulation extends Component {
     super(props);
     this.state = { node: 0 };
     this.changeNode = this.changeNode.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   changeNode(i) {
     this.setState( { node: i } );
+  }
+
+  handleChange(event) {
+    this.setState( { node: event.target.selectedIndex } );
   }
 
   render () {
@@ -49,11 +54,11 @@ class Simulation extends Component {
             onClick={this.changeNode.bind(this)}
           />
 
-          {SimulationData.map((data, index) => {
-            return (
-              <a href="#" key={index} onClick={this.changeNode.bind(this, index)}>{index}</a>
-            );
-          })}
+          <select className="dayTimeSelect" value={this.state.node} onChange={this.handleChange} >
+            {SimulationData.map((data, index) => {
+              return <option key={"select:"+ index} value={index}>{data.DayTime.Day + ": " + data.DayTime.Time}</option>
+            })}
+          </select>
 
           <NextButton 
             node={this.state.node}

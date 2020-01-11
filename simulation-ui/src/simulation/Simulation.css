@@ -5,3 +5,20 @@ div.node_selectors a {
 div.node_selectors {
   width: 300;
 }
+
+.dayTimeSelect {
+  width: 4em;
+  margin: 1em;
+}
+
+a.lastButton {
+  padding: 0.5em;
+}
+
+a.nextButton {
+  padding: 0.5em;
+}
+
+.hidden {
+  visibility: hidden;
+}
