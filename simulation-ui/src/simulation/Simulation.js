@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SimulationData from '../data/test.json';
 import Day from './Day';
 import Plant from './plants/Plant';
+import './Reset.css';
 import './Simulation.css';
 
 function LastButton(props) {
@@ -18,6 +19,36 @@ function NextButton(props) {
     return (<a href="#" key={"next"} className="nextButton" onClick={props.onClick.bind(this, props.node + 1)}>{"=>"}</a>);
   }
   else { return <a href="#" className="disabled hidden" >{"=>"}</a> }
+}
+
+function ParseDay(day){
+  var dayOfWeek;
+  switch(day) {
+    case 0: dayOfWeek = 'Su'; break;
+    case 1: dayOfWeek = 'Mo'; break;
+    case 2: dayOfWeek = 'Tu'; break;
+    case 3: dayOfWeek = 'We'; break;
+    case 4: dayOfWeek = 'Th'; break;
+    case 5: dayOfWeek = 'Fr'; break;
+    case 6: dayOfWeek = 'Sa'; break;
+    default: dayOfWeek = 'Er';
+  }
+  return dayOfWeek;
+}
+
+function ParseTime(time) {
+  var hour = FrontLoadZeros(Math.floor(time / 60));
+  var minute = FrontLoadZeros(time % 60);
+
+  return hour + ":" + minute;
+}
+
+function FrontLoadZeros(number) {
+  var answer;
+  if (number === 0){ answer = "00"; }
+  else if (number < 10) { answer = "0" + number; }
+  else { answer = number.toString(); }
+  return answer;
 }
 
 class Simulation extends Component {
@@ -56,7 +87,7 @@ class Simulation extends Component {
 
           <select className="dayTimeSelect" value={this.state.node} onChange={this.handleChange} >
             {SimulationData.map((data, index) => {
-              return <option key={"select:"+ index} value={index}>{data.DayTime.Day + ": " + data.DayTime.Time}</option>
+              return <option key={"select:"+ index} value={index}>{ParseDay(data.DayTime.Day) + "--" + ParseTime(data.DayTime.Time)}</option>
             })}
           </select>
 
@@ -69,7 +100,7 @@ class Simulation extends Component {
 
         <div className="simulation_node">
           <div key={"Day" + index}>
-            <Day day={daytime.Day} time={daytime.Time} />
+            <Day day={ParseDay(daytime.Day)} time={ParseTime(daytime.Time)} />
           </div>
 
           {plants.map((plant, i) => {

@@ -11,6 +11,18 @@ div.plant_header {
 div.plant_body {
   padding: 0.1em;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+div.plant_leaf {
+  flex-grow: 2;
+  flex-shrink: 2;
+}
+
+div.plant_leaf.dock {
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 div.transport {

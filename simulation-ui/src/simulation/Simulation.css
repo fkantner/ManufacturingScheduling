@@ -7,7 +7,7 @@ div.node_selectors {
 }
 
 .dayTimeSelect {
-  width: 4em;
+  width: 7em;
   margin: 1em;
 }
 
@@ -21,4 +21,8 @@ a.nextButton {
 
 .hidden {
   visibility: hidden;
+}
+
+h1 {
+  font-weight: bold;
 }

@@ -25,7 +25,7 @@ class Machine extends Component {
         
         <div className='machine_current_wo'>
           <h4>Current Workorder</h4>
-          <Workorder workorder={this.props.machine.CurrentWorkorder} />
+          <Workorder workorder={this.props.machine.CurrentWorkorder} ShowAll={true} />
         </div>
       </div>
       

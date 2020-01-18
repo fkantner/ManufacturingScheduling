@@ -28,7 +28,7 @@ class Plant extends Component {
       if (wc.Name === "Shipping Dock")
       {
         return (
-          <div key={"Dock:" + index}>
+          <div className="plant_leaf dock" key={"Dock:" + index}>
             <Transport workcenter={wc} transport={transport} />
             <Dock dock={wc} />
           </div>
@@ -36,7 +36,7 @@ class Plant extends Component {
       }
       else {
         return(
-          <div key={"WC:" + index}>
+          <div className="plant_leaf" key={"WC:" + index}>
             <Transport workcenter={wc} transport={transport} />
             <Workcenter wc={wc} />
           </div>
