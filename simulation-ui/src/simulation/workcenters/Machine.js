@@ -17,16 +17,29 @@ class Machine extends Component {
         { inputbuffer }
 
         <div className='machine_data'>
+          
           <h4>Operation</h4>
-          <div>Setup Time: {this.props.machine.SetupTime}</div>
-          <div>Est Time to Complete: {this.props.machine.EstTimeToComplete}</div>
-          <div>Last Op Type: {this.props.machine.LastType}</div>
+          <table className='machine_time'>
+            <tr>
+              <th>S</th>
+              <th>C</th>
+              <th className='machine_last_type'>Last</th>
+            </tr>
+            <tr>
+              <td>{this.props.machine.SetupTime}</td>
+              <td>{this.props.machine.EstTimeToComplete}</td>
+              <td>{this.props.machine.LastType}</td>
+            </tr>              
+          </table>
+          
+          <div className='machine_current_wo'>
+            <h4>Current Workorder</h4>
+            <Workorder workorder={this.props.machine.CurrentWorkorder} ShowAll={true} />
+          </div>
+
         </div>
         
-        <div className='machine_current_wo'>
-          <h4>Current Workorder</h4>
-          <Workorder workorder={this.props.machine.CurrentWorkorder} ShowAll={true} />
-        </div>
+
       </div>
       
     </div>);

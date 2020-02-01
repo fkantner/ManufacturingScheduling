@@ -10,8 +10,12 @@ class Quality extends Component {
 
     return (<div className='Inspection'>
       <h4>Inspection</h4>
-      { inputbuffer }
-      <div>Current Inspection Time: { this.props.inspection.CurrentInspectionTime }</div>
+      <div className='inspection_buffer'>
+        { inputbuffer }
+      </div>
+
+      <div className='inspection_time'>Current Inspection Time: { this.props.inspection.CurrentInspectionTime }</div>
+      
       <div>Current WO: <Workorder workorder={this.props.inspection.CurrentWo} /></div>
     </div>);
   }

@@ -13,3 +13,27 @@ div.machine_data {
 div.machine_current_wo {
   padding: 0.1em;
 }
+
+table.machine_time {
+  background-color: lightblue;
+  width: 100%;
+}
+
+table.machine_time tr {
+  border: thin solid grey;
+  padding-bottom: 0.1em;
+}
+
+table.machine_time th {
+  font-weight: bold;
+  width: 3em;
+}
+
+table.machine_time td {
+  border: thin solid black;
+  padding: 0.3em;
+}
+
+th.machine_last_type {
+  width: 5em;
+}
