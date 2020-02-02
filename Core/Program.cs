@@ -13,7 +13,7 @@ namespace simulationCode
     class Program
     {
         static private StreamWriter writer;
-        static private readonly string filename = "./simulation-ui/src/data/test.json";
+        static private readonly string filename = "../simulation-ui/src/data/test.json";
         static private bool hasWritten;
         static void Main(string[] args)
         {
