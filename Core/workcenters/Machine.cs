@@ -11,11 +11,11 @@ namespace Core.Workcenters
     private int _setupTime;
     private string _lastType;
     private readonly Queue<Workorder> _queue;
-    private readonly MachineScheduler _scheduler;
+    private readonly IScheduleMachines _scheduler;
     private readonly List<string> _type;
     private readonly string _name;
 
-    public Machine(string name, MachineScheduler ms, List<string> type)
+    public Machine(string name, IScheduleMachines ms, List<string> type)
     {
       _name = name;
       _queue = new Queue<Workorder>();

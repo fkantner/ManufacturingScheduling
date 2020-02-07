@@ -3,7 +3,12 @@ namespace Core.Schedulers
   using Core.Resources;
   using System.Collections.Generic;
 
-  public class MachineScheduler
+  public interface IScheduleMachines
+  {
+      void Sort(Queue<Workorder> queue);
+  }
+
+  public class MachineScheduler : IScheduleMachines
   {
     // TODO - Implement MachineScheduler
 
