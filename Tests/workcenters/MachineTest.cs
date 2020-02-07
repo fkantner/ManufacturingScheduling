@@ -15,7 +15,7 @@ namespace Tests.Workcenters
   {
     private Machine _subject;
     private MachineScheduler machineScheduler;
-    private DayTime dayTime;
+    private DayTime _dayTime;
       
     [SetUp]
     protected void SetUp()
@@ -25,7 +25,7 @@ namespace Tests.Workcenters
       
       List<string> types = new List<string>(){"type1", "type2"};
       _subject = new Machine("test subject", machineScheduler, types);
-      dayTime = new DayTime();
+      _dayTime = new DayTime();
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenEmpty_ReturnsNull()
     {
-      Workorder answer = _subject.Work(dayTime);
+      Workorder answer = _subject.Work(_dayTime);
       Assert.IsNull(answer);
     }
 
@@ -49,7 +49,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(0);
       
-      Workorder answer = _subject.Work(dayTime);
+      Workorder answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.IsEmpty(_subject.InputBuffer);
@@ -63,7 +63,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(1);
 
-      Workorder answer = _subject.Work(dayTime);
+      Workorder answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.IsEmpty(_subject.InputBuffer);
@@ -77,7 +77,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(2);
 
-      Workorder answer = _subject.Work(dayTime);
+      Workorder answer = _subject.Work(_dayTime);
 
       Assert.AreEqual(1, answer.Id);
       Assert.AreEqual("type1", _subject.LastType);
@@ -106,7 +106,7 @@ namespace Tests.Workcenters
 
       for(int i = 0; i < workIterations; i++)
       {
-        _subject.Work(dayTime);
+        _subject.Work(_dayTime);
       }
     }
   }

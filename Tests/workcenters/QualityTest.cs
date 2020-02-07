@@ -45,7 +45,37 @@ namespace Tests.Workcenters
       Workorder answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
-      Assert.AreEqual(_subject.CurrentWo, _wo1);
+      Assert.AreEqual(_wo1, _subject.CurrentWo);
+      Assert.AreEqual(3, _subject.CurrentInspectionTime);
+    }
+
+    [Test]
+    public void Work_WhenProcessing_ReducesCurrentInspectionTime()
+    {
+      _subject.AddToQueue(_wo1);
+      Workorder answer = _subject.Work(_dayTime);
+      answer = _subject.Work(_dayTime);
+
+      Assert.IsNull(answer);
+      Assert.AreEqual(_wo1, _subject.CurrentWo);
+      Assert.AreEqual(2, _subject.CurrentInspectionTime);
+    }
+
+    [Test]
+    public void Work_WhenDoneProcessing_SetsNextOpAndReturns()
+    {
+      _subject.AddToQueue(_wo1);
+      Workorder answer = null;
+
+      for(int i=0; i<4; i++)
+      {
+        answer = _subject.Work(_dayTime);
+      }
+
+      Assert.IsNotNull(answer);
+      Assert.AreEqual(1, answer.Id);
+      Assert.IsNull(_subject.CurrentWo);
+      Assert.AreEqual("type2", answer.CurrentOpType);
     }
 
   }
