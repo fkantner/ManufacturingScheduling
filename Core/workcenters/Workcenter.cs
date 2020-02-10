@@ -5,12 +5,12 @@ namespace Core.Workcenters
 
   public class Workcenter : IAcceptWorkorders
   {
-    private Machine _machine;
+    private IDoWork _machine;
     private Quality _quality;
     private string _name;
     private readonly Queue<Workorder> _outbound_buffer;
         
-    public Workcenter(string name, Machine machine)
+    public Workcenter(string name, IDoWork machine)
     {
       _machine = machine;
       _name = name;
@@ -18,7 +18,7 @@ namespace Core.Workcenters
       _quality = new Quality();
     }
 
-    public Machine Machine { get => _machine; }
+    public IDoWork Machine { get => _machine; }
     public string Name { get => _name; }
     public Queue<Workorder> OutputBuffer { get => _outbound_buffer; }
     public Quality Inspection { get => _quality; }

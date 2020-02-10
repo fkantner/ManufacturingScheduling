@@ -4,7 +4,7 @@ namespace Core.Workcenters
   using Core.Schedulers;
   using System.Collections.Generic;
 
-  public class Machine
+  public class Machine : IDoWork
   {
     private Workorder _currentWorkorder;
     private int _estTimeToComplete;

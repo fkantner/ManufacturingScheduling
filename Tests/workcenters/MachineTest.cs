@@ -8,8 +8,6 @@ namespace Tests.Workcenters
   using System.Collections.Generic;
   using NSubstitute;
   
-
-
   [TestFixture]
   public class MachineTest
   {
