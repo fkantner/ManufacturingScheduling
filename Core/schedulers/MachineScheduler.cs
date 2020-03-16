@@ -5,14 +5,14 @@ namespace Core.Schedulers
 
   public interface IScheduleMachines
   {
-      void Sort(Queue<Workorder> queue);
+      void Sort(Queue<IWork> queue);
   }
 
   public class MachineScheduler : IScheduleMachines
   {
     // TODO - Implement MachineScheduler
 
-    public void Sort(Queue<Workorder> queue)
+    public void Sort(Queue<IWork> queue)
     {
       // TODO - Implement Machine Scheduler Sort Algorithm
       return;

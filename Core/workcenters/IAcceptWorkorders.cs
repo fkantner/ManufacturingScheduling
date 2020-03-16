@@ -5,11 +5,11 @@ namespace Core.Workcenters
 
   public interface IAcceptWorkorders
   {
-    public void AddToQueue(Workorder wc);
+    public void AddToQueue(IWork wc);
     public bool ReceivesType(string type);
     public void Work(DayTime dayTime);
 
     public string Name { get; }
-    public Queue<Workorder> OutputBuffer { get; }
+    public Queue<IWork> OutputBuffer { get; }
   }
 }

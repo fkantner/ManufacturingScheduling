@@ -32,7 +32,7 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenNoWorkOrder_ReturnsNothing()
     {
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.IsNull(_subject.CurrentWo);
@@ -42,7 +42,7 @@ namespace Tests.Workcenters
     public void Work_WhenWoInQueue_SetsWoAndReturnsNull()
     {
       _subject.AddToQueue(_wo1);
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.AreEqual(_wo1, _subject.CurrentWo);
@@ -53,7 +53,7 @@ namespace Tests.Workcenters
     public void Work_WhenProcessing_ReducesCurrentInspectionTime()
     {
       _subject.AddToQueue(_wo1);
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
       answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
@@ -65,7 +65,7 @@ namespace Tests.Workcenters
     public void Work_WhenDoneProcessing_SetsNextOpAndReturns()
     {
       _subject.AddToQueue(_wo1);
-      Workorder answer = null;
+      IWork answer = null;
 
       for(int i=0; i<4; i++)
       {

@@ -5,7 +5,6 @@ namespace Tests.Workcenters
   using Core.Workcenters;
   using NSubstitute;
   using NUnit.Framework;
-  using System.Collections.Generic;
 
   [TestFixture]
   public class WorkcenterTest
@@ -13,14 +12,13 @@ namespace Tests.Workcenters
     private Workcenter _subject;
     private IDoWork _testMachine;
     private DayTime _dayTime;
-
-    private Workorder _workorder;
+    private IWork _workorder;
 
     [SetUp]
     protected void SetUp()
     {
       _testMachine = Substitute.For<IDoWork>();
-      _workorder = Substitute.For<Workorder>(1, new List<Op>());
+      _workorder = Substitute.For<IWork>();
       _dayTime = new DayTime();
       _subject = new Workcenter("TestWC", _testMachine);
     }
@@ -28,7 +26,7 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenEmpty_DoesNothing()
     {
-      _testMachine.Work(Arg.Any<DayTime>()).Returns((Workorder)null);
+      _testMachine.Work(Arg.Any<DayTime>()).Returns((IWork) null);
       
       _subject.Work(_dayTime);
       
@@ -54,10 +52,10 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenWoIsInspected_PutsWoInBuffer()
     {
-      Workorder returnValue = _workorder;
+      IWork returnValue = _workorder;
       _testMachine.Work(Arg.Any<DayTime>()).Returns(
         _workorder,
-        (Workorder) null
+        (IWork) null
       );
       
       for(int i = 0; i < 5; i++)
@@ -69,6 +67,5 @@ namespace Tests.Workcenters
       Assert.IsNull(_subject.Inspection.CurrentWo);
       Assert.IsEmpty(_subject.Inspection.Buffer);
     }
-
   }
 }

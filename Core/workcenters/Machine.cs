@@ -6,11 +6,11 @@ namespace Core.Workcenters
 
   public class Machine : IDoWork
   {
-    private Workorder _currentWorkorder;
+    private IWork _currentWorkorder;
     private int _estTimeToComplete;
     private int _setupTime;
     private string _lastType;
-    private readonly Queue<Workorder> _queue;
+    private readonly Queue<IWork> _queue;
     private readonly IScheduleMachines _scheduler;
     private readonly List<string> _type;
     private readonly string _name;
@@ -18,7 +18,7 @@ namespace Core.Workcenters
     public Machine(string name, IScheduleMachines ms, List<string> type)
     {
       _name = name;
-      _queue = new Queue<Workorder>();
+      _queue = new Queue<IWork>();
       _scheduler = ms;
       _type = type;
       _setupTime = 0;
@@ -27,7 +27,7 @@ namespace Core.Workcenters
       _currentWorkorder = null;
     }
 
-    public Workorder CurrentWorkorder
+    public IWork CurrentWorkorder
     {
       get => _currentWorkorder;
       private set => _currentWorkorder = value;
@@ -37,7 +37,7 @@ namespace Core.Workcenters
       get => _estTimeToComplete; 
       private set => _estTimeToComplete = value;
     }
-    public Queue<Workorder> InputBuffer { get => _queue; }
+    public Queue<IWork> InputBuffer { get => _queue; }
     public string LastType 
     { 
       get => _lastType; 
@@ -50,7 +50,7 @@ namespace Core.Workcenters
       private set => _setupTime = value;
     }
 
-    public void AddToQueue(Workorder wc)
+    public void AddToQueue(IWork wc)
     {
       _queue.Enqueue(wc);
       _scheduler.Sort(_queue);
@@ -62,7 +62,7 @@ namespace Core.Workcenters
       return _type.Contains(type);      
     }
 
-    public Workorder Work(DayTime dayTime)
+    public IWork Work(DayTime dayTime)
     {
       // TODO - Implement Machine Breakdown
 
@@ -98,7 +98,7 @@ namespace Core.Workcenters
 
       if (EstTimeToComplete > 0) { return null; }
 
-      Workorder answer = CurrentWorkorder;
+      IWork answer = CurrentWorkorder;
       LastType = CurrentWorkorder.CurrentOpType;
       CurrentWorkorder = null;
       return answer;

@@ -19,7 +19,7 @@ namespace Tests.Workcenters
     protected void SetUp()
     {
       machineScheduler = Substitute.For<MachineScheduler>();
-      machineScheduler.Sort(Arg.Any<Queue<Workorder>>());
+      machineScheduler.Sort(Arg.Any<Queue<IWork>>());
       
       List<string> types = new List<string>(){"type1", "type2"};
       _subject = new Machine("test subject", machineScheduler, types);
@@ -32,13 +32,13 @@ namespace Tests.Workcenters
       Workorder wo = GenerateWorkorder();
       _subject.AddToQueue(wo);
 
-      machineScheduler.Received().Sort(Arg.Any<Queue<Workorder>>());
+      machineScheduler.Received().Sort(Arg.Any<Queue<IWork>>());
     }
 
     [Test]
     public void Work_WhenEmpty_ReturnsNull()
     {
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
       Assert.IsNull(answer);
     }
 
@@ -47,7 +47,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(0);
       
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.IsEmpty(_subject.InputBuffer);
@@ -61,7 +61,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(1);
 
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.IsEmpty(_subject.InputBuffer);
@@ -75,7 +75,7 @@ namespace Tests.Workcenters
     {
       SetupSubject(2);
 
-      Workorder answer = _subject.Work(_dayTime);
+      var answer = _subject.Work(_dayTime);
 
       Assert.AreEqual(1, answer.Id);
       Assert.AreEqual("type1", _subject.LastType);

@@ -5,28 +5,28 @@ namespace Core.Workcenters
 
   public class Quality
   {
-    private Workorder _currentWo;
+    private IWork _currentWo;
     private int _currentInspectionTime;
     private readonly int _inspectionTime;
-    private Queue<Workorder> _buffer;
+    private Queue<IWork> _buffer;
 
     public Quality()
     {
       _inspectionTime = 3;
       _currentInspectionTime = 0;
       _currentWo = null;
-      _buffer = new Queue<Workorder>();
+      _buffer = new Queue<IWork>();
     }
 
-    public Workorder CurrentWo { get => _currentWo; }
+    public IWork CurrentWo { get => _currentWo; }
     public int CurrentInspectionTime { get => _currentInspectionTime; }
-    public Queue<Workorder> Buffer { get => _buffer; }
+    public Queue<IWork> Buffer { get => _buffer; }
     
-    public void AddToQueue(Workorder workorder)
+    public void AddToQueue(IWork workorder)
     {
       _buffer.Enqueue(workorder);
     }
-    public Workorder Work(DayTime dayTime)
+    public IWork Work(DayTime dayTime)
     {
       if(_currentWo == null)
       {
@@ -38,7 +38,7 @@ namespace Core.Workcenters
         return null;
       }
 
-      Workorder answer = null;
+      IWork answer = null;
       _currentInspectionTime -= 1;
       if (_currentInspectionTime == 0)
       {

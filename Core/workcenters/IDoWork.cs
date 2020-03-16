@@ -4,8 +4,8 @@ namespace Core.Workcenters
 
   public interface IDoWork
   {
-    public void AddToQueue(Workorder workorder);
+    public void AddToQueue(IWork workorder);
     public bool ReceivesType(string type);
-    public Workorder Work(DayTime dayTime);
+    public IWork Work(DayTime dayTime);
   }
 }

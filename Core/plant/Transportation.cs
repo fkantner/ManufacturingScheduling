@@ -4,17 +4,24 @@ namespace Core.Plant
   using Core.Resources;
   using Core.Schedulers;
 
-  public class Transportation
+  public interface ITransportWork
+  {
+    string CurrentLocation { get; }
+    int CargoNumber { get; }
+    string Destination { get; }
+    int TransportTime { get; }
+    void Work(DayTime dayTime);
+  }
+
+  public class Transportation : ITransportWork
   {
     private IAcceptWorkorders _current_location;
     private IAcceptWorkorders _destination;
     private int _transport_time;
-    private Workorder _cargo;
-    private TransportationScheduler _scheduler;
+    private IWork _cargo;
+    private IScheduleTransport _scheduler;
 
-    private const int _default_transport_time = 5;
-
-    public Transportation(IAcceptWorkorders start, TransportationScheduler ts)
+    public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
     {
       _current_location = start;
       _destination = null;

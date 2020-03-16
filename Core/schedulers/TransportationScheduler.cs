@@ -5,13 +5,21 @@ namespace Core.Schedulers
   using Core.Plant;
   using System.Linq;
 
-  public class TransportationScheduler
+  public interface IScheduleTransport
+  {
+    public void ChooseNextCargo(IAcceptWorkorders current_location);
+    public IWork GetCargo(IAcceptWorkorders current_location);
+    public IAcceptWorkorders Destination { get; }
+    public int TransportTime { get; }
+  }
+
+  public class TransportationScheduler : IScheduleTransport
   {
     private Plant _plant;
 
     //TODO - Improve TransportationScheduler to include other algorithms
 
-    private Workorder _next_cargo;
+    private IWork _next_cargo;
     private IAcceptWorkorders _destination;
     private int _transport_time;
     
@@ -23,7 +31,7 @@ namespace Core.Schedulers
       _transport_time = 0;
     }
 
-    public Workorder Cargo { get => _next_cargo; }
+    public IWork Cargo { get => _next_cargo; }
     public IAcceptWorkorders Destination { get => _destination; }
     public int TransportTime { get => _transport_time; }
 
@@ -56,7 +64,7 @@ namespace Core.Schedulers
       }
     }
 
-    public Workorder GetCargo(IAcceptWorkorders current_location)
+    public IWork GetCargo(IAcceptWorkorders current_location)
     {
       if(_next_cargo == null){ return null; }
       return current_location.OutputBuffer.Dequeue();
