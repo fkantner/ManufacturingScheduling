@@ -90,8 +90,8 @@ namespace Tests.Plant
 
       Assert.AreEqual(_destination.Name, _subject.CurrentLocation); // Made it to destination
       Assert.AreEqual(EMPTY_WO_ID, _subject.CargoNumber); // Picked up Cargo -- if any
-      Assert.AreEqual(_start, _subject.Destination); // Is now assigned to new destination
-      Assert.AreEqual(TRANSPORT_TIME, _subject.TransportTime);
+      Assert.AreEqual("None", _subject.Destination); // destination is consumed
+      Assert.AreEqual(0, _subject.TransportTime); // Transport is no longer going anywhere
       _destination.Received().AddToQueue(_workorder);
     }
 

@@ -26,14 +26,20 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenEmpty_DoesNothing()
     {
-      _testMachine.Work(Arg.Any<DayTime>()).Returns((IWork) null);
+      _dayTime = new DayTime();
+      IDoWork _emptyTestMachine = Substitute.For<IDoWork>();
+      _emptyTestMachine.Work(Arg.Any<DayTime>()).ReturnsForAnyArgs((IWork) null);
+      _emptyTestMachine.Work(null).Returns((IWork) null);
+
+      Workcenter subject = new Workcenter("TestWC", _emptyTestMachine);
       
-      _subject.Work(_dayTime);
       
-      Assert.IsEmpty(_subject.OutputBuffer);
-      Assert.IsEmpty(_subject.Inspection.Buffer);
-      Assert.IsNull(_subject.Inspection.CurrentWo);
-      _testMachine.Received().Work(_dayTime);
+      subject.Work(_dayTime);
+      
+      Assert.IsEmpty(subject.OutputBuffer);
+      Assert.IsEmpty(subject.Inspection.Buffer);
+      Assert.IsNull(subject.Inspection.CurrentWo);
+      _emptyTestMachine.Received().Work(Arg.Any<DayTime>());
     }
 
     [Test]
