@@ -1,7 +1,7 @@
 namespace Core.Schedulers
 {
   using Core.Resources;
-  
+
   public class PlantScheduler
   {
     // TODO - Implement PlantScheduler

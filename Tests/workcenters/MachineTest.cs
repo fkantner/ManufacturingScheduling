@@ -7,20 +7,20 @@ namespace Tests.Workcenters
   using NUnit.Framework;
   using System.Collections.Generic;
   using NSubstitute;
-  
+
   [TestFixture]
   public class MachineTest
   {
     private Machine _subject;
     private MachineScheduler machineScheduler;
     private DayTime _dayTime;
-      
+
     [SetUp]
     protected void SetUp()
     {
       machineScheduler = Substitute.For<MachineScheduler>();
       machineScheduler.Sort(Arg.Any<Queue<IWork>>());
-      
+
       List<string> types = new List<string>(){"type1", "type2"};
       _subject = new Machine("test subject", machineScheduler, types);
       _dayTime = new DayTime();
@@ -46,7 +46,7 @@ namespace Tests.Workcenters
     public void Work_WhenNoCurrent_SetsCurrent()
     {
       SetupSubject(0);
-      
+
       var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);

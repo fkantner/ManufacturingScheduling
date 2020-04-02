@@ -6,60 +6,39 @@ namespace Core.Workcenters
 
   public class Machine : IDoWork
   {
-    private IWork _currentWorkorder;
-    private int _estTimeToComplete;
-    private int _setupTime;
-    private string _lastType;
-    private readonly Queue<IWork> _queue;
     private readonly IScheduleMachines _scheduler;
     private readonly List<string> _type;
-    private readonly string _name;
 
     public Machine(string name, IScheduleMachines ms, List<string> type)
     {
-      _name = name;
-      _queue = new Queue<IWork>();
+      Name = name;
       _scheduler = ms;
       _type = type;
-      _setupTime = 0;
-      _estTimeToComplete = 0;
-      _lastType = null;
-      _currentWorkorder = null;
+
+      CurrentWorkorder = null;
+      EstTimeToComplete = 0;
+      InputBuffer = new Queue<IWork>();
+      LastType = null;
+      SetupTime = 0;
     }
 
-    public IWork CurrentWorkorder
-    {
-      get => _currentWorkorder;
-      private set => _currentWorkorder = value;
-    }
-    public int EstTimeToComplete 
-    { 
-      get => _estTimeToComplete; 
-      private set => _estTimeToComplete = value;
-    }
-    public Queue<IWork> InputBuffer { get => _queue; }
-    public string LastType 
-    { 
-      get => _lastType; 
-      private set => _lastType = value;
-    }
-    public string Name { get => _name; }
-    public int SetupTime 
-    { 
-      get => _setupTime; 
-      private set => _setupTime = value;
-    }
+    public IWork CurrentWorkorder { get; private set; }
+    public int EstTimeToComplete { get; private set; }
+    public Queue<IWork> InputBuffer { get; }
+    public string LastType { get; private set; }
+    public string Name { get; }
+    public int SetupTime { get; private set; }
 
     public void AddToQueue(IWork wc)
     {
-      _queue.Enqueue(wc);
-      _scheduler.Sort(_queue);
+      InputBuffer.Enqueue(wc);
+      _scheduler.Sort(InputBuffer);
       return;
     }
 
     public bool ReceivesType(string type)
     {
-      return _type.Contains(type);      
+      return _type.Contains(type);
     }
 
     public IWork Work(DayTime dayTime)
@@ -69,12 +48,12 @@ namespace Core.Workcenters
       // TODO - Implement Machine Tooling
 
       // TODO - Implement Machine Resourcing
-      
+
       if (CurrentWorkorder == null)
       {
-        if(_queue.Count == 0){ return null; }
+        if(InputBuffer.Count == 0){ return null; }
 
-        CurrentWorkorder = _queue.Dequeue();
+        CurrentWorkorder = InputBuffer.Dequeue();
         if ( LastType == null || LastType != CurrentWorkorder.CurrentOpType )
         {
           SetupTime = CurrentWorkorder.CurrentOpSetupTime;
@@ -86,11 +65,11 @@ namespace Core.Workcenters
 
       if(SetupTime > 0)
       {
-        SetupTime = SetupTime - 1;
+        SetupTime--;
         return null;
       }
 
-      EstTimeToComplete = EstTimeToComplete - 1;
+      EstTimeToComplete--;
 
       // TODO - Implement Machine Tooling replacement
 
@@ -103,6 +82,5 @@ namespace Core.Workcenters
       CurrentWorkorder = null;
       return answer;
     } // Work()
-
   }
 }

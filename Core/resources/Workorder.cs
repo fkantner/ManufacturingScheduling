@@ -16,17 +16,16 @@ namespace Core.Resources
   {
     private readonly List<Op> _operations;
     private int _currentOpIndex;
-    private readonly int _id;
 
     public Workorder(int number, List<Op> ops)
     {
       _operations = ops;
       _currentOpIndex = 0;
-      _id = number;
+      Id = number;
     }
 
     // PROPERTIES //
-    // TODO - Implment a Count of Total ops and completed ops.
+    // TODO - Implement a Count of Total ops and completed ops.
     public Op CurrentOp
     {
       get => _operations[_currentOpIndex];
@@ -47,16 +46,14 @@ namespace Core.Resources
       get => CurrentOp.Type;
     }
 
-    public int Id { get => _id; }
+    public int Id { get; }
 
     // PUBLIC METHODS //
-
     public void SetNextOp()
     {
       if(_currentOpIndex < _operations.Count - 1)
-        _currentOpIndex++;     
+        _currentOpIndex++;
       return;
     }
-
   }
 }

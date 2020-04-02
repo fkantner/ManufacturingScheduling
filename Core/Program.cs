@@ -5,17 +5,17 @@ namespace simulationCode
 {
     using Core.Resources;
     using Core.Plant;
-    using Core.Workcenters;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.IO;
 
-    class Program
+    public static class Program
     {
-        static private StreamWriter writer;
-        static private readonly string filename = "../simulation-ui/src/data/test.json";
+        private const string filename = "../simulation-ui/src/data/test.json";
         static private bool hasWritten;
-        static void Main(string[] args)
+        static private StreamWriter writer;
+
+        public static void Main()
         {
             File.Delete(filename);
             writer = new StreamWriter(filename);
@@ -31,7 +31,7 @@ namespace simulationCode
             //WriteJson(wc);
             SimulationNode sn = new SimulationNode(dt, plants);
             WriteJson(sn);
-            
+
             for(int i = 0; i < 500; i++)
             {
                 dt.Next();

@@ -94,6 +94,5 @@ namespace Tests.Plant
       Assert.AreEqual(0, _subject.TransportTime); // Transport is no longer going anywhere
       _destination.Received().AddToQueue(_workorder);
     }
-
   }
 }

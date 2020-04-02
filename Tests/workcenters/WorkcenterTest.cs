@@ -32,10 +32,9 @@ namespace Tests.Workcenters
       _emptyTestMachine.Work(null).Returns((IWork) null);
 
       Workcenter subject = new Workcenter("TestWC", _emptyTestMachine);
-      
-      
+
       subject.Work(_dayTime);
-      
+
       Assert.IsEmpty(subject.OutputBuffer);
       Assert.IsEmpty(subject.Inspection.Buffer);
       Assert.IsNull(subject.Inspection.CurrentWo);
@@ -46,7 +45,7 @@ namespace Tests.Workcenters
     public void Work_WhenWoInBuffer_StartsWork()
     {
       _testMachine.Work(Arg.Any<DayTime>()).Returns(_workorder);
-      
+
       _subject.Work(_dayTime);
 
       Assert.IsEmpty(_subject.OutputBuffer);
@@ -58,17 +57,17 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenWoIsInspected_PutsWoInBuffer()
     {
-      IWork returnValue = _workorder;
+      //IWork returnValue = _workorder;
       _testMachine.Work(Arg.Any<DayTime>()).Returns(
         _workorder,
         (IWork) null
       );
-      
+
       for(int i = 0; i < 5; i++)
       {
         _subject.Work(_dayTime);
       }
-      
+
       Assert.IsNotEmpty(_subject.OutputBuffer);
       Assert.IsNull(_subject.Inspection.CurrentWo);
       Assert.IsEmpty(_subject.Inspection.Buffer);

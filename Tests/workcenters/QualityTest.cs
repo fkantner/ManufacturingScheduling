@@ -22,7 +22,7 @@ namespace Tests.Workcenters
 
       List<Op> ops = new List<Op>()
       {
-        new Op("type1", 1, 1), 
+        new Op("type1", 1, 1),
         new Op("type2", 1, 1)
       };
 
@@ -77,6 +77,5 @@ namespace Tests.Workcenters
       Assert.IsNull(_subject.CurrentWo);
       Assert.AreEqual("type2", answer.CurrentOpType);
     }
-
   }
 }

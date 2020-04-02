@@ -15,25 +15,24 @@ namespace Core.Schedulers
 
   public class TransportationScheduler : IScheduleTransport
   {
-    private Plant _plant;
+    private readonly Plant _plant;
 
     //TODO - Improve TransportationScheduler to include other algorithms
 
     private IWork _next_cargo;
     private IAcceptWorkorders _destination;
-    private int _transport_time;
-    
+
     public TransportationScheduler(Plant plant)
     {
       _plant = plant;
       _next_cargo = null;
       _destination = null;
-      _transport_time = 0;
+      TransportTime = 0;
     }
 
     public IWork Cargo { get => _next_cargo; }
     public IAcceptWorkorders Destination { get => _destination; }
-    public int TransportTime { get => _transport_time; }
+    public int TransportTime { get; private set; }
 
     public void ChooseNextCargo(IAcceptWorkorders current_location)
     {
@@ -43,11 +42,11 @@ namespace Core.Schedulers
         _destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count > 0);
         if (_destination != null)
         {
-          _transport_time = 5;
+          TransportTime = 5;
         }
         else
         {
-          _transport_time = 0;
+          TransportTime = 0;
         }
         return;
       }
@@ -56,11 +55,11 @@ namespace Core.Schedulers
       _destination = ChooseWorkcenter(_next_cargo.CurrentOpType);
       if(_destination == current_location)
       {
-        _transport_time = 0;
+        TransportTime = 0;
       }
       else
       {
-        _transport_time = 5;
+        TransportTime = 5;
       }
     }
 
@@ -74,6 +73,5 @@ namespace Core.Schedulers
     {
       return _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(type));
     }
-
   }
 }

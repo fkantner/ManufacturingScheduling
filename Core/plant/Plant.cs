@@ -6,30 +6,25 @@ namespace Core.Plant
 
   public class Plant
   {
-    private readonly string _name;
-    private IEnumerable<IAcceptWorkorders> _workcenters;
-    private Transportation _transportation;
-
     public Plant(string name, IEnumerable<IAcceptWorkorders> workcenters)
     {
-      _name = name;
-      _workcenters = workcenters;
+      Name = name;
+      Workcenters = workcenters;
     }
 
-    public string Name { get => _name; }
-    public IEnumerable<IAcceptWorkorders> Workcenters { get => _workcenters; }
-    public Transportation InternalTransportation { get => _transportation; set => _transportation = value; }
+    public string Name { get; }
+    public IEnumerable<IAcceptWorkorders> Workcenters { get; }
+    public Transportation InternalTransportation { get; set; }
 
     public void Work( DayTime dt )
     {
-      foreach(IAcceptWorkorders wc in _workcenters)
+      foreach(IAcceptWorkorders wc in Workcenters)
       {
         wc.Work(dt);
       }
 
-      _transportation.Work(dt);
+      InternalTransportation.Work(dt);
 
-      //TODO Add Transportation to Plant
       //TODO Add Shipping to Plant
       //TODO Add Receiving to Plant
       //TODO Add Dock to Plant

@@ -5,12 +5,12 @@ namespace simulationCode
   using Core.Workcenters;
   using System.Collections.Generic;
 
-  public class SimulationSetup
+  public static class SimulationSetup
   {
-    static readonly string drill = "Drill", lathe = "Lathe", cnc = "CNC";
-    static readonly string drillOpType1 = "drillOpType1", 
-        drillOpType2 = "drillOpType2", 
-        latheOpType1 = "latheOpType1", 
+    private const string drill = "Drill", lathe = "Lathe", cnc = "CNC";
+    private const string drillOpType1 = "drillOpType1",
+        drillOpType2 = "drillOpType2",
+        latheOpType1 = "latheOpType1",
         latheOpType2 = "latheOpType2",
         cncOpType1 = "cncOpType1",
         cncOpType2 = "cncOpType2",
@@ -20,7 +20,6 @@ namespace simulationCode
 
     public static List<IAcceptWorkorders> GenerateWorkCenters()
     {
-
       List<IAcceptWorkorders> workcenters = new List<IAcceptWorkorders>();
 
       Machine a = new Machine(drill, new Core.Schedulers.MachineScheduler(), new List<string>{drillOpType1, drillOpType2});
@@ -76,11 +75,11 @@ namespace simulationCode
 
       return workorders;
     }
-    
+
     public static List<Plant> GeneratePlants()
     {
       List<Plant> plants = new List<Plant>();
-      
+
       List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
       List<IAcceptWorkorders> wc_list = SimulationSetup.GenerateWorkCenters();
 
@@ -88,7 +87,7 @@ namespace simulationCode
       IAcceptWorkorders wc2 = wc_list[1];
       IAcceptWorkorders wc3 = wc_list[2];
       IAcceptWorkorders wc4 = wc_list[4];
-      
+
       foreach(Workorder wo in wo_list)
       {
           if (wc1.ReceivesType(wo.CurrentOpType))
@@ -115,8 +114,7 @@ namespace simulationCode
 
       Plant plant = new Plant("plantA", wc_list);
 
-      Transportation transport = new Transportation(wc1, new Core.Schedulers.TransportationScheduler(plant));
-      plant.InternalTransportation = transport;
+      plant.InternalTransportation = new Transportation(wc1, new Core.Schedulers.TransportationScheduler(plant));
 
       plants.Add(plant);
 

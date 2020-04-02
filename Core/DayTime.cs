@@ -2,27 +2,25 @@ namespace Core
 {
   public class DayTime
   {
-    enum Days {Sun, Mon, Tue, Wed, Thu, Fri, Sat};
-    private int _day;
-    private int _time;    
-    const int MinutesInDay = 24*60;
+    public enum Days {Sun, Mon, Tue, Wed, Thu, Fri, Sat};
+    private const int MinutesInDay = 24*60;
 
     // CONSTRUCTORS //
     public DayTime()
     {
-      _day = (int) DayTime.Days.Wed;
-      _time = 0;
+      Day = (int) DayTime.Days.Wed;
+      Time = 0;
     }
 
     public DayTime(int setDay, int setTime)
     {
-      _day = setDay;
-      _time = setTime;
+      Day = setDay;
+      Time = setTime;
     }
 
     // PROPERTIES //
-    public int Day { get => _day; }
-    public int Time { get => _time; }
+    public int Day { get; private set; }
+    public int Time { get; private set; }
 
     // PUBLIC METHODS //
     public DayTime CreateTimestamp(int increment)
@@ -32,7 +30,7 @@ namespace Core
       while(increment > 0)
       {
         timestamp.Next();
-        increment = increment - 1;
+        increment--;
       }
 
       return timestamp;
@@ -50,33 +48,33 @@ namespace Core
 
     public void Next()
     {
-      
-      _time += 1;
+      Time++;
 
-      if (_time >= MinutesInDay)
+      if (Time >= MinutesInDay)
       {
-        _day += 1;
-        _time = 0;
+        Day++;
+        Time = 0;
 
-        if (_day > (int)Days.Sat)
+        if (Day > (int)Days.Sat)
         {
-          _day = (int) Days.Sun;
+          Day = (int) Days.Sun;
         }
       }
     }
 
     // PRIVATE METHODS //
-
+/* May ReAdd later
     private string GetTime()
     {
-      int hour = _time / 60;
-      int minutes = _time % 60;
+      int hour = Time / 60;
+      int minutes = Time % 60;
       return hour + ":" + minutes;
     }
-
+*/
+/*
     private string GetDay()
     {
-      switch (_day)
+      switch (Day)
       {
         case 0:
           return "Sun";
@@ -95,6 +93,6 @@ namespace Core
       }
       return "Error";
     }
-
+*/
   }
 }

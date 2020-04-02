@@ -17,50 +17,82 @@ namespace Core.Plant
   {
     private IAcceptWorkorders _current_location;
     private IAcceptWorkorders _destination;
-    private int _transport_time;
     private IWork _cargo;
-    private IScheduleTransport _scheduler;
+    private readonly IScheduleTransport _scheduler;
 
     public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
     {
       _current_location = start;
       _destination = null;
-      _transport_time = 0;
+      TransportTime = 0;
       _cargo = null;
       _scheduler = ts;
     }
 
     public string CurrentLocation { get => _current_location.Name; }
-    public int CargoNumber { get => _cargo == null ? 0 : _cargo.Id; }
-    public string Destination { get => _destination == null ? "None" : _destination.Name; }
-    public int TransportTime { get => _transport_time; }
-    
+    public int CargoNumber { get => _cargo?.Id ?? 0; }
+    public string Destination { get => _destination?.Name ?? "None"; }
+    public int TransportTime { get; private set; }
+
     public void Work(DayTime dayTime)
     {
-      if(_cargo == null && _transport_time == 0) // Pickup cargo.
+      if(IsAtLocationWithoutCargo()) // Pickup cargo.
       {
-        if(_destination != null){
-          _current_location = _destination;
-          _destination = null;
+        // Adding this check in case sitting and waiting for instruction
+        if(HasADestination()){
+          Arrive();
         }
-        _scheduler.ChooseNextCargo(_current_location);
-        _cargo = _scheduler.GetCargo(_current_location);
-        _destination = _scheduler.Destination;
-        _transport_time = _scheduler.TransportTime;
+        UpdateSelfFromScheduler();
       }
-      else if (_transport_time == 0) // Dropping off Cargo
+      else if (IsAtLocation()) // Dropping off Cargo
       {
-        _current_location = _destination;
-        _current_location.AddToQueue(_cargo);
-        _cargo = null;
-        _destination = null;
-      } 
+        Arrive();
+        DropOffCargo();
+      }
       else //In Route
       {
-        _transport_time -= 1;
+        Transport();
       }
-
     }
 
+    private void Arrive()
+    {
+      _current_location = _destination;
+      _destination = null;
+    }
+
+    private void DropOffCargo()
+    {
+      _current_location.AddToQueue(_cargo);
+      _cargo = null;
+    }
+
+    private bool HasADestination()
+    {
+      return _destination != null;
+    }
+
+    private bool IsAtLocation()
+    {
+      return TransportTime == 0;
+    }
+
+    private bool IsAtLocationWithoutCargo()
+    {
+      return _cargo == null && TransportTime == 0;
+    }
+
+    private void Transport()
+    {
+      TransportTime--;
+    }
+
+    private void UpdateSelfFromScheduler()
+    {
+      _scheduler.ChooseNextCargo(_current_location);
+      _cargo = _scheduler.GetCargo(_current_location);
+      _destination = _scheduler.Destination;
+      TransportTime = _scheduler.TransportTime;
+    }
   }
 }
