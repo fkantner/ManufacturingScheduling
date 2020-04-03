@@ -9,13 +9,17 @@ namespace Core.Workcenters
     {
       Machine = machine;
       Name = name;
-      OutputBuffer = new Queue<IWork>();
+      _output_buffer = new Queue<IWork>();
       Inspection = new Quality();
     }
 
     public IDoWork Machine { get; }
     public string Name { get; }
-    public Queue<IWork> OutputBuffer { get; }
+    private readonly Queue<IWork> _output_buffer;
+    public ICollection<IWork> OutputBuffer
+    {
+      get { return _output_buffer as ICollection<IWork>; }
+    }
     public Quality Inspection { get; }
 
     public void AddToQueue(IWork wo)
@@ -37,7 +41,7 @@ namespace Core.Workcenters
       if(wo != null)
       {
         // TODO - Implement Rework and Scheduling
-        OutputBuffer.Enqueue(wo);
+        _output_buffer.Enqueue(wo);
         // TODO - Implement Notify Scheduler when WC done
       }
 

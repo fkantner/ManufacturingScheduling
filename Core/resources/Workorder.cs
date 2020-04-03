@@ -2,16 +2,6 @@ namespace Core.Resources
 {
   using System.Collections.Generic;
 
-  public interface IWork
-  {
-    Op CurrentOp { get; }
-    int CurrentOpEstTimeToComplete { get; }
-    int CurrentOpSetupTime { get; }
-    string CurrentOpType { get; }
-    int Id { get; }
-    void SetNextOp();
-  }
-
   public class Workorder : IWork
   {
     private readonly List<Op> _operations;

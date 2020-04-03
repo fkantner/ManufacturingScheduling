@@ -4,6 +4,7 @@ namespace Core.Schedulers
   using Core.Workcenters;
   using Core.Plant;
   using System.Linq;
+  using System.Collections.Generic;
 
   public interface IScheduleTransport
   {
@@ -19,28 +20,25 @@ namespace Core.Schedulers
 
     //TODO - Improve TransportationScheduler to include other algorithms
 
-    private IWork _next_cargo;
-    private IAcceptWorkorders _destination;
-
     public TransportationScheduler(Plant plant)
     {
       _plant = plant;
-      _next_cargo = null;
-      _destination = null;
+      Cargo = null;
+      Destination = null;
       TransportTime = 0;
     }
 
-    public IWork Cargo { get => _next_cargo; }
-    public IAcceptWorkorders Destination { get => _destination; }
+    public IWork Cargo { get; private set; }
+    public IAcceptWorkorders Destination { get; private set; }
     public int TransportTime { get; private set; }
 
     public void ChooseNextCargo(IAcceptWorkorders current_location)
     {
       if(current_location.OutputBuffer.Count == 0)
       {
-        _next_cargo = null;
-        _destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count > 0);
-        if (_destination != null)
+        Cargo = null;
+        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count > 0);
+        if (Destination != null)
         {
           TransportTime = 5;
         }
@@ -51,9 +49,9 @@ namespace Core.Schedulers
         return;
       }
 
-      _next_cargo = current_location.OutputBuffer.Peek();
-      _destination = ChooseWorkcenter(_next_cargo.CurrentOpType);
-      if(_destination == current_location)
+      Cargo = (current_location.OutputBuffer as Queue<IWork>)?.Peek();
+      Destination = ChooseWorkcenter(Cargo.CurrentOpType);
+      if(Destination == current_location)
       {
         TransportTime = 0;
       }
@@ -65,8 +63,8 @@ namespace Core.Schedulers
 
     public IWork GetCargo(IAcceptWorkorders current_location)
     {
-      if(_next_cargo == null){ return null; }
-      return current_location.OutputBuffer.Dequeue();
+      if(Cargo == null){ return null; }
+      return (current_location.OutputBuffer as Queue<IWork>)?.Dequeue();
     }
 
     private IAcceptWorkorders ChooseWorkcenter(string type)

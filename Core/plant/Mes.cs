@@ -8,10 +8,10 @@ namespace Core.Plant
   {
     // TODO - Connect MES to ERP
     // TODO - Connect MES to Plant Scheduler
-    
-    private Dictionary<int, Workorder> _workorders;
-    private Dictionary<string, Workcenter> _workcenters;
-    
+
+    private readonly Dictionary<int, Workorder> _workorders;
+    private readonly Dictionary<string, Workcenter> _workcenters;
+
     public Mes(Dictionary<string, Workcenter> workcenters)
     {
       _workorders = new Dictionary<int, Workorder>();
@@ -38,5 +38,31 @@ namespace Core.Plant
       _workorders.Remove(wo_number);
     }
 
+    private class VirtualWorkcenter : IAcceptWorkorders
+    {
+      public VirtualWorkcenter(string name, string type)
+      {
+        Name = name;
+        Type = type;
+        OutputBuffer = new List<IWork>();
+        InputBuffer = new List<IWork>();
+      }
+
+      public void AddToQueue(IWork wo)
+      {
+        InputBuffer.Add(wo);
+      }
+
+      public bool ReceivesType(string type)
+      {
+        return type == Type;
+      }
+      public void Work(DayTime dayTime) {}
+
+      public string Name { get; }
+      public ICollection<IWork> OutputBuffer { get; }
+      public List<IWork> InputBuffer { get; }
+      private string Type { get; }
+    }
   }
 }

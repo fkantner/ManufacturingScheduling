@@ -8,12 +8,16 @@ namespace Core.Plant
   {
     public Dock()
     {
-      OutputBuffer = new Queue<IWork>();
+      _output_buffer = new Queue<IWork>();
       ShippingBuffer = new List<IWork>();
       Name = "Shipping Dock";
     }
 
-    public Queue<IWork> OutputBuffer { get; }
+    private readonly Queue<IWork> _output_buffer;
+    public ICollection<IWork> OutputBuffer
+    {
+      get { return _output_buffer as ICollection<IWork>; }
+    }
     public List<IWork> ShippingBuffer { get; }
     public string Name { get; }
 
