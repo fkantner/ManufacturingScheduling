@@ -34,10 +34,10 @@ namespace Core.Schedulers
 
     public void ChooseNextCargo(IAcceptWorkorders current_location)
     {
-      if(current_location.OutputBuffer.Count == 0)
+      if(current_location.OutputBuffer.Count() == 0)
       {
         Cargo = null;
-        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count > 0);
+        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count() > 0);
         if (Destination != null)
         {
           TransportTime = 5;

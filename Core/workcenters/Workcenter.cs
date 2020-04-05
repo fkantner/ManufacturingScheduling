@@ -16,9 +16,9 @@ namespace Core.Workcenters
     public IDoWork Machine { get; }
     public string Name { get; }
     private readonly Queue<IWork> _output_buffer;
-    public ICollection<IWork> OutputBuffer
+    public IEnumerable<IWork> OutputBuffer
     {
-      get { return _output_buffer as ICollection<IWork>; }
+      get { return _output_buffer; }
     }
     public Quality Inspection { get; }
 

@@ -5,6 +5,7 @@ namespace Tests.Workcenters
   using Core.Workcenters;
   using NSubstitute;
   using NUnit.Framework;
+  using System.Collections.Generic;
 
   [TestFixture]
   public class WorkcenterTest
@@ -28,15 +29,15 @@ namespace Tests.Workcenters
     {
       _dayTime = new DayTime();
       IDoWork _emptyTestMachine = Substitute.For<IDoWork>();
-      _emptyTestMachine.Work(Arg.Any<DayTime>()).ReturnsForAnyArgs((IWork) null);
+      _emptyTestMachine.Work(_dayTime).ReturnsForAnyArgs((IWork) null);
       _emptyTestMachine.Work(null).Returns((IWork) null);
 
       Workcenter subject = new Workcenter("TestWC", _emptyTestMachine);
 
       subject.Work(_dayTime);
 
-      Assert.IsEmpty(subject.OutputBuffer);
-      Assert.IsEmpty(subject.Inspection.Buffer);
+      CollectionAssert.IsEmpty(subject.OutputBuffer);
+      CollectionAssert.IsEmpty(subject.Inspection.Buffer);
       Assert.IsNull(subject.Inspection.CurrentWo);
       _emptyTestMachine.Received().Work(Arg.Any<DayTime>());
     }

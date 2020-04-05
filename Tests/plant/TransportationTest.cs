@@ -32,7 +32,7 @@ namespace Tests.Plant
       _destination.Name.Returns("Destination");
       _subject = new Transportation(_start, _scheduler);
       _dayTime = new DayTime();
-      _workorder = Substitute.For<IWork>();//WORKORDER_ID, new List<Op>());
+      _workorder = Substitute.For<IWork>();
       _workorder.Id.Returns(WORKORDER_ID);
     }
     // TODO Finish TransporationTest
@@ -71,7 +71,7 @@ namespace Tests.Plant
       Assert.AreEqual(WORKORDER_ID, _subject.CargoNumber); // Picked up Cargo -- if any
       Assert.AreEqual(_start.Name, _subject.Destination); // Is now assigned to new destination
       Assert.AreEqual(TRANSPORT_TIME, _subject.TransportTime);
-      _destination.DidNotReceive().AddToQueue(Arg.Any<Workorder>());
+      _destination.DidNotReceive().AddToQueue(Arg.Any<IWork>());
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Tests.Plant
       _scheduler.GetCargo(Arg.Any<IAcceptWorkorders>()).Returns(_workorder, (Workorder)null);
       _scheduler.Destination.Returns(_destination, _start);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
-      _destination.AddToQueue(Arg.Any<Workorder>());
+      _destination.AddToQueue(Arg.Any<IWork>());
 
       _subject.Work(_dayTime); // To Set Destination
       _subject.Work(_dayTime); // To Go There

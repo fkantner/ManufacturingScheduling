@@ -10,6 +10,6 @@ namespace Core.Workcenters
     public void Work(DayTime dayTime);
 
     public string Name { get; }
-    public ICollection<IWork> OutputBuffer { get; }
+    public IEnumerable<IWork> OutputBuffer { get; }
   }
 }

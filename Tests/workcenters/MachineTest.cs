@@ -12,13 +12,13 @@ namespace Tests.Workcenters
   public class MachineTest
   {
     private Machine _subject;
-    private MachineScheduler machineScheduler;
+    private IScheduleMachines machineScheduler;
     private DayTime _dayTime;
 
     [SetUp]
     protected void SetUp()
     {
-      machineScheduler = Substitute.For<MachineScheduler>();
+      machineScheduler = Substitute.For<IScheduleMachines>();
       machineScheduler.Sort(Arg.Any<Queue<IWork>>());
 
       List<string> types = new List<string>(){"type1", "type2"};

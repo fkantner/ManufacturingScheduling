@@ -44,7 +44,7 @@ namespace Core.Plant
       {
         Name = name;
         Type = type;
-        OutputBuffer = new List<IWork>();
+        _output_buffer = new List<IWork>();
         InputBuffer = new List<IWork>();
       }
 
@@ -60,7 +60,13 @@ namespace Core.Plant
       public void Work(DayTime dayTime) {}
 
       public string Name { get; }
-      public ICollection<IWork> OutputBuffer { get; }
+
+      private readonly List<IWork> _output_buffer;
+
+      public IEnumerable<IWork> OutputBuffer
+      {
+        get { return _output_buffer as IEnumerable<IWork>; }
+      }
       public List<IWork> InputBuffer { get; }
       private string Type { get; }
     }
