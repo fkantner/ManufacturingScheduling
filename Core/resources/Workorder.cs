@@ -4,13 +4,10 @@ namespace Core.Resources
 
   public class Workorder : IWork
   {
-    private readonly List<Op> _operations;
-    private int _currentOpIndex;
-
     public Workorder(int number, List<Op> ops)
     {
-      _operations = ops;
-      _currentOpIndex = 0;
+      Operations = ops;
+      CurrentOpIndex = 0;
       Id = number;
     }
 
@@ -18,7 +15,7 @@ namespace Core.Resources
     // TODO - Implement a Count of Total ops and completed ops.
     public Op CurrentOp
     {
-      get => _operations[_currentOpIndex];
+      get => Operations[CurrentOpIndex];
     }
 
     public int CurrentOpEstTimeToComplete
@@ -38,11 +35,15 @@ namespace Core.Resources
 
     public int Id { get; }
 
+    public int CurrentOpIndex { get; private set;}
+
+    public List<Op> Operations { get; }
+
     // PUBLIC METHODS //
     public void SetNextOp()
     {
-      if(_currentOpIndex < _operations.Count - 1)
-        _currentOpIndex++;
+      if(CurrentOpIndex < Operations.Count - 1)
+        CurrentOpIndex++;
       return;
     }
   }

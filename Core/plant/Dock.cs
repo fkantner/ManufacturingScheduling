@@ -31,6 +31,11 @@ namespace Core.Plant
       return type == "shippingOp";
     }
 
+    public string ListOfValidTypes()
+    {
+      return "shippingOp";
+    }
+
     public void Work(DayTime dayTime)
     {
       return;

@@ -41,6 +41,11 @@ namespace Core.Workcenters
       return _type.Contains(type);
     }
 
+    public string ListOfValidTypes()
+    {
+      return string.Join(",", _type);
+    }
+
     public IWork Work(DayTime dayTime)
     {
       // TODO - Implement Machine Breakdown

@@ -22,6 +22,11 @@ namespace Core.Workcenters
     }
     public Quality Inspection { get; }
 
+    public string ListOfValidTypes()
+    {
+      return Machine.ListOfValidTypes();
+    }
+
     public void AddToQueue(IWork wo)
     {
       Machine.AddToQueue(wo);

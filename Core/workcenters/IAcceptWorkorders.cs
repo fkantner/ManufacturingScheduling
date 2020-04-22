@@ -9,6 +9,8 @@ namespace Core.Workcenters
     public bool ReceivesType(string type);
     public void Work(DayTime dayTime);
 
+    public string ListOfValidTypes();
+
     public string Name { get; }
     public IEnumerable<IWork> OutputBuffer { get; }
   }

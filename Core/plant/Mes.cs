@@ -6,27 +6,67 @@ namespace Core.Plant
 
   public class Mes
   {
-    // TODO - Connect MES to ERP
+    // TODO - Design MES and API.
+    // TODO - Create Initialization for MES
+    // Should handle Workcenters and Workorders coming in.
+    // TODO - Create API for Workcenters to interact with
+    // Start wo work
+    // End wo work
+    // Non conformance
+    // 
+    // TODO - Create API for Schedulers to interact with
+    // List workcenters with wo's in them
+    // Give recommendations??
     // TODO - Connect MES to Plant Scheduler
+    // TODO - Connect MES to Transportation Scheduler
+    // TODO - Create API for MES to ERP
+    // Send process data up? Similar to Workcenter data?
+    // Anything else needed?
+    // TODO - Connect MES to ERP
+    // TODO - API for Machine Breakdowns
 
-    private readonly Dictionary<int, Workorder> _workorders;
-    private readonly Dictionary<string, Workcenter> _workcenters;
-
-    public Mes(Dictionary<string, Workcenter> workcenters)
+    public Mes(string name, Dictionary<string, IAcceptWorkorders> locations)
     {
-      _workorders = new Dictionary<int, Workorder>();
-      _workcenters = workcenters;
+      Name = name;
+      Workorders = new Dictionary<int, VirtualWorkorder>();
+      LocationInventories = new Dictionary<string, List<VirtualWorkorder>>();
+      Locations = new Dictionary<string, VirtualWorkcenter>();
+
+      foreach(var location in locations)
+      {
+        var value = location.Value;
+        //TODO - Fix Machine Type Issue for creating a Virtual Workcenter... 
+        Locations.Add(location.Key, new VirtualWorkcenter(value.Name, value.ListOfValidTypes()));
+      }
+
+      foreach(var location in Locations)
+      {
+        LocationInventories.Add(location.Key, new List<VirtualWorkorder>());
+      }
     }
 
-    public Workorder Workorder(int key) { return _workorders[key]; }
-    public Workcenter Workcenter(string key) { return _workcenters[key]; }
+    public string Name { get; }
+    private Dictionary<int, VirtualWorkorder> Workorders { get; }
+    private Dictionary<string, VirtualWorkcenter> Locations { get; }
+    private Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
 
-    public void AddWorkorder(int number, List<Op> ops)
+    public void AddWorkorder(string location, IWork wo)
     {
-      var workorder = new Workorder(number, ops);
-      _workorders.Add(number, workorder);
+      if(Workorders.ContainsKey(wo.Id))
+      {
+        throw new System.ArgumentException("Workorder already exists in MES");
+      }
+      VirtualWorkorder newWo = new VirtualWorkorder(wo.CurrentOpIndex, wo);
+      Workorders.Add(wo.Id, newWo);
+
+      LocationInventories[location].Add(newWo);
     }
 
+    public List<int> GetLocationWoIds(string location)
+    {
+      return LocationInventories[location].ConvertAll<int>(x => x.Id);
+    }
+/*
     public void CompleteOp(int wo_number)
     {
       _workorders[wo_number].SetNextOp();
@@ -37,9 +77,10 @@ namespace Core.Plant
       // TODO - Defend workorders that aren't supposed to be removed from MES.
       _workorders.Remove(wo_number);
     }
-
+*/
     private class VirtualWorkcenter : IAcceptWorkorders
     {
+      private readonly List<IWork> _output_buffer;
       public VirtualWorkcenter(string name, string type)
       {
         Name = name;
@@ -55,20 +96,42 @@ namespace Core.Plant
 
       public bool ReceivesType(string type)
       {
-        return type == Type;
+        return Type.IndexOf("," + type + ",") > 0;
       }
+
+      public string ListOfValidTypes() { return Type; }
+
       public void Work(DayTime dayTime) {}
-
       public string Name { get; }
-
-      private readonly List<IWork> _output_buffer;
-
       public IEnumerable<IWork> OutputBuffer
       {
         get { return _output_buffer as IEnumerable<IWork>; }
       }
       public List<IWork> InputBuffer { get; }
       private string Type { get; }
+    }
+
+    private class VirtualWorkorder : IWork
+    {
+      public VirtualWorkorder(int currentOp, IWork woToClone)
+      {
+        Id = woToClone.Id;
+        Operations = new List<Op>();
+        woToClone.Operations.ForEach((operation) => Operations.Add((Op) operation.Clone()));
+        CurrentOpIndex = currentOp;
+      }
+
+      public int CurrentOpIndex { get; private set; }
+      public Op CurrentOp
+      {
+        get => Operations[CurrentOpIndex];
+      }
+      public List<Op> Operations { get; }
+      public int CurrentOpEstTimeToComplete { get => CurrentOp.EstTimeToComplete; }
+      public int CurrentOpSetupTime { get => CurrentOp.SetupTime; }
+      public string CurrentOpType { get => CurrentOp.Type; }
+      public int Id { get; }
+      public void SetNextOp(){ CurrentOpIndex++; }
     }
   }
 }

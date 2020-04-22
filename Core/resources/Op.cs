@@ -1,6 +1,8 @@
 namespace Core.Resources
 {
-  public class Op
+  using System;
+
+  public class Op : ICloneable
   {
     public Op(string type, int completeTime, int setupTime)
     {
@@ -12,5 +14,10 @@ namespace Core.Resources
     public string Type { get; }
     public int EstTimeToComplete { get; }
     public int SetupTime { get; }
+
+    public object Clone()
+    {
+      return new Op(Type, EstTimeToComplete, SetupTime);
+    }
   }
 }
