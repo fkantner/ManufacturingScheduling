@@ -12,7 +12,6 @@ namespace Core.Resources
     }
 
     // PROPERTIES //
-    // TODO - Implement a Count of Total ops and completed ops.    
     public int CountCompletedOps
     {
       get => CurrentOpIndex;
@@ -22,7 +21,7 @@ namespace Core.Resources
     {
       get => Operations.Count;
     }
-    
+
     public Op CurrentOp
     {
       get => Operations[CurrentOpIndex];
