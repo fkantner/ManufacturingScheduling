@@ -35,7 +35,7 @@ namespace Tests.Plant
       _workorder = Substitute.For<IWork>();
       _workorder.Id.Returns(WORKORDER_ID);
     }
-    // TODO Finish TransporationTest
+
     [Test]
     public void Work_InitialWithoutDestination_ChecksTheSchedule()
     {

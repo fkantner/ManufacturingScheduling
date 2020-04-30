@@ -13,7 +13,6 @@ namespace Tests.Workcenters
     private DayTime _dayTime;
     private Workorder _wo1;
 
-    //TODO - Test Quality Work
     [SetUp]
     protected void SetUp()
     {

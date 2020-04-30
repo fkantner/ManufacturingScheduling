@@ -40,12 +40,10 @@ namespace Core.Workcenters
 
     public void Work(DayTime dayTime)
     {
-      // TODO - Implement QA part of Work Center
       IWork wo = Inspection.Work(dayTime);
 
       if(wo != null)
       {
-        // TODO - Implement Rework and Scheduling
         _output_buffer.Enqueue(wo);
         // TODO - Implement Notify Scheduler when WC done
       }

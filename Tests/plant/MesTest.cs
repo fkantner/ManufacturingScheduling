@@ -1,6 +1,5 @@
 namespace Tests.Mes
 {
-  //TODO Create and Fill out tests for MES.
   using Core.Resources;
   using Core.Plant;
   using Core.Workcenters;
@@ -42,10 +41,7 @@ namespace Tests.Mes
     [Test]
     public void AddWorkorder_AddsWo()
     {
-      IWork wo = Substitute.For<IWork>();
-      wo.Id.Returns(1);
-      wo.CurrentOpType.Returns(TYPE1);
-      wo.Operations.Returns(new List<Op>());
+      IWork wo = CreateSubstituteWo(1, TYPE1, new List<Op>());
 
       _subject.AddWorkorder(WC1, wo);
 
@@ -55,20 +51,65 @@ namespace Tests.Mes
     [Test]
     public void Move_MovesWo()
     {
+      IWork wo1 = CreateSubstituteWo(1, TYPE1, new List<Op>());
+      IWork wo2 = CreateSubstituteWo(2, TYPE1, new List<Op>());
 
+      _subject.AddWorkorder(WC1, wo1);
+      _subject.AddWorkorder(WC1, wo2);
+
+      _subject.Move(1, WC1, WC2);
+
+      List<int> wc1_list = _subject.GetLocationWoIds(WC1);
+      List<int> wc2_list = _subject.GetLocationWoIds(WC2);
+
+      Assert.Contains(1, wc2_list);
+      Assert.Contains(2, wc1_list);
+      Assert.That(wc1_list, Has.No.Member(1));
+      Assert.That(wc2_list, Has.No.Member(2));
     }
 
     [Test]
     public void Complete_CompletesOp()
     {
+      Op op1 = new Op(TYPE1, 1, 1);
+      Op op2 = new Op(TYPE2, 1, 1);
+      List<Op> lo = new List<Op>(){op1, op2};
 
+      IWork wo = CreateSubstituteWo(1, TYPE1, lo);
+      _subject.AddWorkorder(WC1, wo);
+
+      _subject.Complete(1);
+
+      IWork answer = _subject.GetWorkorder(1);
+      Assert.AreEqual(answer.CurrentOpIndex, 1);
     }
 
     [Test]
-    public void Location_ReturnsListOfWos()
+    public void GetLocationWoIds_ReturnsListOfWoIds()
     {
+      IWork wo1 = CreateSubstituteWo(1, TYPE1, new List<Op>());
+      IWork wo2 = CreateSubstituteWo(2, TYPE1, new List<Op>());
+      IWork wrongWo = CreateSubstituteWo(3, TYPE1, new List<Op>());
 
+      _subject.AddWorkorder(WC1, wo1);
+      _subject.AddWorkorder(WC1, wo2);
+      _subject.AddWorkorder(WC2, wrongWo);
+
+      List<int> answer = _subject.GetLocationWoIds(WC1);
+
+      Assert.Contains(1, answer);
+      Assert.Contains(2, answer);
+      Assert.That( answer, Has.No.Member(3));
     }
 
+    private IWork CreateSubstituteWo(int id, string type, List<Op> ops)
+    {
+      IWork wo = Substitute.For<IWork>();
+      wo.Id.Returns(id);
+      wo.CurrentOpType.Returns(type);
+      wo.Operations.Returns(ops);
+
+      return wo;
+    }
   }
 }

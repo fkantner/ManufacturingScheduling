@@ -3,19 +3,14 @@ namespace Core.Plant
   using System.Collections.Generic;
   using Core.Resources;
   using Core.Workcenters;
+  using Core.Resources.Virtual;
 
   public class Mes
   {
-    // TODO - Design MES and API.
-    // TODO - Create Initialization for MES
-    // Should handle Workcenters and Workorders coming in.
     // TODO - Create API for Workcenters to interact with
     // Start wo work
     // End wo work
     // Non conformance
-    // 
-    // TODO - Create API for Schedulers to interact with
-    // List workcenters with wo's in them
     // Give recommendations??
     // TODO - Connect MES to Plant Scheduler
     // TODO - Connect MES to Transportation Scheduler
@@ -45,10 +40,10 @@ namespace Core.Plant
       }
     }
 
-    public string Name { get; }
-    private Dictionary<int, VirtualWorkorder> Workorders { get; }
     private Dictionary<string, VirtualWorkcenter> Locations { get; }
     private Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
+    public string Name { get; }
+    private Dictionary<int, VirtualWorkorder> Workorders { get; }
 
     public void AddWorkorder(string location, IWork wo)
     {
@@ -57,81 +52,58 @@ namespace Core.Plant
         throw new System.ArgumentException("Workorder already exists in MES");
       }
       VirtualWorkorder newWo = new VirtualWorkorder(wo.CurrentOpIndex, wo);
-      Workorders.Add(wo.Id, newWo);
 
-      LocationInventories[location].Add(newWo);
+      AddWoToLocation(newWo, location);
+    }
+
+    public void Complete(int wo_id)
+    {
+      VirtualWorkorder wo = Workorders[wo_id];
+      wo.SetNextOp();
     }
 
     public List<int> GetLocationWoIds(string location)
     {
       return LocationInventories[location].ConvertAll<int>(x => x.Id);
     }
-/*
-    public void CompleteOp(int wo_number)
+
+    public IWork GetWorkorder(int id)
     {
-      _workorders[wo_number].SetNextOp();
+      return Workorders[id];
     }
 
-    public void RemoveOp(int wo_number)
+    public void Move(int wo_id, string source_name, string destination_name)
     {
-      // TODO - Defend workorders that aren't supposed to be removed from MES.
-      _workorders.Remove(wo_number);
-    }
-*/
-    private class VirtualWorkcenter : IAcceptWorkorders
-    {
-      private readonly List<IWork> _output_buffer;
-      public VirtualWorkcenter(string name, string type)
+      bool exists = Workorders.ContainsKey(wo_id);
+      if (!exists)
       {
-        Name = name;
-        Type = type;
-        _output_buffer = new List<IWork>();
-        InputBuffer = new List<IWork>();
+        throw new System.ArgumentOutOfRangeException("Workorder does not exist");
       }
-
-      public void AddToQueue(IWork wo)
+      exists = Locations.ContainsKey(source_name);
+      if (!exists)
       {
-        InputBuffer.Add(wo);
+        throw new System.ArgumentException("Source Location does not exist");
       }
-
-      public bool ReceivesType(string type)
+      exists = Locations.ContainsKey(destination_name);
+      if (!exists)
       {
-        return Type.IndexOf("," + type + ",") > 0;
+        throw new System.ArgumentException("DestinationLocation does not exist");
       }
-
-      public string ListOfValidTypes() { return Type; }
-
-      public void Work(DayTime dayTime) {}
-      public string Name { get; }
-      public IEnumerable<IWork> OutputBuffer
-      {
-        get { return _output_buffer as IEnumerable<IWork>; }
-      }
-      public List<IWork> InputBuffer { get; }
-      private string Type { get; }
+      VirtualWorkorder wo = Workorders[wo_id];
+      RemoveWoFromLocation(wo, source_name);
+      AddWoToLocation(wo, destination_name);
     }
 
-    private class VirtualWorkorder : IWork
+    private void AddWoToLocation(VirtualWorkorder wo, string location)
     {
-      public VirtualWorkorder(int currentOp, IWork woToClone)
-      {
-        Id = woToClone.Id;
-        Operations = new List<Op>();
-        woToClone.Operations.ForEach((operation) => Operations.Add((Op) operation.Clone()));
-        CurrentOpIndex = currentOp;
-      }
+      Workorders.Add(wo.Id, wo);
+      LocationInventories[location].Add(wo);
+    }
 
-      public int CurrentOpIndex { get; private set; }
-      public Op CurrentOp
-      {
-        get => Operations[CurrentOpIndex];
-      }
-      public List<Op> Operations { get; }
-      public int CurrentOpEstTimeToComplete { get => CurrentOp.EstTimeToComplete; }
-      public int CurrentOpSetupTime { get => CurrentOp.SetupTime; }
-      public string CurrentOpType { get => CurrentOp.Type; }
-      public int Id { get; }
-      public void SetNextOp(){ CurrentOpIndex++; }
+    private void RemoveWoFromLocation(VirtualWorkorder wo, string location)
+    {
+      LocationInventories[location].Remove(wo);
+      Workorders.Remove(wo.Id);
     }
   }
 }
