@@ -3,7 +3,9 @@ import Op from './Op'
 import './Workorder.css'
 
 function fullDisplay(workorder){
-  return <div><h5>Current Op</h5><Op op={workorder.CurrentOp} /></div>
+  return <div>
+      <h5>Current Op</h5><Op op={workorder.CurrentOp} />
+    </div>
 }
 
 function partialDisplay(workorder){
@@ -20,7 +22,10 @@ function Display(workorder, showAll) {
   var classname = showAll ? 'workorder' : 'short workorder';
     
   return <div className = {classname}>
-    <h4>Workorder: {workorder.Id}</h4>
+    <div>
+      <h4>Workorder: {workorder.Id}</h4>
+      <div><label>C/T</label> <span>{workorder.CountCompletedOps}/{workorder.CountTotalOps}</span></div>
+    </div>
     { opPart }
   </div>
 }

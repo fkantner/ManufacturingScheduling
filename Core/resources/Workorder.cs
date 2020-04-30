@@ -12,7 +12,17 @@ namespace Core.Resources
     }
 
     // PROPERTIES //
-    // TODO - Implement a Count of Total ops and completed ops.
+    // TODO - Implement a Count of Total ops and completed ops.    
+    public int CountCompletedOps
+    {
+      get => CurrentOpIndex;
+    }
+
+    public int CountTotalOps
+    {
+      get => Operations.Count;
+    }
+    
     public Op CurrentOp
     {
       get => Operations[CurrentOpIndex];
@@ -40,6 +50,7 @@ namespace Core.Resources
     public List<Op> Operations { get; }
 
     // PUBLIC METHODS //
+    
     public void SetNextOp()
     {
       if(CurrentOpIndex < Operations.Count - 1)

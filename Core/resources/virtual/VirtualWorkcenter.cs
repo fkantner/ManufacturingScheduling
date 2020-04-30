@@ -8,10 +8,10 @@ namespace Core.Resources.Virtual
   {
     private readonly List<IWork> _output_buffer;
 
-    public VirtualWorkcenter(string name, string type)
+    public VirtualWorkcenter(string name, string types)
     {
       Name = name;
-      Type = type;
+      Types = types;
       _output_buffer = new List<IWork>();
       InputBuffer = new List<IWork>();
     }
@@ -22,18 +22,18 @@ namespace Core.Resources.Virtual
     {
       get { return _output_buffer as IEnumerable<IWork>; }
     }
-    private string Type { get; }
+    private string Types { get; }
 
     public void AddToQueue(IWork wo)
     {
       InputBuffer.Add(wo);
     }
 
-    public string ListOfValidTypes() { return Type; }
+    public string ListOfValidTypes() { return Types; }
 
     public bool ReceivesType(string type)
     {
-      return Type.IndexOf("," + type + ",") > 0;
+      return Types.Contains("," + type + ",");
     }
 
     public void Work(DayTime dayTime) {}
