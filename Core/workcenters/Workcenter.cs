@@ -7,6 +7,8 @@ namespace Core.Workcenters
   public class Workcenter : IAcceptWorkorders
   {
     private IMes _mes;
+    private readonly Queue<IWork> _output_buffer;
+
     public Workcenter(string name, IDoWork machine)
     {
       Machine = machine;
@@ -16,18 +18,12 @@ namespace Core.Workcenters
       _mes = null;
     }
 
+    public Quality Inspection { get; }
     public IDoWork Machine { get; }
     public string Name { get; }
-    private readonly Queue<IWork> _output_buffer;
     public IEnumerable<IWork> OutputBuffer
     {
       get { return _output_buffer; }
-    }
-    public Quality Inspection { get; }
-
-    public string ListOfValidTypes()
-    {
-      return Machine.ListOfValidTypes();
     }
 
     public void AddToQueue(IWork wo)
@@ -38,15 +34,14 @@ namespace Core.Workcenters
       return;
     }
 
+    public string ListOfValidTypes()
+    {
+      return Machine.ListOfValidTypes();
+    }
+
     public bool ReceivesType(string type)
     {
       return Machine.ReceivesType(type);
-    }
-
-    public void SetMes(IMes mes)
-    {
-      if(_mes != null){ return; }
-      _mes = mes;
     }
 
     public void Work(DayTime dayTime)
@@ -74,6 +69,12 @@ namespace Core.Workcenters
           _mes.StartProgress(wo.Id);
         }
       }
+    }
+
+    public void SetMes(IMes mes)
+    {
+      if(_mes != null){ return; }
+      _mes = mes;
     }
   }
 }

@@ -49,7 +49,6 @@ namespace Core.Resources
     public List<Op> Operations { get; }
 
     // PUBLIC METHODS //
-    
     public void SetNextOp()
     {
       if(CurrentOpIndex < Operations.Count - 1)

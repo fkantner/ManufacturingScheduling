@@ -35,17 +35,14 @@ namespace Core.Resources.Virtual
     }
     public string GetStatus()
     {
-      switch(_status)
+      string answer = _status switch
       {
-        case Statuses.Complete:
-          return "Complete";
-        case Statuses.InProgress:
-          return "In Progress";
-        case Statuses.OnRoute:
-          return "On Route";
-        default:
-          return "Open";
-      }
+        Statuses.Complete => "Complete",
+        Statuses.InProgress => "In Progress",
+        Statuses.OnRoute => "On Route",
+        _ => "Open"
+      };
+      return answer;
     }
     public void SetNextOp(){ CurrentOpIndex++; }
   }

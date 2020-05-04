@@ -52,8 +52,8 @@ namespace Tests.Workcenters
     public void Work_WhenProcessing_ReducesCurrentInspectionTime()
     {
       _subject.AddToQueue(_wo1);
+      _subject.Work(_dayTime);
       var answer = _subject.Work(_dayTime);
-      answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
       Assert.AreEqual(_wo1, _subject.CurrentWo);

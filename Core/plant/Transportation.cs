@@ -20,7 +20,7 @@ namespace Core.Plant
     private IAcceptWorkorders _destination;
     private IWork _cargo;
     private readonly IScheduleTransport _scheduler;
-    private IMes _mes;
+    private readonly IMes _mes;
 
     public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
     {

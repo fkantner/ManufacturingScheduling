@@ -39,7 +39,7 @@ namespace Core.Schedulers
       if(!current_location.OutputBuffer.Any())
       {
         Cargo = null;
-        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count() > 0);
+        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
         if (Destination != null)
         {
           TransportTime = 5;

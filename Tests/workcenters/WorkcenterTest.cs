@@ -6,7 +6,6 @@ namespace Tests.Workcenters
   using Core.Workcenters;
   using NSubstitute;
   using NUnit.Framework;
-  using System.Collections.Generic;
 
   [TestFixture]
   public class WorkcenterTest

@@ -6,14 +6,13 @@ namespace Core.Workcenters
 
   public interface IAcceptWorkorders
   {
-    public void AddToQueue(IWork wo);
-    public bool ReceivesType(string type);
-    public void SetMes(IMes mes);
-    public void Work(DayTime dayTime);
+    string Name { get; }
+    IEnumerable<IWork> OutputBuffer { get; }
 
-    public string ListOfValidTypes();
-
-    public string Name { get; }
-    public IEnumerable<IWork> OutputBuffer { get; }
+    void AddToQueue(IWork wo);
+    string ListOfValidTypes();
+    bool ReceivesType(string type);
+    void Work(DayTime dayTime);
+    void SetMes(IMes mes);
   }
 }
