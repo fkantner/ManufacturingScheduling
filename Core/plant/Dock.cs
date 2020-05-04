@@ -6,11 +6,13 @@ namespace Core.Plant
 
   public class Dock : IAcceptWorkorders
   {
+    private IMes _mes;
     public Dock()
     {
       _output_buffer = new Queue<IWork>();
       ShippingBuffer = new List<IWork>();
       Name = "Shipping Dock";
+      _mes = null;
     }
 
     private readonly Queue<IWork> _output_buffer;
@@ -34,6 +36,12 @@ namespace Core.Plant
     public string ListOfValidTypes()
     {
       return "shippingOp";
+    }
+
+    public void SetMes(IMes mes)
+    {
+      if(_mes != null) { return; }
+      _mes = mes;
     }
 
     public void Work(DayTime dayTime)

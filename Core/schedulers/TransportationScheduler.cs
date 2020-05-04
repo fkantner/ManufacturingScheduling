@@ -11,6 +11,7 @@ namespace Core.Schedulers
     public void ChooseNextCargo(IAcceptWorkorders current_location);
     public IWork GetCargo(IAcceptWorkorders current_location);
     public IAcceptWorkorders Destination { get; }
+    public IMes Mes { get; }
     public int TransportTime { get; }
   }
 
@@ -30,11 +31,12 @@ namespace Core.Schedulers
 
     public IWork Cargo { get; private set; }
     public IAcceptWorkorders Destination { get; private set; }
+    public IMes Mes { get => _plant.Mes; }
     public int TransportTime { get; private set; }
 
     public void ChooseNextCargo(IAcceptWorkorders current_location)
     {
-      if(current_location.OutputBuffer.Count() == 0)
+      if(!current_location.OutputBuffer.Any())
       {
         Cargo = null;
         Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Count() > 0);

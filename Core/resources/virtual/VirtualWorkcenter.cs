@@ -1,5 +1,6 @@
 namespace Core.Resources.Virtual
 {
+  using Core.Plant;
   using Core.Resources;
   using Core.Workcenters;
   using System.Collections.Generic;
@@ -35,6 +36,8 @@ namespace Core.Resources.Virtual
     {
       return Types.Contains("," + type + ",");
     }
+
+    public void SetMes(IMes mes) { return ; }
 
     public void Work(DayTime dayTime) {}
   }

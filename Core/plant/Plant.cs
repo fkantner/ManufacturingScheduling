@@ -10,8 +10,16 @@ namespace Core.Plant
     {
       Name = name;
       Workcenters = workcenters;
+
+      Dictionary<string, IAcceptWorkorders> locations = new Dictionary<string, IAcceptWorkorders>();
+      foreach(IAcceptWorkorders wc in Workcenters)
+      {
+        locations.Add(wc.Name, wc);
+      }
+      Mes = (IMes) new Mes("MES", locations);
     }
 
+    public IMes Mes { get; }
     public string Name { get; }
     public IEnumerable<IAcceptWorkorders> Workcenters { get; }
     public Transportation InternalTransportation { get; set; }
@@ -24,6 +32,8 @@ namespace Core.Plant
       }
 
       InternalTransportation.Work(dt);
+
+      Mes.Work(dt);
 
       //TODO Add Shipping to Plant
       //TODO Add Receiving to Plant

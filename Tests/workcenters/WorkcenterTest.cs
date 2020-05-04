@@ -1,6 +1,7 @@
 namespace Tests.Workcenters
 {
   using Core;
+  using Core.Plant;
   using Core.Resources;
   using Core.Workcenters;
   using NSubstitute;
@@ -14,14 +15,17 @@ namespace Tests.Workcenters
     private IDoWork _testMachine;
     private DayTime _dayTime;
     private IWork _workorder;
+    private IMes _mes;
 
     [SetUp]
     protected void SetUp()
     {
       _testMachine = Substitute.For<IDoWork>();
       _workorder = Substitute.For<IWork>();
+      _mes = Substitute.For<IMes>();
       _dayTime = new DayTime();
       _subject = new Workcenter("TestWC", _testMachine);
+      _subject.SetMes(_mes);
     }
 
     [Test]
@@ -33,6 +37,7 @@ namespace Tests.Workcenters
       _emptyTestMachine.Work(null).Returns((IWork) null);
 
       Workcenter subject = new Workcenter("TestWC", _emptyTestMachine);
+      subject.SetMes(_mes);
 
       subject.Work(_dayTime);
 

@@ -1,6 +1,7 @@
 namespace Core.Plant
 {
   using Core.Workcenters;
+  using Core.Plant;
   using Core.Resources;
   using Core.Schedulers;
 
@@ -19,6 +20,7 @@ namespace Core.Plant
     private IAcceptWorkorders _destination;
     private IWork _cargo;
     private readonly IScheduleTransport _scheduler;
+    private IMes _mes;
 
     public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
     {
@@ -27,6 +29,7 @@ namespace Core.Plant
       TransportTime = 0;
       _cargo = null;
       _scheduler = ts;
+      _mes = ts.Mes;
     }
 
     public string CurrentLocation { get => _current_location.Name; }
@@ -63,6 +66,7 @@ namespace Core.Plant
 
     private void DropOffCargo()
     {
+      if (_cargo == null) { return; }
       _current_location.AddToQueue(_cargo);
       _cargo = null;
     }
@@ -91,6 +95,10 @@ namespace Core.Plant
     {
       _scheduler.ChooseNextCargo(_current_location);
       _cargo = _scheduler.GetCargo(_current_location);
+      if(_cargo != null)
+      {
+        _mes.StartTransit(_cargo.Id, _current_location.Name);
+      }
       _destination = _scheduler.Destination;
       TransportTime = _scheduler.TransportTime;
     }

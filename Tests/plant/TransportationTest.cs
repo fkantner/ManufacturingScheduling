@@ -16,6 +16,7 @@ namespace Tests.Plant
     private IScheduleTransport _scheduler;
     private IAcceptWorkorders _start;
     private IAcceptWorkorders _destination;
+    private IMes _mes;
     private DayTime _dayTime;
     private IWork _workorder;
 
@@ -26,6 +27,8 @@ namespace Tests.Plant
     protected void SetUp()
     {
       _scheduler = Substitute.For<IScheduleTransport>();
+      _mes = Substitute.For<IMes>();
+      _scheduler.Mes.Returns(_mes);
       _start = Substitute.For<IAcceptWorkorders>();
       _start.Name.Returns("Start Location");
       _destination = Substitute.For<IAcceptWorkorders>();
@@ -72,6 +75,7 @@ namespace Tests.Plant
       Assert.AreEqual(_start.Name, _subject.Destination); // Is now assigned to new destination
       Assert.AreEqual(TRANSPORT_TIME, _subject.TransportTime);
       _destination.DidNotReceive().AddToQueue(Arg.Any<IWork>());
+      _mes.Received().StartTransit(WORKORDER_ID, _subject.CurrentLocation);
     }
 
     [Test]

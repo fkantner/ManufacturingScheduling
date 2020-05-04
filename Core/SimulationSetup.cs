@@ -88,31 +88,35 @@ namespace simulationCode
       IAcceptWorkorders wc3 = wc_list[2];
       IAcceptWorkorders wc4 = wc_list[4];
 
+      Plant plant = new Plant("plantA", wc_list);
+
       foreach(Workorder wo in wo_list)
       {
-          if (wc1.ReceivesType(wo.CurrentOpType))
-          {
-              wc1.AddToQueue(wo);
-          }
-          else if (wc2.ReceivesType(wo.CurrentOpType))
-          {
-              wc2.AddToQueue(wo);
-          }
-          else if (wc3.ReceivesType(wo.CurrentOpType))
-          {
-              wc3.AddToQueue(wo);
-          }
-          else if (wc4.ReceivesType(wo.CurrentOpType))
-          {
-              wc4.AddToQueue(wo);
-          }
-          else
-          {
-            throw new System.ArgumentException("No WC for wo: " + wo.ToString());
-          }
+        if (wc1.ReceivesType(wo.CurrentOpType))
+        {
+          plant.Mes.AddWorkorder(wc1.Name, wo);
+          wc1.AddToQueue(wo);
+        }
+        else if (wc2.ReceivesType(wo.CurrentOpType))
+        {
+          plant.Mes.AddWorkorder(wc2.Name, wo);
+          wc2.AddToQueue(wo);
+        }
+        else if (wc3.ReceivesType(wo.CurrentOpType))
+        {
+          plant.Mes.AddWorkorder(wc3.Name, wo);
+          wc3.AddToQueue(wo);
+        }
+        else if (wc4.ReceivesType(wo.CurrentOpType))
+        {
+          plant.Mes.AddWorkorder(wc4.Name, wo);
+          wc4.AddToQueue(wo);
+        }
+        else
+        {
+          throw new System.ArgumentException("No WC for wo: " + wo.ToString());
+        }
       }
-
-      Plant plant = new Plant("plantA", wc_list);
 
       plant.InternalTransportation = new Transportation(wc1, new Core.Schedulers.TransportationScheduler(plant));
 

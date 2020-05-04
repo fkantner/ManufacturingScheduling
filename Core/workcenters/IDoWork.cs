@@ -8,5 +8,6 @@ namespace Core.Workcenters
     bool ReceivesType(string type);
     IWork Work(DayTime dayTime);
     string ListOfValidTypes();
+    IWork CurrentWorkorder { get; }
   }
 }

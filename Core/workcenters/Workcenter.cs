@@ -2,15 +2,18 @@ namespace Core.Workcenters
 {
   using Resources;
   using System.Collections.Generic;
+  using Core.Plant;
 
   public class Workcenter : IAcceptWorkorders
   {
+    private IMes _mes;
     public Workcenter(string name, IDoWork machine)
     {
       Machine = machine;
       Name = name;
       _output_buffer = new Queue<IWork>();
       Inspection = new Quality();
+      _mes = null;
     }
 
     public IDoWork Machine { get; }
@@ -29,6 +32,8 @@ namespace Core.Workcenters
 
     public void AddToQueue(IWork wo)
     {
+      //Check for _mes null for adding WO's before adding to MES.
+      _mes?.StopTransit(wo.Id, Name);
       Machine.AddToQueue(wo);
       return;
     }
@@ -38,6 +43,12 @@ namespace Core.Workcenters
       return Machine.ReceivesType(type);
     }
 
+    public void SetMes(IMes mes)
+    {
+      if(_mes != null){ return; }
+      _mes = mes;
+    }
+
     public void Work(DayTime dayTime)
     {
       IWork wo = Inspection.Work(dayTime);
@@ -45,6 +56,7 @@ namespace Core.Workcenters
       if(wo != null)
       {
         _output_buffer.Enqueue(wo);
+        _mes.Complete(wo.Id);
         // TODO - Implement Notify Scheduler when WC done
       }
 
@@ -52,8 +64,15 @@ namespace Core.Workcenters
 
       if(wo != null)
       {
-        // TODO - Work Center Report to MES when finishing Work
         Inspection.AddToQueue(wo);
+      }
+      else
+      {
+        wo = Machine.CurrentWorkorder;
+        if( wo != null)
+        {
+          _mes.StartProgress(wo.Id);
+        }
       }
     }
   }

@@ -5,7 +5,21 @@ namespace Core.Plant
   using Core.Workcenters;
   using Core.Resources.Virtual;
 
-  public class Mes
+  public interface IMes
+  {
+    void AddWorkorder(string location, IWork wo);
+    void Complete(int wo_id);
+    List<int> GetLocationWoIds(string location);
+    IWork GetWorkorder(int id);
+    void Move(int wo_id, string source_name, string destination_name);
+    void StartProgress(int wo_id);
+    void StartTransit(int wo_id, string workcenterName);
+    void StopProgress(int wo_id);
+    void StopTransit(int wo_id, string workcenterName);
+    void Work(DayTime dayTime);
+  }
+
+  public class Mes : IMes
   {
     // TODO - Create API for Workcenters to interact with
     // Start wo work
@@ -30,8 +44,8 @@ namespace Core.Plant
       foreach(var location in locations)
       {
         var value = location.Value;
-        //TODO - Fix Machine Type Issue for creating a Virtual Workcenter... 
         Locations.Add(location.Key, new VirtualWorkcenter(value.Name, value.ListOfValidTypes()));
+        location.Value.SetMes(this);
       }
 
       foreach(var location in Locations)
@@ -52,7 +66,7 @@ namespace Core.Plant
         throw new System.ArgumentException("Workorder already exists in MES");
       }
       VirtualWorkorder newWo = new VirtualWorkorder(wo.CurrentOpIndex, wo);
-
+      Workorders[newWo.Id] = newWo;
       AddWoToLocation(newWo, location);
     }
 
@@ -60,6 +74,7 @@ namespace Core.Plant
     {
       VirtualWorkorder wo = Workorders[wo_id];
       wo.SetNextOp();
+      wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
     }
 
     public List<int> GetLocationWoIds(string location)
@@ -94,16 +109,46 @@ namespace Core.Plant
       AddWoToLocation(wo, destination_name);
     }
 
+    public void StartProgress(int wo_id)
+    {
+      Workorders[wo_id].ChangeStatus(VirtualWorkorder.Statuses.InProgress);
+    }
+
+    public void StartTransit(int wo_id, string workcenterName)
+    {
+      VirtualWorkorder wo = Workorders[wo_id];
+      wo.ChangeStatus(VirtualWorkorder.Statuses.OnRoute);
+      RemoveWoFromLocation(wo, workcenterName);
+    }
+
+    public void StopProgress(int wo_id)
+    {
+      Workorders[wo_id].ChangeStatus(VirtualWorkorder.Statuses.Open);
+    }
+
+    public void StopTransit(int wo_id, string workcenterName)
+    {
+      VirtualWorkorder wo = Workorders[wo_id];
+      wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
+      if (!LocationInventories[workcenterName].Contains(wo))
+      {
+        AddWoToLocation(wo, workcenterName);
+      }
+    }
+
+    public void Work(DayTime dayTime)
+    {
+      // TODO: Implement MES.Work (Connect to ERP)
+    }
+
     private void AddWoToLocation(VirtualWorkorder wo, string location)
     {
-      Workorders.Add(wo.Id, wo);
       LocationInventories[location].Add(wo);
     }
 
     private void RemoveWoFromLocation(VirtualWorkorder wo, string location)
     {
       LocationInventories[location].Remove(wo);
-      Workorders.Remove(wo.Id);
     }
   }
 }
