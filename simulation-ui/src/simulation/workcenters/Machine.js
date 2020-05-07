@@ -20,16 +20,18 @@ class Machine extends Component {
           
           <h4>Operation</h4>
           <table className='machine_time'>
-            <tr>
-              <th>S</th>
-              <th>C</th>
-              <th className='machine_last_type'>Last</th>
-            </tr>
-            <tr>
-              <td>{this.props.machine.SetupTime}</td>
-              <td>{this.props.machine.EstTimeToComplete}</td>
-              <td>{this.props.machine.LastType}</td>
-            </tr>              
+            <tbody>
+              <tr>
+                <th>S</th>
+                <th>C</th>
+                <th className='machine_last_type'>Last</th>
+              </tr>
+              <tr>
+                <td>{this.props.machine.SetupTime}</td>
+                <td>{this.props.machine.EstTimeToComplete}</td>
+                <td>{this.props.machine.LastType}</td>
+              </tr>              
+            </tbody>
           </table>
           
           <div className='machine_current_wo'>

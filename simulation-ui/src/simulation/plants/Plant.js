@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Plant.css';
 import Workcenter from '../workcenters/Workcenter';
 import Dock from './Dock';
+import Mes from './Mes';
 
 function Transport(props) {
   if (props.workcenter.Name === props.transport.CurrentLocation){
@@ -47,6 +48,7 @@ class Plant extends Component {
     return <div className='plant'>
       <div className='plant_header'>
         <h4>Plant: {this.props.plant.Name}</h4>
+        <Mes mes={this.props.plant.Mes} />
       </div>
       <div className='plant_body'>
         { wc_list }

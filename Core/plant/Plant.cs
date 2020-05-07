@@ -2,7 +2,6 @@ namespace Core.Plant
 {
   using System.Collections.Generic;
   using Core.Workcenters;
-  //using Core.Resources;
 
   public class Plant
   {
@@ -39,7 +38,6 @@ namespace Core.Plant
       //TODO Add Receiving to Plant
       //TODO Add Dock to Plant
       //TODO Add Staging to Plant
-      //TODO Add MES to Plant
     }
   }
 }

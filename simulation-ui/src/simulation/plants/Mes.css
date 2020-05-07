@@ -1,0 +1,13 @@
+div.mes {
+  border: thin black outset;
+}
+
+ul.mesWcList {
+  border: thin pink outset;
+  padding: 0.3em;
+  margin: 0.2em 0.2em 1em 1em ;
+}
+
+div.virtualWorkcenters {
+  display: flex;
+}

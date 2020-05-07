@@ -25,6 +25,7 @@ namespace Core.Plant
 
     public void AddToQueue(IWork workorder)
     {
+      _mes?.StopTransit(workorder.Id, Name);
       ShippingBuffer.Add(workorder);
     }
 

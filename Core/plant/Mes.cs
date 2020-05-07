@@ -21,9 +21,6 @@ namespace Core.Plant
 
   public class Mes : IMes
   {
-    // TODO - Create API for Workcenters to interact with
-    // Start wo work
-    // End wo work
     // Non conformance
     // Give recommendations??
     // TODO - Connect MES to Plant Scheduler
@@ -54,10 +51,10 @@ namespace Core.Plant
       }
     }
 
-    private Dictionary<string, VirtualWorkcenter> Locations { get; }
-    private Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
+    public Dictionary<string, VirtualWorkcenter> Locations { get; }
+    public Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
     public string Name { get; }
-    private Dictionary<int, VirtualWorkorder> Workorders { get; }
+    public Dictionary<int, VirtualWorkorder> Workorders { get; }
 
     public void AddWorkorder(string location, IWork wo)
     {
