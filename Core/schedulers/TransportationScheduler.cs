@@ -22,9 +22,9 @@ namespace Core.Schedulers
 
     //TODO - Improve TransportationScheduler to include other algorithms
 
-    public enum Schedule { DEFAULT };
+    public enum Schedule { DEFAULT=0 };
 
-    public TransportationScheduler(Plant plant, Schedule schedule=DEFAULT)
+    public TransportationScheduler(Plant plant, Schedule schedule=(Schedule) 0)
     {
       _plant = plant;
       Cargo = null;
@@ -48,7 +48,7 @@ namespace Core.Schedulers
       {
         Cargo = null;
       }
-      SetDestination();
+      SetDestination(current_location);
     }
 
     public IWork GetCargo(IAcceptWorkorders current_location)
@@ -57,7 +57,7 @@ namespace Core.Schedulers
       return (current_location.OutputBuffer as Queue<IWork>)?.Dequeue();
     }
 
-    private void SetDestination()
+    private void SetDestination(IAcceptWorkorders current_location)
     {
       bool staysHere = (Cargo == null && Destination == null) || (Cargo != null && Destination == current_location);
       ChooseWorkcenterByAlgorithm();
