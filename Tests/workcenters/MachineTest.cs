@@ -19,7 +19,7 @@ namespace Tests.Workcenters
     protected void SetUp()
     {
       machineScheduler = Substitute.For<IScheduleMachines>();
-      machineScheduler.Sort(Arg.Any<Queue<IWork>>());
+      machineScheduler.Sort(Arg.Any<ICustomQueue>());
 
       List<string> types = new List<string>(){"type1", "type2"};
       _subject = new Machine("test subject", machineScheduler, types);
@@ -32,7 +32,7 @@ namespace Tests.Workcenters
       Workorder wo = GenerateWorkorder();
       _subject.AddToQueue(wo);
 
-      machineScheduler.Received().Sort(Arg.Any<Queue<IWork>>());
+      machineScheduler.Received().Sort(Arg.Any<ICustomQueue>());
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Tests.Workcenters
       var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
-      Assert.IsEmpty(_subject.InputBuffer);
+      Assert.IsTrue(_subject.InputBuffer.Empty());
       Assert.AreEqual(1, _subject.CurrentWorkorder.Id);
       Assert.AreEqual(1, _subject.SetupTime);
       Assert.AreEqual(1, _subject.EstTimeToComplete);
@@ -64,7 +64,7 @@ namespace Tests.Workcenters
       var answer = _subject.Work(_dayTime);
 
       Assert.IsNull(answer);
-      Assert.IsEmpty(_subject.InputBuffer);
+      Assert.IsTrue(_subject.InputBuffer.Empty());
       Assert.AreEqual(1, _subject.CurrentWorkorder.Id);
       Assert.AreEqual(0, _subject.SetupTime);
       Assert.AreEqual(1, _subject.EstTimeToComplete);
@@ -80,7 +80,7 @@ namespace Tests.Workcenters
       Assert.AreEqual(1, answer.Id);
       Assert.AreEqual("type1", _subject.LastType);
       Assert.IsNull(_subject.CurrentWorkorder);
-      Assert.IsEmpty(_subject.InputBuffer);
+      Assert.IsTrue(_subject.InputBuffer.Empty());
       Assert.AreEqual(0, _subject.SetupTime);
       Assert.AreEqual(0, _subject.EstTimeToComplete);
     }

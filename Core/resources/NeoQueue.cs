@@ -8,6 +8,7 @@ namespace Core.Resources
 
     bool Any();
     IWork Dequeue();
+    bool Empty();
     void Enqueue(IWork wo);
     IWork Find(int id);
     int? FirstId();
@@ -54,6 +55,11 @@ namespace Core.Resources
       ConsolidateOrdering();
 
       return answer;
+    }
+
+    public bool Empty()
+    {
+      return _min == 0;
     }
 
     public void Enqueue(IWork wo)

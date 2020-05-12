@@ -17,14 +17,14 @@ namespace Core.Workcenters
 
       CurrentWorkorder = null;
       EstTimeToComplete = 0;
-      InputBuffer = new Queue<IWork>();
+      InputBuffer = new NeoQueue();
       LastType = null;
       SetupTime = 0;
     }
 
     public IWork CurrentWorkorder { get; private set; }
     public int EstTimeToComplete { get; private set; }
-    public Queue<IWork> InputBuffer { get; }
+    public ICustomQueue InputBuffer { get; }
     public string LastType { get; private set; }
     public string Name { get; }
     public int SetupTime { get; private set; }
@@ -56,7 +56,7 @@ namespace Core.Workcenters
 
       if (CurrentWorkorder == null)
       {
-        if(InputBuffer.Count == 0){ return null; }
+        if(InputBuffer.Empty()){ return null; }
 
         CurrentWorkorder = InputBuffer.Dequeue();
         if ( LastType == null || LastType != CurrentWorkorder.CurrentOpType )

@@ -1,7 +1,6 @@
 namespace Core.Workcenters
 {
   using Core.Resources;
-  using System.Collections.Generic;
 
   public class Quality
   {
@@ -12,12 +11,12 @@ namespace Core.Workcenters
       _inspectionTime = 3;
       CurrentInspectionTime = 0;
       CurrentWo = null;
-      Buffer = new Queue<IWork>();
+      Buffer = new NeoQueue();
     }
 
     public IWork CurrentWo { get; private set; }
     public int CurrentInspectionTime { get; private set; }
-    public Queue<IWork> Buffer { get; }
+    public ICustomQueue Buffer { get; }
 
     public void AddToQueue(IWork workorder)
     {
