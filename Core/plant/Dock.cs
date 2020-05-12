@@ -2,7 +2,6 @@ namespace Core.Plant
 {
   using Core.Workcenters;
   using Core.Resources;
-  using System.Collections.Generic;
 
   public class Dock : IAcceptWorkorders
   {
@@ -10,19 +9,19 @@ namespace Core.Plant
     public Dock()
     {
       OutputBuffer = new NeoQueue();
-      ShippingBuffer = new List<IWork>();
+      ShippingBuffer = new NeoQueue();
       Name = "Shipping Dock";
       _mes = null;
     }
 
     public ICustomQueue OutputBuffer { get; }
-    public List<IWork> ShippingBuffer { get; }
+    public ICustomQueue ShippingBuffer { get; }
     public string Name { get; }
 
     public void AddToQueue(IWork workorder)
     {
       _mes?.StopTransit(workorder.Id, Name);
-      ShippingBuffer.Add(workorder);
+      ShippingBuffer.Enqueue(workorder);
     }
 
     public bool ReceivesType(string type)
