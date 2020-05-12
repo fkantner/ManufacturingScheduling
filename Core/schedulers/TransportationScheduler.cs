@@ -9,7 +9,7 @@ namespace Core.Schedulers
   public interface IScheduleTransport
   {
     public void ChooseNextCargo(IAcceptWorkorders current_location);
-    public IWork GetCargo(IAcceptWorkorders current_location);
+    public int? GetCargoID();
     public IAcceptWorkorders Destination { get; }
     public IMes Mes { get; }
     public int TransportTime { get; }
@@ -17,23 +17,21 @@ namespace Core.Schedulers
 
   public class TransportationScheduler : IScheduleTransport
   {
+    public enum Schedule { DEFAULT=0 };
+
     private readonly Plant _plant;
     private readonly Schedule _schedule;
-
-    //TODO - Improve TransportationScheduler to include other algorithms
-
-    public enum Schedule { DEFAULT=0 };
 
     public TransportationScheduler(Plant plant, Schedule schedule=(Schedule) 0)
     {
       _plant = plant;
-      Cargo = null;
+      CargoID = null;
       Destination = null;
       TransportTime = 0;
       _schedule = schedule;
     }
 
-    public IWork Cargo { get; private set; }
+    public int? CargoID { get; private set; }
     public IAcceptWorkorders Destination { get; private set; }
     public IMes Mes { get => _plant.Mes; }
     public int TransportTime { get; private set; }
@@ -42,47 +40,49 @@ namespace Core.Schedulers
     {
       if(current_location.OutputBuffer.Any())
       {
-        Cargo = ChooseCargoByAlgorithm(current_location);
+        CargoID = ChooseCargoByAlgorithm(current_location);
       }
       else
       {
-        Cargo = null;
+        CargoID = null;
       }
       SetDestination(current_location);
     }
 
-    public IWork GetCargo(IAcceptWorkorders current_location)
+    public int? GetCargoID()
     {
-      if(Cargo == null){ return null; }
-      return (current_location.OutputBuffer as Queue<IWork>)?.Dequeue();
+      return CargoID;
     }
 
     private void SetDestination(IAcceptWorkorders current_location)
     {
-      bool staysHere = (Cargo == null && Destination == null) || (Cargo != null && Destination == current_location);
-      ChooseWorkcenterByAlgorithm();
+      bool staysHere = (!CargoID.HasValue && Destination == null) || (CargoID.HasValue && Destination == current_location);
+      ChooseWorkcenterByAlgorithm(current_location);
       TransportTime = staysHere ? 0 : 5;
     }
 
+    /*********************************/
     // Scheduling Algorithms go here //
-    private IWork ChooseCargoByAlgorithm(IAcceptWorkorders current_location)
+    /*********************************/
+
+    private int? ChooseCargoByAlgorithm(IAcceptWorkorders current_location)
     {
       // if _schedule == Schedule.DEFAULT
-      return (current_location.OutputBuffer as Queue<IWork>)?.Peek();
+      return current_location.OutputBuffer.FirstId();
     }
 
-    private void ChooseWorkcenterByAlgorithm()
+    private void ChooseWorkcenterByAlgorithm(IAcceptWorkorders current_location)
     {
       // if _schedule == Schedule.DEFAULT
-      if (Cargo == null)
+      if (!CargoID.HasValue)
       {
         Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
       }
       else
       {
-        Destination = _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(Cargo.CurrentOpType));
+        var cargo = current_location.OutputBuffer.Find(CargoID.Value);
+        Destination = _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
       }
     }
-
   }
 }

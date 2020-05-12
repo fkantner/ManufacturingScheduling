@@ -94,11 +94,13 @@ namespace Core.Plant
     private void UpdateSelfFromScheduler()
     {
       _scheduler.ChooseNextCargo(_current_location);
-      _cargo = _scheduler.GetCargo(_current_location);
-      if(_cargo != null)
+      int? cargoId = _scheduler.GetCargoID();
+      if(cargoId.HasValue)
       {
-        _mes.StartTransit(_cargo.Id, _current_location.Name);
+        _cargo = _current_location.OutputBuffer.Remove(cargoId.Value);
+        _mes.StartTransit(cargoId.Value, _current_location.Name);
       }
+
       _destination = _scheduler.Destination;
       TransportTime = _scheduler.TransportTime;
     }

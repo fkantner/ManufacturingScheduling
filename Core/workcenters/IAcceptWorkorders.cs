@@ -2,12 +2,11 @@ namespace Core.Workcenters
 {
   using Core.Plant;
   using Core.Resources;
-  using System.Collections.Generic;
 
   public interface IAcceptWorkorders
   {
     string Name { get; }
-    IEnumerable<IWork> OutputBuffer { get; }
+    ICustomQueue OutputBuffer { get; }
 
     void AddToQueue(IWork wo);
     string ListOfValidTypes();

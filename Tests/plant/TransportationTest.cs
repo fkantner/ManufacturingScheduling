@@ -7,7 +7,6 @@ namespace Tests.Plant
   using Core.Workcenters;
   using NSubstitute;
   using NUnit.Framework;
-  using System.Collections.Generic;
 
   [TestFixture]
   public class TransportationTest
@@ -19,6 +18,7 @@ namespace Tests.Plant
     private IMes _mes;
     private DayTime _dayTime;
     private IWork _workorder;
+    private ICustomQueue _nQueue;
 
     private const int WORKORDER_ID = 1;
     private const int EMPTY_WO_ID = 0;
@@ -37,6 +37,12 @@ namespace Tests.Plant
       _dayTime = new DayTime();
       _workorder = Substitute.For<IWork>();
       _workorder.Id.Returns(WORKORDER_ID);
+
+      _nQueue = Substitute.For<ICustomQueue>();
+      _nQueue.Remove(WORKORDER_ID).Returns(_workorder);
+
+      _start.OutputBuffer.Returns(_nQueue);
+      _destination.OutputBuffer.Returns(_nQueue);
     }
 
     [Test]
@@ -44,7 +50,7 @@ namespace Tests.Plant
     {
       const int TRANSPORT_TIME = 5;
       _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
-      _scheduler.GetCargo(Arg.Any<IAcceptWorkorders>()).Returns((Workorder)null);
+      _scheduler.GetCargoID().Returns((int?)null);
       _scheduler.Destination.Returns(_destination);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
 
@@ -62,7 +68,7 @@ namespace Tests.Plant
     {
       const int TRANSPORT_TIME = 1;
       _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
-      _scheduler.GetCargo(Arg.Any<IAcceptWorkorders>()).Returns((Workorder)null, _workorder);
+      _scheduler.GetCargoID().Returns(null, WORKORDER_ID);
       _scheduler.Destination.Returns(_destination, _start);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
 
@@ -83,7 +89,7 @@ namespace Tests.Plant
     {
       const int TRANSPORT_TIME = 1;
       _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
-      _scheduler.GetCargo(Arg.Any<IAcceptWorkorders>()).Returns(_workorder, (Workorder)null);
+      _scheduler.GetCargoID().Returns(WORKORDER_ID, null);
       _scheduler.Destination.Returns(_destination, _start);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
       _destination.AddToQueue(Arg.Any<IWork>());

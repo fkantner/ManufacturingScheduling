@@ -7,13 +7,12 @@ namespace Core.Workcenters
   public class Workcenter : IAcceptWorkorders
   {
     private IMes _mes;
-    private readonly Queue<IWork> _output_buffer;
 
     public Workcenter(string name, IDoWork machine)
     {
       Machine = machine;
       Name = name;
-      _output_buffer = new Queue<IWork>();
+      OutputBuffer = new NeoQueue();
       Inspection = new Quality();
       _mes = null;
     }
@@ -21,10 +20,7 @@ namespace Core.Workcenters
     public Quality Inspection { get; }
     public IDoWork Machine { get; }
     public string Name { get; }
-    public IEnumerable<IWork> OutputBuffer
-    {
-      get { return _output_buffer; }
-    }
+    public ICustomQueue OutputBuffer { get; }
 
     public void AddToQueue(IWork wo)
     {
@@ -50,7 +46,7 @@ namespace Core.Workcenters
 
       if(wo != null)
       {
-        _output_buffer.Enqueue(wo);
+        OutputBuffer.Enqueue(wo);
         _mes.Complete(wo.Id);
         // TODO - Implement Notify Scheduler when WC done
       }

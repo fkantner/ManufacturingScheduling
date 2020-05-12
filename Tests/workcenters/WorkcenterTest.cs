@@ -40,7 +40,7 @@ namespace Tests.Workcenters
 
       subject.Work(_dayTime);
 
-      CollectionAssert.IsEmpty(subject.OutputBuffer);
+      Assert.IsFalse(subject.OutputBuffer.Any());
       CollectionAssert.IsEmpty(subject.Inspection.Buffer);
       Assert.IsNull(subject.Inspection.CurrentWo);
       _emptyTestMachine.Received().Work(Arg.Any<DayTime>());
@@ -53,7 +53,7 @@ namespace Tests.Workcenters
 
       _subject.Work(_dayTime);
 
-      Assert.IsEmpty(_subject.OutputBuffer);
+      Assert.IsFalse(_subject.OutputBuffer.Any());
       _testMachine.Received().Work(_dayTime);
       Assert.IsNull(_subject.Inspection.CurrentWo);
       Assert.IsNotEmpty(_subject.Inspection.Buffer);
@@ -73,7 +73,7 @@ namespace Tests.Workcenters
         _subject.Work(_dayTime);
       }
 
-      Assert.IsNotEmpty(_subject.OutputBuffer);
+      Assert.IsTrue(_subject.OutputBuffer.Any());
       Assert.IsNull(_subject.Inspection.CurrentWo);
       Assert.IsEmpty(_subject.Inspection.Buffer);
     }

@@ -9,17 +9,13 @@ namespace Core.Plant
     private IMes _mes;
     public Dock()
     {
-      _output_buffer = new Queue<IWork>();
+      OutputBuffer = new NeoQueue();
       ShippingBuffer = new List<IWork>();
       Name = "Shipping Dock";
       _mes = null;
     }
 
-    private readonly Queue<IWork> _output_buffer;
-    public IEnumerable<IWork> OutputBuffer
-    {
-      get { return _output_buffer as IEnumerable<IWork>; }
-    }
+    public ICustomQueue OutputBuffer { get; }
     public List<IWork> ShippingBuffer { get; }
     public string Name { get; }
 

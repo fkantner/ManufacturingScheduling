@@ -7,22 +7,17 @@ namespace Core.Resources.Virtual
 
   public class VirtualWorkcenter : IAcceptWorkorders
   {
-    private readonly List<IWork> _output_buffer;
-
     public VirtualWorkcenter(string name, string types)
     {
       Name = name;
       Types = types;
-      _output_buffer = new List<IWork>();
+      OutputBuffer = new NeoQueue();
       InputBuffer = new List<IWork>();
     }
 
     public List<IWork> InputBuffer { get; }
     public string Name { get; }
-    public IEnumerable<IWork> OutputBuffer
-    {
-      get { return _output_buffer as IEnumerable<IWork>; }
-    }
+    public ICustomQueue OutputBuffer { get; }
     private string Types { get; }
 
     public void AddToQueue(IWork wo)
