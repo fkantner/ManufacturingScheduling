@@ -67,7 +67,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.DEFAULT => current_location.OutputBuffer.FirstId()
+        Schedule.DEFAULT => ChooseCargoByDefault(current_location)
       };
     }
 
@@ -79,17 +79,30 @@ namespace Core.Schedulers
       };
     }
 
+    private int? ChooseCargoByDefault(IAcceptWorkorders current_location)
+    {
+      int? selected = current_location.OutputBuffer.FirstId();
+      return _plant.PlantScheduler.ValidateWoForTransport(selected.Value, current_location.Name);
+    }
+
     private IAcceptWorkorders ChooseWorkcenterByDefault(IAcceptWorkorders current_location)
     {
+      IAcceptWorkorders selected;
       if (!CargoID.HasValue)
       {
-        return _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
+        selected = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
       }
       else
       {
         var cargo = current_location.OutputBuffer.Find(CargoID.Value);
-        return _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
+        selected = _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
       }
+      string new_selected = _plant.PlantScheduler.ValidateDestinationForTransport(CargoID, current_location.Name, selected.Name);
+      if(new_selected != selected.Name)
+      {
+        selected = _plant.Workcenters.FirstOrDefault(x => x.Name == new_selected);
+      }
+      return selected;
     }
   }
 }

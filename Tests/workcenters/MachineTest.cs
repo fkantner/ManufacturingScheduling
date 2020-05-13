@@ -14,25 +14,19 @@ namespace Tests.Workcenters
     private Machine _subject;
     private IScheduleMachines machineScheduler;
     private DayTime _dayTime;
+    private const int WO_ID = 1;
 
     [SetUp]
     protected void SetUp()
     {
       machineScheduler = Substitute.For<IScheduleMachines>();
-      machineScheduler.Sort(Arg.Any<ICustomQueue>());
+      machineScheduler
+        .ChooseNextWoId(Arg.Any<ICustomQueue>())
+        .Returns(WO_ID);
 
       List<string> types = new List<string>(){"type1", "type2"};
       _subject = new Machine("test subject", machineScheduler, types);
       _dayTime = new DayTime();
-    }
-
-    [Test]
-    public void AddToQueue_AddsWOAndCallsScheduler()
-    {
-      Workorder wo = GenerateWorkorder();
-      _subject.AddToQueue(wo);
-
-      machineScheduler.Received().Sort(Arg.Any<ICustomQueue>());
     }
 
     [Test]
@@ -77,7 +71,7 @@ namespace Tests.Workcenters
 
       var answer = _subject.Work(_dayTime);
 
-      Assert.AreEqual(1, answer.Id);
+      Assert.AreEqual(WO_ID, answer.Id);
       Assert.AreEqual("type1", _subject.LastType);
       Assert.IsNull(_subject.CurrentWorkorder);
       Assert.IsTrue(_subject.InputBuffer.Empty());
@@ -92,7 +86,7 @@ namespace Tests.Workcenters
         new Op("type1", 1, 1),
         new Op("type2", 1, 1)
       };
-      Workorder wo = new Workorder(1, ops);
+      Workorder wo = new Workorder(WO_ID, ops);
       return wo;
     }
 

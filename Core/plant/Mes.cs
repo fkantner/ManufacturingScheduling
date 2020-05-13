@@ -7,6 +7,10 @@ namespace Core.Plant
 
   public interface IMes
   {
+    Dictionary<string, VirtualWorkcenter> Locations { get; }
+    Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
+    Dictionary<int, VirtualWorkorder> Workorders { get; }
+
     void AddWorkorder(string location, IWork wo);
     void Complete(int wo_id);
     List<int> GetLocationWoIds(string location);
@@ -24,7 +28,6 @@ namespace Core.Plant
     // Non conformance
     // Give recommendations??
     // TODO - Connect MES to Plant Scheduler
-    // TODO - Connect MES to Transportation Scheduler
     // TODO - Create API for MES to ERP
     // Send process data up? Similar to Workcenter data?
     // Anything else needed?

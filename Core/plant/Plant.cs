@@ -1,6 +1,7 @@
 namespace Core.Plant
 {
   using System.Collections.Generic;
+  using Core.Schedulers;
   using Core.Workcenters;
 
   public class Plant
@@ -16,10 +17,13 @@ namespace Core.Plant
         locations.Add(wc.Name, wc);
       }
       Mes = (IMes) new Mes("MES", locations);
+
+      PlantScheduler = new PlantScheduler(Mes, PlantScheduler.Schedule.DEFAULT);
     }
 
     public IMes Mes { get; }
     public string Name { get; }
+    public PlantScheduler PlantScheduler { get; }
     public IEnumerable<IAcceptWorkorders> Workcenters { get; }
     public Transportation InternalTransportation { get; set; }
 
