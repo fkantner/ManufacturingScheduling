@@ -32,7 +32,6 @@ namespace Core.Workcenters
     public void AddToQueue(IWork wc)
     {
       InputBuffer.Enqueue(wc);
-      _scheduler.Sort(InputBuffer);
       return;
     }
 
@@ -58,7 +57,8 @@ namespace Core.Workcenters
       {
         if(InputBuffer.Empty()){ return null; }
 
-        CurrentWorkorder = InputBuffer.Dequeue();
+        int nextWoId = _scheduler.ChooseNextWoId(InputBuffer);
+        CurrentWorkorder = InputBuffer.Remove(nextWoId);
         if ( LastType == null || LastType != CurrentWorkorder.CurrentOpType )
         {
           SetupTime = CurrentWorkorder.CurrentOpSetupTime;

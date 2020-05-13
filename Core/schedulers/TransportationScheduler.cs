@@ -1,10 +1,8 @@
 namespace Core.Schedulers
 {
-  using Core.Resources;
   using Core.Workcenters;
   using Core.Plant;
   using System.Linq;
-  using System.Collections.Generic;
 
   public interface IScheduleTransport
   {
@@ -67,21 +65,30 @@ namespace Core.Schedulers
 
     private int? ChooseCargoByAlgorithm(IAcceptWorkorders current_location)
     {
-      // if _schedule == Schedule.DEFAULT
-      return current_location.OutputBuffer.FirstId();
+      return _schedule switch
+      {
+        Schedule.DEFAULT => current_location.OutputBuffer.FirstId()
+      };
     }
 
     private void ChooseWorkcenterByAlgorithm(IAcceptWorkorders current_location)
     {
-      // if _schedule == Schedule.DEFAULT
+      Destination = _schedule switch
+      {
+        Schedule.DEFAULT => ChooseWorkcenterByDefault(current_location)
+      };
+    }
+
+    private IAcceptWorkorders ChooseWorkcenterByDefault(IAcceptWorkorders current_location)
+    {
       if (!CargoID.HasValue)
       {
-        Destination = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
+        return _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
       }
       else
       {
         var cargo = current_location.OutputBuffer.Find(CargoID.Value);
-        Destination = _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
+        return _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
       }
     }
   }

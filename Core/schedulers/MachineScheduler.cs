@@ -5,17 +5,26 @@ namespace Core.Schedulers
 
   public interface IScheduleMachines
   {
-      void Sort(ICustomQueue queue);
+      int ChooseNextWoId(ICustomQueue queue);
   }
 
   public class MachineScheduler : IScheduleMachines
   {
-    // TODO - Implement MachineScheduler
+    public enum Schedule { DEFAULT=0 };
 
-    public void Sort(ICustomQueue queue)
+    private readonly Schedule _schedule;
+
+    public MachineScheduler(Schedule schedule=(Schedule) 0)
     {
-      // TODO - Implement Machine Scheduler Sort Algorithm
-      return;
+      _schedule = schedule;
+    }
+
+    public int ChooseNextWoId(ICustomQueue queue)
+    {
+      return _schedule switch
+      {
+        Schedule.DEFAULT => queue.FirstId().Value
+      };
     }
   }
 }
