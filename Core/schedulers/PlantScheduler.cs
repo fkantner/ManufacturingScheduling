@@ -20,8 +20,6 @@ namespace Core.Schedulers
       _mes = mes;
       _schedule = schedule;
     }
-    // TODO - Implement PlantScheduler
-    // TODO - Connect Plant Scheduler to Machine Scheduler
 
     public int ValidateWoForMachines(int woid, string location)
     {

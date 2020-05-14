@@ -15,6 +15,7 @@ namespace Core.Plant
       foreach(IAcceptWorkorders wc in Workcenters)
       {
         locations.Add(wc.Name, wc);
+        wc.AddPlant(this);
       }
       Mes = (IMes) new Mes("MES", locations);
 

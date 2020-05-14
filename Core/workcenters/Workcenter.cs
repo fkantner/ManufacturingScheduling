@@ -22,6 +22,11 @@ namespace Core.Workcenters
     public string Name { get; }
     public ICustomQueue OutputBuffer { get; }
 
+    public void AddPlant(Plant plant)
+    {
+      Machine.AddPlant(plant);
+    }
+
     public void AddToQueue(IWork wo)
     {
       //Check for _mes null for adding WO's before adding to MES.

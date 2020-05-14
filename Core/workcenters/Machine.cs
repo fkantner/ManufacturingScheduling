@@ -1,5 +1,6 @@
 namespace Core.Workcenters
 {
+  using Core.Plant;
   using Core.Resources;
   using Core.Schedulers;
   using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Core.Workcenters
 
     public Machine(string name, IScheduleMachines ms, List<string> type)
     {
-      Name = name;
+      Name = "Machine " + name;
       _scheduler = ms;
       _type = type;
 
@@ -28,6 +29,11 @@ namespace Core.Workcenters
     public string LastType { get; private set; }
     public string Name { get; }
     public int SetupTime { get; private set; }
+
+    public void AddPlant(Plant plant)
+    {
+      _scheduler.AddPlant(plant);
+    }
 
     public void AddToQueue(IWork wc)
     {
@@ -57,7 +63,7 @@ namespace Core.Workcenters
       {
         if(InputBuffer.Empty()){ return null; }
 
-        int nextWoId = _scheduler.ChooseNextWoId(InputBuffer);
+        int nextWoId = _scheduler.ChooseNextWoId(Name, InputBuffer);
         CurrentWorkorder = InputBuffer.Remove(nextWoId);
         if ( LastType == null || LastType != CurrentWorkorder.CurrentOpType )
         {

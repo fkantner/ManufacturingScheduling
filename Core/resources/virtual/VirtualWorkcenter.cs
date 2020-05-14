@@ -20,6 +20,11 @@ namespace Core.Resources.Virtual
     public ICustomQueue OutputBuffer { get; }
     private string Types { get; }
 
+    public void AddPlant(Plant plant)
+    { // Doesn't need to respond to Plant.
+      return;
+    }
+
     public void AddToQueue(IWork wo)
     {
       InputBuffer.Add(wo);

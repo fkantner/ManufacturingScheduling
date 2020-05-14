@@ -22,23 +22,27 @@ namespace simulationCode
     {
       List<IAcceptWorkorders> workcenters = new List<IAcceptWorkorders>();
 
-      Machine a = new Machine(drill, new Core.Schedulers.MachineScheduler(), new List<string>{drillOpType1, drillOpType2});
-      Workcenter wc = new Workcenter("drill_WC_a", a);
+      string wcName = "drill_WC_a";
+      Machine a = new Machine(wcName, new Core.Schedulers.MachineScheduler(), new List<string>{drillOpType1, drillOpType2});
+      Workcenter wc = new Workcenter(wcName, a);
 
       workcenters.Add(wc);
 
-      Machine b = new Machine(lathe, new Core.Schedulers.MachineScheduler(), new List<string>{latheOpType1, latheOpType2});
-      Workcenter wc2 = new Workcenter("lathe_WC_b", b);
+      wcName = "lathe_WC_b";
+      Machine b = new Machine(wcName, new Core.Schedulers.MachineScheduler(), new List<string>{latheOpType1, latheOpType2});
+      Workcenter wc2 = new Workcenter(wcName, b);
 
       workcenters.Add(wc2);
 
-      Machine c = new Machine(cnc, new Core.Schedulers.MachineScheduler(), new List<string>{cncOpType1, cncOpType2});
-      Workcenter wc3 = new Workcenter("cnc_WC_c", c);
+      wcName = "cnc_WC_c";
+      Machine c = new Machine(wcName, new Core.Schedulers.MachineScheduler(), new List<string>{cncOpType1, cncOpType2});
+      Workcenter wc3 = new Workcenter(wcName, c);
 
       workcenters.Add(wc3);
 
-      Machine d = new Machine(lathe, new Core.Schedulers.MachineScheduler(), new List<string>{cncOpType2, cncOpType3, cncOpType4});
-      Workcenter wc4 = new Workcenter("cnc_WC_d", d);
+      wcName = "cnc_WC_d";
+      Machine d = new Machine(wcName, new Core.Schedulers.MachineScheduler(), new List<string>{cncOpType2, cncOpType3, cncOpType4});
+      Workcenter wc4 = new Workcenter(wcName, d);
 
       workcenters.Add(wc4);
 

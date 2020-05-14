@@ -1,11 +1,12 @@
 namespace Core.Schedulers
 {
+  using Core.Plant;
   using Core.Resources;
-  using System.Collections.Generic;
 
   public interface IScheduleMachines
   {
-      int ChooseNextWoId(ICustomQueue queue);
+    void AddPlant(Plant plant);
+    int ChooseNextWoId(string machineName, ICustomQueue queue);
   }
 
   public class MachineScheduler : IScheduleMachines
@@ -13,18 +14,30 @@ namespace Core.Schedulers
     public enum Schedule { DEFAULT=0 };
 
     private readonly Schedule _schedule;
+    private Plant _plant;
 
     public MachineScheduler(Schedule schedule=(Schedule) 0)
     {
+      _plant = null;
       _schedule = schedule;
     }
 
-    public int ChooseNextWoId(ICustomQueue queue)
+    public void AddPlant(Plant plant)
     {
-      return _schedule switch
+      if (_plant == null)
+      {
+        _plant = plant;
+      }
+    }
+
+    public int ChooseNextWoId(string machineName, ICustomQueue queue)
+    {
+      int proposed = _schedule switch
       {
         Schedule.DEFAULT => queue.FirstId().Value
       };
+
+      return _plant.PlantScheduler.ValidateWoForMachines(proposed, machineName);
     }
   }
 }

@@ -21,7 +21,7 @@ namespace Tests.Workcenters
     {
       machineScheduler = Substitute.For<IScheduleMachines>();
       machineScheduler
-        .ChooseNextWoId(Arg.Any<ICustomQueue>())
+        .ChooseNextWoId(Arg.Any<string>(), Arg.Any<ICustomQueue>())
         .Returns(WO_ID);
 
       List<string> types = new List<string>(){"type1", "type2"};

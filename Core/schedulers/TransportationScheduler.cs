@@ -97,9 +97,14 @@ namespace Core.Schedulers
         var cargo = current_location.OutputBuffer.Find(CargoID.Value);
         selected = _plant.Workcenters.FirstOrDefault(x => x.ReceivesType(cargo.CurrentOpType));
       }
-      string new_selected = _plant.PlantScheduler.ValidateDestinationForTransport(CargoID, current_location.Name, selected.Name);
-      if(new_selected != selected.Name)
+      string selectedName = selected?.Name;
+      string new_selected = _plant.PlantScheduler.ValidateDestinationForTransport(CargoID, current_location.Name, selectedName);
+      if(new_selected != selectedName)
       {
+        if(new_selected == null)
+        {
+          return null;
+        }
         selected = _plant.Workcenters.FirstOrDefault(x => x.Name == new_selected);
       }
       return selected;

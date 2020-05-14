@@ -8,6 +8,7 @@ namespace Core.Workcenters
     string Name { get; }
     ICustomQueue OutputBuffer { get; }
 
+    void AddPlant(Plant plant);
     void AddToQueue(IWork wo);
     string ListOfValidTypes();
     bool ReceivesType(string type);

@@ -18,6 +18,12 @@ namespace Core.Plant
     public ICustomQueue ShippingBuffer { get; }
     public string Name { get; }
 
+    public void AddPlant(Plant plant)
+    {
+      // TODO - Implement Dock scheduling.
+      return;
+    }
+
     public void AddToQueue(IWork workorder)
     {
       _mes?.StopTransit(workorder.Id, Name);
@@ -42,6 +48,7 @@ namespace Core.Plant
 
     public void Work(DayTime dayTime)
     {
+      // TODO - Implement Dock -> Work
       return;
     }
   }
