@@ -7,7 +7,6 @@ namespace simulationCode
 
   public static class SimulationSetup
   {
-    private const string drill = "Drill", lathe = "Lathe", cnc = "CNC";
     private const string drillOpType1 = "drillOpType1",
         drillOpType2 = "drillOpType2",
         latheOpType1 = "latheOpType1",

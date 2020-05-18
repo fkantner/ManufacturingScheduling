@@ -53,23 +53,26 @@ namespace Tests
       Assert.AreEqual(next.Time, expectedTime);
     }
 
+    [Test]
     public void CreateTimeStamp_FromInitial_CreateATimestampADayInFuture()
     {
-      const int expectedDay = 3;
-      const int expectedOriginalDay = 4;
+      const int expectedDay = 4;
+      const int expectedOriginalDay = 3;
       const int expectedTime = 0;
       const int expectedOriginalTime = 0;
 
       DayTime next = _dayTime.CreateTimestamp(1440); //Should be right at 24 hours.
 
-      Assert.AreEqual(_dayTime.Day, expectedOriginalDay);
-      Assert.AreEqual(_dayTime.Time, expectedOriginalTime);
-      Assert.AreEqual(next.Day, expectedDay);
-      Assert.AreEqual(next.Time, expectedTime);
+      Assert.Multiple( () =>
+      {
+        Assert.AreEqual(expectedOriginalDay, _dayTime.Day);
+        Assert.AreEqual(expectedOriginalTime, _dayTime.Time);
+        Assert.AreEqual(next.Day, expectedDay);
+        Assert.AreEqual(next.Time, expectedTime);
+      });
     }
 
-    //TODO - Add Tests for Equals and LessThan
-
+    [Test]
     public void Next_FromInitial_Increments1Minute()
     {
       const int expectedDay = 3;
@@ -81,7 +84,29 @@ namespace Tests
       Assert.AreEqual(_dayTime.Time, expectedTime);
     }
 
-    //TODO - Add DayTime Test for Next Day
+    [Test]
+    public void LessThan_WhenLess_ReturnsTrue()
+    {
+      _dayTime.Next();
+      DayTime lessDay = new DayTime((int) DayTime.Days.Tue, 0);
+      DayTime lessTime = new DayTime((int) DayTime.Days.Wed, 0);
+
+      Assert.IsTrue(lessDay.LessThan(_dayTime));
+      Assert.IsFalse(_dayTime.LessThan(lessDay));
+      Assert.IsTrue(lessTime.LessThan(_dayTime));
+      Assert.IsFalse(_dayTime.LessThan(lessTime));
+      Assert.IsFalse(_dayTime.Equals(lessDay));
+      Assert.IsFalse(_dayTime.Equals(lessTime));
+    }
+
+    [Test]
+    public void Equals_WhenEqual_ReturnsTrue()
+    {
+      DayTime other = new DayTime();
+
+      Assert.IsTrue(_dayTime.Equals(other));
+      Assert.IsFalse(_dayTime.LessThan(other));
+    }
 
     #endregion
 

@@ -8,7 +8,7 @@ namespace Core
     // CONSTRUCTORS //
     public DayTime()
     {
-      Day = (int) DayTime.Days.Wed;
+      Day = (int) Days.Wed;
       Time = 0;
     }
 
@@ -55,7 +55,7 @@ namespace Core
         Day++;
         Time = 0;
 
-        if (Day > (int)Days.Sat)
+        if (Day > (int) Days.Sat)
         {
           Day = (int) Days.Sun;
         }
