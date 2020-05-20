@@ -14,8 +14,8 @@ namespace Core.Plant
       _mes = null;
     }
 
-    public ICustomQueue OutputBuffer { get; }
-    public ICustomQueue ShippingBuffer { get; }
+    public ICustomQueue OutputBuffer { get; } // To be picked from plant
+    public ICustomQueue ShippingBuffer { get; } // To ship out
     public string Name { get; }
 
     public void AddPlant(Plant plant)
@@ -30,9 +30,21 @@ namespace Core.Plant
       ShippingBuffer.Enqueue(workorder);
     }
 
+    public void ReceiveFromExternal(IWork workorder)
+    {
+      OutputBuffer.Enqueue(workorder);
+    }
+
     public bool ReceivesType(string type)
     {
       return type == "shippingOp";
+    }
+
+    public IWork Ship(int wo_id)
+    {
+      IWork wo = ShippingBuffer.Remove(wo_id);
+      _mes.Ship(wo_id);
+      return wo;
     }
 
     public string ListOfValidTypes()

@@ -38,11 +38,6 @@ namespace Core.Plant
       InternalTransportation.Work(dt);
 
       Mes.Work(dt);
-
-      //TODO Add Shipping to Plant
-      //TODO Add Receiving to Plant
-      //TODO Add Dock to Plant
-      //TODO Add Staging to Plant
     }
   }
 }

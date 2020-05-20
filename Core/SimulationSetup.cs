@@ -15,11 +15,15 @@ namespace simulationCode
         cncOpType2 = "cncOpType2",
         cncOpType3 = "cncOpType3",
         cncOpType4 = "cncOpType4",
-        shippingOpType = "shippingOp";
+        shippingOpType = "shippingOp",
+        stageOpType = "stageOp";
 
     public static List<IAcceptWorkorders> GenerateWorkCenters()
     {
       List<IAcceptWorkorders> workcenters = new List<IAcceptWorkorders>();
+
+      Stage stage = new Stage();
+      workcenters.Add(stage);
 
       string wcName = "drill_WC_a";
       Machine a = new Machine(wcName, new Core.Schedulers.MachineScheduler(), new List<string>{drillOpType1, drillOpType2});
@@ -46,7 +50,6 @@ namespace simulationCode
       workcenters.Add(wc4);
 
       Dock dock = new Dock();
-
       workcenters.Add(dock);
 
       return workcenters;
@@ -65,16 +68,25 @@ namespace simulationCode
       Op cncOp3 = new Op(cncOpType3, 40, 12);
       Op cncOp4 = new Op(cncOpType4, 45, 10);
       Op shippingOp = new Op(shippingOpType, 0, 0);
+      Op stagingOp = new Op(stageOpType, 0, 0);
 
-      workorders.Add(new Workorder(1, new List<Op> { drillOp1, drillOp2, latheOp1, shippingOp }));
-      workorders.Add(new Workorder(2, new List<Op> { drillOp2, drillOp2, drillOp1, latheOp2, shippingOp }));
-      workorders.Add(new Workorder(3, new List<Op> { latheOp1, latheOp1, shippingOp }));
-      workorders.Add(new Workorder(4, new List<Op> { latheOp2, latheOp2, drillOp1, shippingOp }));
-      workorders.Add(new Workorder(5, new List<Op> { latheOp1, latheOp1, drillOp2, shippingOp }));
-      workorders.Add(new Workorder(6, new List<Op> { drillOp2, latheOp2, cncOp1, shippingOp }));
-      workorders.Add(new Workorder(7, new List<Op> { drillOp1, latheOp1, cncOp2, shippingOp }));
-      workorders.Add(new Workorder(8, new List<Op> { latheOp2, latheOp2, cncOp3, shippingOp }));
-      workorders.Add(new Workorder(9, new List<Op> { latheOp1, cncOp1, cncOp4, shippingOp }));
+      workorders.Add(new Workorder(1, new List<Op> { stagingOp, drillOp1, drillOp2, latheOp1, shippingOp }));
+      workorders.Add(new Workorder(2, new List<Op> { stagingOp, drillOp2, drillOp2, drillOp1, latheOp2, shippingOp }));
+      workorders.Add(new Workorder(3, new List<Op> { stagingOp, latheOp1, latheOp1, shippingOp }));
+      workorders.Add(new Workorder(4, new List<Op> { stagingOp, latheOp2, latheOp2, drillOp1, shippingOp }));
+      workorders.Add(new Workorder(5, new List<Op> { stagingOp, latheOp1, latheOp1, drillOp2, shippingOp }));
+      workorders.Add(new Workorder(6, new List<Op> { stagingOp, drillOp2, latheOp2, cncOp1, shippingOp }));
+      workorders.Add(new Workorder(7, new List<Op> { stagingOp, drillOp1, latheOp1, cncOp2, shippingOp }));
+      workorders.Add(new Workorder(8, new List<Op> { stagingOp, latheOp2, latheOp2, cncOp3, shippingOp }));
+      workorders.Add(new Workorder(9, new List<Op> { stagingOp, latheOp1, cncOp1, cncOp4, shippingOp }));
+
+      foreach(Workorder wo in workorders)
+      {
+        if(wo.Id % 3 == 0)
+        {
+          wo.SetNextOp();
+        }
+      }
 
       return workorders;
     }
@@ -86,42 +98,29 @@ namespace simulationCode
       List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
       List<IAcceptWorkorders> wc_list = SimulationSetup.GenerateWorkCenters();
 
-      IAcceptWorkorders wc1 = wc_list[0];
-      IAcceptWorkorders wc2 = wc_list[1];
-      IAcceptWorkorders wc3 = wc_list[2];
-      IAcceptWorkorders wc4 = wc_list[4];
-
       Plant plant = new Plant("plantA", wc_list);
 
       foreach(Workorder wo in wo_list)
       {
-        if (wc1.ReceivesType(wo.CurrentOpType))
+        bool placed = false;
+
+        foreach(IAcceptWorkorders wc in wc_list)
         {
-          plant.Mes.AddWorkorder(wc1.Name, wo);
-          wc1.AddToQueue(wo);
+          if(wc.ReceivesType(wo.CurrentOpType))
+          {
+            plant.Mes.AddWorkorder(wc.Name, wo);
+            wc.AddToQueue(wo);
+            placed = true;
+            break;
+          }
         }
-        else if (wc2.ReceivesType(wo.CurrentOpType))
-        {
-          plant.Mes.AddWorkorder(wc2.Name, wo);
-          wc2.AddToQueue(wo);
-        }
-        else if (wc3.ReceivesType(wo.CurrentOpType))
-        {
-          plant.Mes.AddWorkorder(wc3.Name, wo);
-          wc3.AddToQueue(wo);
-        }
-        else if (wc4.ReceivesType(wo.CurrentOpType))
-        {
-          plant.Mes.AddWorkorder(wc4.Name, wo);
-          wc4.AddToQueue(wo);
-        }
-        else
+        if(!placed)
         {
           throw new System.ArgumentException("No WC for wo: " + wo.ToString());
         }
       }
 
-      plant.InternalTransportation = new Transportation(wc1, new Core.Schedulers.TransportationScheduler(plant));
+      plant.InternalTransportation = new Transportation(wc_list[0], new Core.Schedulers.TransportationScheduler(plant));
 
       plants.Add(plant);
 

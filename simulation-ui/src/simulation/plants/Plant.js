@@ -3,6 +3,7 @@ import './Plant.css';
 import Workcenter from '../workcenters/Workcenter';
 import Dock from './Dock';
 import Mes from './Mes';
+import Stage from './Stage';
 
 function Transport(props) {
   if (props.workcenter.Name === props.transport.CurrentLocation){
@@ -34,6 +35,15 @@ class Plant extends Component {
             <Dock dock={wc} />
           </div>
         )
+      }
+      else if (wc.Name === "Stage")
+      {
+        return (
+          <div className="plant_leaf stage" key={"Stage:" + index}>
+            <Transport workcenter={wc} transport={transport} />
+            <Stage stage = {wc} />
+          </div>
+        ) 
       }
       else {
         return(

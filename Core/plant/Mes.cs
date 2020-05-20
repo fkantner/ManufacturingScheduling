@@ -16,6 +16,7 @@ namespace Core.Plant
     List<int> GetLocationWoIds(string location);
     IWork GetWorkorder(int id);
     void Move(int wo_id, string source_name, string destination_name);
+    void Ship(int wo_id);
     void StartProgress(int wo_id);
     void StartTransit(int wo_id, string workcenterName);
     void StopProgress(int wo_id);
@@ -107,6 +108,13 @@ namespace Core.Plant
       VirtualWorkorder wo = Workorders[wo_id];
       RemoveWoFromLocation(wo, source_name);
       AddWoToLocation(wo, destination_name);
+    }
+
+    public void Ship(int wo_id)
+    {
+      VirtualWorkorder wo = Workorders[wo_id];
+      Workorders.Remove(wo_id);
+      RemoveWoFromLocation(wo, "Shipping Dock");
     }
 
     public void StartProgress(int wo_id)

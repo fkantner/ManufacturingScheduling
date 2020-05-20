@@ -54,8 +54,8 @@ namespace Core.Schedulers
 
     private void SetDestination(IAcceptWorkorders current_location)
     {
-      bool staysHere = (!CargoID.HasValue && Destination == null) || (CargoID.HasValue && Destination == current_location);
       ChooseWorkcenterByAlgorithm(current_location);
+      bool staysHere = (!CargoID.HasValue && Destination == null) || (CargoID.HasValue && Destination == current_location);
       TransportTime = staysHere ? 0 : 5;
     }
 
