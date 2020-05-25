@@ -1,17 +1,16 @@
 namespace Core.Resources
 {
-  using Plant;
-  using System.Collections.Generic;
+  using Core.Enterprise;
 
   public class SimulationNode
   {
-    public SimulationNode(DayTime dayTime, IEnumerable<Plant> plants)
+    public SimulationNode(DayTime dayTime, Enterprise ent)
     {
       DayTime = dayTime;
-      Plants = plants;
+      Enterprise = ent;
     }
 
     public DayTime DayTime { get; }
-    public IEnumerable<Plant> Plants { get; }
+    public Enterprise Enterprise { get; }
   }
 }

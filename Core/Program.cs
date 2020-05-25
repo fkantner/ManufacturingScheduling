@@ -5,6 +5,7 @@ namespace simulationCode
 {
     using Core.Resources;
     using Core.Plant;
+    using Core.Enterprise;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.IO;
@@ -24,18 +25,17 @@ namespace simulationCode
 
             Console.WriteLine("Starting Simulation");
             DayTime dt = new DayTime();
-            //WriteJson(dt);
 
-            List<Plant> plants = SimulationSetup.GeneratePlants();
+            List<IPlant> plants = SimulationSetup.GeneratePlants();
 
-            //WriteJson(wc);
-            SimulationNode sn = new SimulationNode(dt, plants);
+            Enterprise ent = new Enterprise(dt, plants);
+            SimulationNode sn = new SimulationNode(dt, ent);
             WriteJson(sn);
 
             for(int i = 0; i < 500; i++)
             {
                 dt.Next();
-                plants[0].Work(dt);
+                ent.Work(dt);
                 WriteJson(sn);
             }
 

@@ -28,7 +28,6 @@ namespace Core.Plant
   {
     // Non conformance
     // Give recommendations??
-    // TODO - Connect MES to Plant Scheduler
     // TODO - Create API for MES to ERP
     // Send process data up? Similar to Workcenter data?
     // Anything else needed?

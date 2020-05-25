@@ -91,14 +91,14 @@ namespace simulationCode
       return workorders;
     }
 
-    public static List<Plant> GeneratePlants()
+    public static List<IPlant> GeneratePlants()
     {
-      List<Plant> plants = new List<Plant>();
+      List<IPlant> plants = new List<IPlant>();
 
       List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
       List<IAcceptWorkorders> wc_list = SimulationSetup.GenerateWorkCenters();
 
-      Plant plant = new Plant("plantA", wc_list);
+      IPlant plant = new Plant("plantA", wc_list);
 
       foreach(Workorder wo in wo_list)
       {

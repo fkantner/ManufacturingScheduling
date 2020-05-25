@@ -1,7 +1,6 @@
 namespace Core.Plant
 {
   using Core.Workcenters;
-  using Core.Plant;
   using Core.Resources;
   using Core.Schedulers;
 

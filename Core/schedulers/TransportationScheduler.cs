@@ -17,10 +17,10 @@ namespace Core.Schedulers
   {
     public enum Schedule { DEFAULT=0 };
 
-    private readonly Plant _plant;
+    private readonly IPlant _plant;
     private readonly Schedule _schedule;
 
-    public TransportationScheduler(Plant plant, Schedule schedule=(Schedule) 0)
+    public TransportationScheduler(IPlant plant, Schedule schedule=(Schedule) 0)
     {
       _plant = plant;
       CargoID = null;

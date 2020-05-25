@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SimulationData from '../data/test.json';
 import Day from './Day';
-import Plant from './plants/Plant';
+import Enterprise from './enterprise/Enterprise';
 import './Reset.css';
 import './Simulation.css';
 
@@ -72,7 +72,6 @@ class Simulation extends Component {
     var simulationDetail = SimulationData[index];
     
     var daytime = simulationDetail.DayTime;
-    var plants = simulationDetail.Plants;
     
     return (
       <div>
@@ -103,13 +102,7 @@ class Simulation extends Component {
             <Day day={ParseDay(daytime.Day)} time={ParseTime(daytime.Time)} />
           </div>
 
-          {plants.map((plant, i) => {
-            return (
-              <div key={"Plant" + index + ":" + i}>
-                <Plant plant={plant} />
-              </div>
-            )
-          })}
+          <Enterprise enterprise={simulationDetail.Enterprise} index = {index} />
           
         </div>
   

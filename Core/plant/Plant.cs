@@ -3,8 +3,17 @@ namespace Core.Plant
   using System.Collections.Generic;
   using Core.Schedulers;
   using Core.Workcenters;
+  public interface IPlant
+  {
+    IMes Mes { get; }
+    string Name { get; }
+    ISchedulePlants PlantScheduler { get; }
+    IEnumerable<IAcceptWorkorders> Workcenters { get; }
+    ITransportWork InternalTransportation { get; set; }
+    void Work(DayTime dt);
+  }
 
-  public class Plant
+  public class Plant : IPlant
   {
     public Plant(string name, IEnumerable<IAcceptWorkorders> workcenters)
     {
@@ -19,14 +28,14 @@ namespace Core.Plant
       }
       Mes = (IMes) new Mes("MES", locations);
 
-      PlantScheduler = new PlantScheduler(Mes, PlantScheduler.Schedule.DEFAULT);
+      PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes, PlantSchedule.DEFAULT);
     }
 
     public IMes Mes { get; }
     public string Name { get; }
-    public PlantScheduler PlantScheduler { get; }
+    public ISchedulePlants PlantScheduler { get; }
     public IEnumerable<IAcceptWorkorders> Workcenters { get; }
-    public Transportation InternalTransportation { get; set; }
+    public ITransportWork InternalTransportation { get; set; }
 
     public void Work( DayTime dt )
     {

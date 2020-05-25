@@ -3,6 +3,8 @@ namespace Core.Schedulers
   using Core.Plant;
   using Core.Resources;
 
+  public enum PlantSchedule { DEFAULT=0 };
+
   public interface ISchedulePlants
   {
     int ValidateWoForMachines(int woid, string location);
@@ -13,9 +15,8 @@ namespace Core.Schedulers
   public class PlantScheduler : ISchedulePlants
   {
     private readonly IMes _mes;
-    public enum Schedule { DEFAULT=0 };
-    private readonly Schedule _schedule;
-    public PlantScheduler(IMes mes, Schedule schedule=(Schedule) 0)
+    private readonly PlantSchedule _schedule;
+    public PlantScheduler(IMes mes, PlantSchedule schedule=(PlantSchedule) 0)
     {
       _mes = mes;
       _schedule = schedule;
@@ -25,7 +26,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.DEFAULT => woid
+        PlantSchedule.DEFAULT => woid
       };
     }
 
@@ -33,7 +34,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.DEFAULT => woid
+        PlantSchedule.DEFAULT => woid
       };
     }
 
@@ -41,7 +42,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.DEFAULT => destination
+        PlantSchedule.DEFAULT => destination
       };
     }
   }
