@@ -95,8 +95,8 @@ namespace simulationCode
     {
       List<IPlant> plants = new List<IPlant>();
 
-      List<Workorder> wo_list = SimulationSetup.GenerateWorkorders();
-      List<IAcceptWorkorders> wc_list = SimulationSetup.GenerateWorkCenters();
+      List<Workorder> wo_list = GenerateWorkorders();
+      List<IAcceptWorkorders> wc_list = GenerateWorkCenters();
 
       IPlant plant = new Plant("plantA", wc_list);
 

@@ -2,6 +2,7 @@ namespace Core.Enterprise
 {
   using Core;
   using Plant;
+  using Resources;
   using System.Collections.Generic;
 
   public class Enterprise
@@ -10,7 +11,17 @@ namespace Core.Enterprise
     {
       DayTime = dayTime;
       Plants = plants;
-      Erp = (IErp) new Erp(DayTime, Plants);
+      Erp = (IErp) new Erp("ERP", Plants);
+
+      foreach(IPlant plant in Plants)
+      {
+        plant.Mes.AddErp(Erp);
+
+        foreach(IWork wo in plant.Mes.Workorders.Values)
+        {
+          Erp.AddWorkorder(plant.Name, wo);
+        }
+      }
     }
 
     public DayTime DayTime { get; }

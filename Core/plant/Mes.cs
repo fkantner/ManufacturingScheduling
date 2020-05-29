@@ -1,9 +1,10 @@
 namespace Core.Plant
 {
   using System.Collections.Generic;
-  using Core.Resources;
-  using Core.Workcenters;
-  using Core.Resources.Virtual;
+  using Enterprise;
+  using Resources;
+  using Resources.Virtual;
+  using Workcenters;
 
   public interface IMes
   {
@@ -11,6 +12,7 @@ namespace Core.Plant
     Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
     Dictionary<int, VirtualWorkorder> Workorders { get; }
 
+    void AddErp(IErp erp);
     void AddWorkorder(string location, IWork wo);
     void Complete(int wo_id);
     List<int> GetLocationWoIds(string location);
@@ -36,6 +38,7 @@ namespace Core.Plant
 
     public Mes(string name, Dictionary<string, IAcceptWorkorders> locations)
     {
+      Erp = null;
       Name = name;
       Workorders = new Dictionary<int, VirtualWorkorder>();
       LocationInventories = new Dictionary<string, List<VirtualWorkorder>>();
@@ -54,10 +57,17 @@ namespace Core.Plant
       }
     }
 
+    private IErp Erp { get; set; }
     public Dictionary<string, VirtualWorkcenter> Locations { get; }
     public Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
     public string Name { get; }
     public Dictionary<int, VirtualWorkorder> Workorders { get; }
+
+    public void AddErp(IErp erp)
+    {
+      if(Erp != null) { return; }
+      Erp = erp;
+    }
 
     public void AddWorkorder(string location, IWork wo)
     {
