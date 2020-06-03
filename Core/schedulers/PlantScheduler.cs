@@ -26,7 +26,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        PlantSchedule.DEFAULT => woid
+        _ => woid
       };
     }
 
@@ -34,7 +34,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        PlantSchedule.DEFAULT => woid
+        _ => woid
       };
     }
 
@@ -42,7 +42,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        PlantSchedule.DEFAULT => destination
+        _ => destination
       };
     }
   }

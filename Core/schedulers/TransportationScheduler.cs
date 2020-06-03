@@ -67,7 +67,7 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.DEFAULT => ChooseCargoByDefault(current_location)
+        _ => ChooseCargoByDefault(current_location)
       };
     }
 
@@ -75,7 +75,7 @@ namespace Core.Schedulers
     {
       Destination = _schedule switch
       {
-        Schedule.DEFAULT => ChooseWorkcenterByDefault(current_location)
+        _ => ChooseWorkcenterByDefault(current_location)
       };
     }
 

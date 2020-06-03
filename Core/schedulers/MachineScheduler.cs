@@ -34,7 +34,7 @@ namespace Core.Schedulers
     {
       int proposed = _schedule switch
       {
-        Schedule.DEFAULT => queue.FirstId().Value
+        _ => queue.FirstId().Value
       };
 
       return _plant.PlantScheduler.ValidateWoForMachines(proposed, machineName);

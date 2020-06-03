@@ -3,6 +3,7 @@ namespace Core.Enterprise
   using Core;
   using Plant;
   using Resources;
+  using Schedulers;
   using System.Collections.Generic;
 
   public class Enterprise
@@ -12,10 +13,12 @@ namespace Core.Enterprise
       DayTime = dayTime;
       Plants = plants;
       Erp = (IErp) new Erp("ERP", Plants);
+      Scheduler = new EnterpriseScheduler(Erp);
 
       foreach(IPlant plant in Plants)
       {
         plant.Mes.AddErp(Erp);
+        plant.AddEnterprise(this);
 
         foreach(IWork wo in plant.Mes.Workorders.Values)
         {
@@ -27,6 +30,7 @@ namespace Core.Enterprise
     public DayTime DayTime { get; }
     public IEnumerable<IPlant> Plants { get; }
     public IErp Erp { get; }
+    public EnterpriseScheduler Scheduler { get; }
 
     public void Work(DayTime dayTime)
     {
