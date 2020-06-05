@@ -172,11 +172,11 @@ namespace Core.Plant
         {
           if(change.IsAddToPlant)
           {
-            Erp.Receive(woid, Name);
+            Erp.Receive(change.Woid, Name);
           }
           else
           {
-            Erp.Ship(woid, Name);
+            Erp.Ship(change.Woid, Name);
           }
         }
 
@@ -204,12 +204,12 @@ namespace Core.Plant
 
     private class Change
     {
-      private int _woid;
+      public int Woid { get; }
       public bool IsAddToPlant { get; }
 
       public Change(int woid, bool add)
       {
-        _woid = woid;
+        Woid = woid;
         IsAddToPlant = add;
       }
     }
