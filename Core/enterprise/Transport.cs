@@ -66,13 +66,11 @@ namespace Core.Enterprise
     {
       public IWork Wo { get; }
       public string Destination { get; }
-      public DayTime EarliestArrivalTime { get; }
 
       public Cargo(IWork work, string destination, DayTime now)
       {
         Wo = work;
         Destination = destination;
-        EarliestArrivalTime = now.CreateTimestamp(30); // Adds 30 minutes of travel time.
       }
     }
   }
