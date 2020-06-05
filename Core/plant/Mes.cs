@@ -1,10 +1,13 @@
 namespace Core.Plant
 {
+  using Core;
   using System.Collections.Generic;
   using Enterprise;
   using Resources;
   using Resources.Virtual;
   using Workcenters;
+
+  public enum MesSchedule { DEFAULT=0 };
 
   public interface IMes
   {
@@ -29,20 +32,25 @@ namespace Core.Plant
   public class Mes : IMes
   {
     // Non conformance
-    // Give recommendations??
     // TODO - Create API for MES to ERP
     // Send process data up? Similar to Workcenter data?
     // Anything else needed?
     // TODO - Connect MES to ERP
     // TODO - API for Machine Breakdowns
+    private MesSchedule _schedule;
+    private DayTime _nextDump;
 
-    public Mes(string name, Dictionary<string, IAcceptWorkorders> locations)
+    public Mes(string name, Dictionary<string, IAcceptWorkorders> locations, MesSchedule schedule=(MesSchedule) 0)
     {
       Erp = null;
       Name = name;
       Workorders = new Dictionary<int, VirtualWorkorder>();
       LocationInventories = new Dictionary<string, List<VirtualWorkorder>>();
       Locations = new Dictionary<string, VirtualWorkcenter>();
+      Changes = new List<Change>();
+
+      _schedule = schedule;
+      _nextDump = new DayTime();
 
       foreach(var location in locations)
       {
@@ -57,6 +65,7 @@ namespace Core.Plant
       }
     }
 
+    private List<Change> Changes { get; }
     private IErp Erp { get; set; }
     public Dictionary<string, VirtualWorkcenter> Locations { get; }
     public Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
@@ -78,6 +87,7 @@ namespace Core.Plant
       VirtualWorkorder newWo = new VirtualWorkorder(wo.CurrentOpIndex, wo);
       Workorders[newWo.Id] = newWo;
       AddWoToLocation(newWo, location);
+      Changes.Add(new Change(newWo.Id, true));
     }
 
     public void Complete(int wo_id)
@@ -124,6 +134,7 @@ namespace Core.Plant
       VirtualWorkorder wo = Workorders[wo_id];
       Workorders.Remove(wo_id);
       RemoveWoFromLocation(wo, "Shipping Dock");
+      Changes.Add(new Change(wo_id, false));
     }
 
     public void StartProgress(int wo_id)
@@ -155,7 +166,30 @@ namespace Core.Plant
 
     public void Work(DayTime dayTime)
     {
-      // TODO: Implement MES.Work (Connect to ERP)
+      if(_nextDump.Equals(dayTime))
+      {
+        foreach(Change change in Changes)
+        {
+          if(change.IsAddToPlant)
+          {
+            Erp.Receive(woid, Name);
+          }
+          else
+          {
+            Erp.Ship(woid, Name);
+          }
+        }
+
+        IncrementDumpTime();
+      }
+    }
+
+    private void IncrementDumpTime()
+    {
+      _nextDump = _schedule switch
+      {
+          _ => _nextDump.CreateTimestamp(24*60)
+      };
     }
 
     private void AddWoToLocation(VirtualWorkorder wo, string location)
@@ -166,6 +200,18 @@ namespace Core.Plant
     private void RemoveWoFromLocation(VirtualWorkorder wo, string location)
     {
       LocationInventories[location].Remove(wo);
+    }
+
+    private class Change
+    {
+      private int _woid;
+      public bool IsAddToPlant { get; }
+
+      public Change(int woid, bool add)
+      {
+        _woid = woid;
+        IsAddToPlant = add;
+      }
     }
   }
 }

@@ -11,6 +11,8 @@ namespace Core.Enterprise
     Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
     Dictionary<int, VirtualWorkorder> Workorders { get; }
     void AddWorkorder(string location, IWork work);
+    void Receive(int woid, string location);
+    void Ship(int woid, string location);
     void Work(DayTime dayTime);
   }
 
@@ -47,6 +49,18 @@ namespace Core.Enterprise
       Workorders[newWo.Id] = newWo;
       AddWoToLocation(newWo, location);
     }
+
+    public void Receive(int woid, string location)
+    {
+      LocationInventories[location].Add(Workorders[woid]);
+    }
+
+    public void Ship(int woid, string location)
+    {
+      LocationInventories[location].Remove(Workorders[woid]);
+    }
+    
+
     public void Work(DayTime dayTime)
     {
       // Do Something
