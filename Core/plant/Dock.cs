@@ -3,7 +3,14 @@ namespace Core.Plant
   using Core.Workcenters;
   using Core.Resources;
 
-  public class Dock : IAcceptWorkorders
+  public interface IReceive : IAcceptWorkorders
+  {
+    void ReceiveFromExternal(IWork workorder);
+    ICustomQueue ShippingBuffer { get; }
+    IWork Ship(int wo_id);
+  }
+
+  public class Dock : IReceive
   {
     private IMes _mes;
     public Dock()

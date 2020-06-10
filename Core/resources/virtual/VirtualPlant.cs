@@ -25,7 +25,7 @@ namespace Core.Resources.Virtual
     public IEnumerable<IAcceptWorkorders> Workcenters { get; }
     public ITransportWork InternalTransportation { get; set; }
 
-    public Dock Dock()
+    public IReceive Dock()
     {
       if(_dock != null) { return _dock; }
 

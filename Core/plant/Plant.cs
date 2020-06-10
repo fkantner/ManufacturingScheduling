@@ -12,7 +12,7 @@ namespace Core.Plant
     ISchedulePlants PlantScheduler { get; }
     IEnumerable<IAcceptWorkorders> Workcenters { get; }
     ITransportWork InternalTransportation { get; set; }
-    Dock Dock();
+    IReceive Dock();
     Dictionary<IWork, string> ShipToOtherPlants();
     void AddEnterprise(Enterprise enterprise);
     bool CanWorkOnType(string type);
@@ -87,7 +87,7 @@ namespace Core.Plant
       return false;
     }
 
-    public Dock Dock()
+    public IReceive Dock()
     {
       if(_dock != null) { return _dock; }
 

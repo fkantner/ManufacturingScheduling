@@ -56,13 +56,19 @@ namespace Core.Enterprise
 
       if (_current_location == null) { return; }
       // Dropoff Shipments
+      List<Cargo> deliveries = new List<Cargo>();
       foreach(Cargo item in _cargo)
       {
         if(item.Destination == CurrentLocation)
         {
           _current_location.Dock().ReceiveFromExternal(item.Wo);
-          _cargo.Remove(item);
+          deliveries.Add(item);
         }
+      }
+      
+      foreach(Cargo item in deliveries)
+      {
+        _cargo.Remove(item);
       }
 
       // Pickup Shipments
