@@ -6,7 +6,16 @@ namespace Core.Enterprise
   using Schedulers;
   using System.Collections.Generic;
 
-  public class Enterprise
+  public interface IEnterprise
+  {
+    DayTime DayTime { get; }
+    IEnumerable<IPlant> Plants { get; }
+    IErp Erp { get; }
+    EnterpriseScheduler Scheduler { get; }
+    void Work(DayTime dayTime);
+  }
+
+  public class Enterprise : IEnterprise
   {
     public Enterprise(DayTime dayTime, IEnumerable<IPlant> plants)
     {

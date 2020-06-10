@@ -15,11 +15,11 @@ namespace Core.Enterprise
     private IPlant _current_location;
     public string CurrentLocation { get => _current_location?.Name; }
 
-    private readonly Enterprise _company;
+    private readonly IEnterprise _company;
     private readonly Dictionary<DayTime, string> _routes;
     private readonly List<Cargo> _cargo;
 
-    public Transport(Enterprise company, Dictionary<DayTime, string> routes)
+    public Transport(IEnterprise company, Dictionary<DayTime, string> routes)
     {
       _current_location = null;
       _company = company;
@@ -27,11 +27,23 @@ namespace Core.Enterprise
       _cargo = new List<Cargo>();
     }
 
+    public Dictionary<int, string> Inventory()
+    {
+      Dictionary<int, string> answer = new Dictionary<int, string>();
+
+      foreach(Cargo c in _cargo)
+      {
+        answer.Add(c.Wo.Id, c.Destination);
+      }
+      
+      return answer;
+    }
+
     public void Work(DayTime dayTime)
     {
-      if (!_routes.ContainsKey(dayTime)) { return; }
-      var route = _routes[dayTime];
-
+      if(!HasRouteStop(dayTime)) { return; }
+      var route = RouteStop(dayTime);
+      
       //Find current location;
       foreach( IPlant p in _company.Plants)
       {
@@ -58,8 +70,32 @@ namespace Core.Enterprise
 
       foreach(IWork wo in list.Keys)
       {
-        _cargo.Add(new Cargo(wo, list[wo], dayTime));
+        _cargo.Add(new Cargo(wo, list[wo]));
       }
+    }
+
+    private bool HasRouteStop(DayTime dayTime)
+    {
+      foreach( var time in _routes.Keys)
+      {
+        if(time.Equals(dayTime)) { return true; }
+      }
+      return false;
+    }
+
+    private string RouteStop(DayTime dayTime)
+    {
+      DayTime key = null;
+      foreach( var time in _routes.Keys)
+      {
+        if(time.Equals(dayTime)) 
+        { 
+          key = time; 
+          break;
+        }
+      }
+      if(key == null) return "No Stop";
+      return _routes[key];
     }
 
     private class Cargo
@@ -67,7 +103,7 @@ namespace Core.Enterprise
       public IWork Wo { get; }
       public string Destination { get; }
 
-      public Cargo(IWork work, string destination, DayTime now)
+      public Cargo(IWork work, string destination)
       {
         Wo = work;
         Destination = destination;

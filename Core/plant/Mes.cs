@@ -12,8 +12,8 @@ namespace Core.Plant
   public interface IMes
   {
     Dictionary<string, VirtualWorkcenter> Locations { get; }
-    Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
-    Dictionary<int, VirtualWorkorder> Workorders { get; }
+    Dictionary<string, List<IWork>> LocationInventories { get; }
+    Dictionary<int, IWork> Workorders { get; }
 
     void AddErp(IErp erp);
     void AddWorkorder(string location, IWork wo);
@@ -44,8 +44,8 @@ namespace Core.Plant
     {
       Erp = null;
       Name = name;
-      Workorders = new Dictionary<int, VirtualWorkorder>();
-      LocationInventories = new Dictionary<string, List<VirtualWorkorder>>();
+      Workorders = new Dictionary<int, IWork>();
+      LocationInventories = new Dictionary<string, List<IWork>>();
       Locations = new Dictionary<string, VirtualWorkcenter>();
       Changes = new List<Change>();
 
@@ -61,16 +61,16 @@ namespace Core.Plant
 
       foreach(var location in Locations)
       {
-        LocationInventories.Add(location.Key, new List<VirtualWorkorder>());
+        LocationInventories.Add(location.Key, new List<IWork>());
       }
     }
 
     private List<Change> Changes { get; }
     private IErp Erp { get; set; }
     public Dictionary<string, VirtualWorkcenter> Locations { get; }
-    public Dictionary<string, List<VirtualWorkorder>> LocationInventories { get; }
+    public Dictionary<string, List<IWork>> LocationInventories { get; }
     public string Name { get; }
-    public Dictionary<int, VirtualWorkorder> Workorders { get; }
+    public Dictionary<int, IWork> Workorders { get; }
 
     public void AddErp(IErp erp)
     {
@@ -92,7 +92,7 @@ namespace Core.Plant
 
     public void Complete(int wo_id)
     {
-      VirtualWorkorder wo = Workorders[wo_id];
+      VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       wo.SetNextOp();
       wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
     }
@@ -124,14 +124,14 @@ namespace Core.Plant
       {
         throw new System.ArgumentException("DestinationLocation does not exist");
       }
-      VirtualWorkorder wo = Workorders[wo_id];
+      VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       RemoveWoFromLocation(wo, source_name);
       AddWoToLocation(wo, destination_name);
     }
 
     public void Ship(int wo_id)
     {
-      VirtualWorkorder wo = Workorders[wo_id];
+      VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       Workorders.Remove(wo_id);
       RemoveWoFromLocation(wo, "Shipping Dock");
       Changes.Add(new Change(wo_id, false));
@@ -139,24 +139,24 @@ namespace Core.Plant
 
     public void StartProgress(int wo_id)
     {
-      Workorders[wo_id].ChangeStatus(VirtualWorkorder.Statuses.InProgress);
+      ((VirtualWorkorder) Workorders[wo_id]).ChangeStatus(VirtualWorkorder.Statuses.InProgress);
     }
 
     public void StartTransit(int wo_id, string workcenterName)
     {
-      VirtualWorkorder wo = Workorders[wo_id];
+      VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       wo.ChangeStatus(VirtualWorkorder.Statuses.OnRoute);
       RemoveWoFromLocation(wo, workcenterName);
     }
 
     public void StopProgress(int wo_id)
     {
-      Workorders[wo_id].ChangeStatus(VirtualWorkorder.Statuses.Open);
+      ((VirtualWorkorder) Workorders[wo_id]).ChangeStatus(VirtualWorkorder.Statuses.Open);
     }
 
     public void StopTransit(int wo_id, string workcenterName)
     {
-      VirtualWorkorder wo = Workorders[wo_id];
+      VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
       if (!LocationInventories[workcenterName].Contains(wo))
       {
