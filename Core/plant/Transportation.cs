@@ -48,7 +48,9 @@ namespace Core.Plant
       }
       else if (IsAtLocation()) // Dropping off Cargo
       {
-        Arrive();
+        if(HasADestination()){
+          Arrive();
+        }
         DropOffCargo();
       }
       else //In Route
@@ -59,7 +61,10 @@ namespace Core.Plant
 
     private void Arrive()
     {
-      _current_location = _destination;
+      if(_destination != null)
+      {
+        _current_location = _destination;
+      }
       _destination = null;
     }
 

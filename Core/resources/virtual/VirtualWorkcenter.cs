@@ -34,7 +34,7 @@ namespace Core.Resources.Virtual
 
     public bool ReceivesType(string type)
     {
-      return Types.Contains("," + type + ",");
+      return Types.Contains(type);
     }
 
     public void SetMes(IMes mes) { return ; }

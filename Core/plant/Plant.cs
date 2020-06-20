@@ -52,7 +52,7 @@ namespace Core.Plant
 
     public void AddEnterprise(Enterprise enterprise)
     {
-      if(_enterprise == null) { return; }
+      if(_enterprise != null) { return; }
       _enterprise = enterprise;
     }
 
@@ -66,6 +66,7 @@ namespace Core.Plant
       while (woid.HasValue)
       {
         IWork wo = dock.Ship(woid.Value);
+
         string destination = _enterprise.Scheduler.SelectDestinationForExternalTransport(wo.Id);
         answer.Add(wo, destination);
 

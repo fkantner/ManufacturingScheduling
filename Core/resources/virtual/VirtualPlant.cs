@@ -15,8 +15,15 @@ namespace Core.Resources.Virtual
       Mes = original.Mes;
       PlantScheduler = original.PlantScheduler;
       InternalTransportation = null;
-      Workcenters = new List<IAcceptWorkorders>();
+      
       _dock = null;
+
+      List<IAcceptWorkorders> temp = new List<IAcceptWorkorders>();
+      foreach(var wc in original.Workcenters)
+      {
+        temp.Add(new VirtualWorkcenter(wc.Name, wc.ListOfValidTypes()));
+      }
+      Workcenters = temp;
     }
 
     public IMes Mes { get; }
