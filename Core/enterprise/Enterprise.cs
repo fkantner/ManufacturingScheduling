@@ -12,6 +12,8 @@ namespace Core.Enterprise
     IEnumerable<IPlant> Plants { get; }
     IErp Erp { get; }
     EnterpriseScheduler Scheduler { get; }
+    Transport Transport { get; }
+    void AddTransport(Transport transport);
     void Work(DayTime dayTime);
   }
 
@@ -23,6 +25,7 @@ namespace Core.Enterprise
       Plants = plants;
       Erp = (IErp) new Erp("ERP", Plants);
       Scheduler = new EnterpriseScheduler(Erp);
+      Transport = null;
 
       foreach(IPlant plant in Plants)
       {
@@ -40,7 +43,13 @@ namespace Core.Enterprise
     public IEnumerable<IPlant> Plants { get; }
     public IErp Erp { get; }
     public EnterpriseScheduler Scheduler { get; }
+    public Transport Transport { get; private set; }
 
+    public void AddTransport(Transport transport)
+    {
+      if(Transport != null) { return; }
+      Transport = transport;
+    }
     public void Work(DayTime dayTime)
     {
       foreach(IPlant plant in Plants)
@@ -48,6 +57,7 @@ namespace Core.Enterprise
         plant.Work(dayTime);
       }
 
+      Transport.Work(dayTime);
       Erp.Work(dayTime);
     }
   }

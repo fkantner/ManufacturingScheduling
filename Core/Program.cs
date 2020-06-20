@@ -33,6 +33,7 @@ namespace simulationCode
             Console.WriteLine("Generating Transport Routes");
             var routes = SimulationSetup.GenerateRoutes(plants);
             Transport transport = new Transport(ent, routes);
+            ent.AddTransport(transport);
 
             SimulationNode sn = new SimulationNode(dt, ent);
             WriteJson(sn);
@@ -41,7 +42,6 @@ namespace simulationCode
             {
                 dt.Next();
                 ent.Work(dt);
-                transport.Work(dt);
                 WriteJson(sn);
             }
 

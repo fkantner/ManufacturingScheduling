@@ -3,9 +3,11 @@ namespace Core.Enterprise
   using Core.Plant;
   using Core.Resources;
   using System.Collections.Generic;
+  using System.Linq;
 
   public interface ITransportWorkBetweenPlants
   {
+    string CurrentCargo { get; }
     string CurrentLocation { get; }
     void Work(DayTime dayTime);
   }
@@ -14,6 +16,9 @@ namespace Core.Enterprise
   {
     private IPlant _current_location;
     public string CurrentLocation { get => _current_location?.Name; }
+    public string CurrentCargo {
+      get => string.Join(',', _cargo.Select(x => x.Wo.Id));
+    }
 
     private readonly IEnterprise _company;
     private readonly Dictionary<DayTime, string> _routes;
@@ -41,7 +46,10 @@ namespace Core.Enterprise
 
     public void Work(DayTime dayTime)
     {
-      if(!HasRouteStop(dayTime)) { return; }
+      if(!HasRouteStop(dayTime)) { 
+        if(TimeToLeave(dayTime)){ _current_location = null; }
+        return; 
+      }
       var route = RouteStop(dayTime);
       
       //Find current location;
@@ -102,6 +110,15 @@ namespace Core.Enterprise
       }
       if(key == null) return "No Stop";
       return _routes[key];
+    }
+
+    private bool TimeToLeave(DayTime dayTime)
+    {
+      foreach( var time in _routes.Keys )
+      {
+        if(time.CreateTimestamp(5).Equals(dayTime) ) { return true; }
+      }
+      return false;
     }
 
     private class Cargo

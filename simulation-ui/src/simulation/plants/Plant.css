@@ -8,6 +8,10 @@ div.plant_header {
   text-align: left;
 }
 
+div.plant_header > h4 {
+  font-weight: bold;
+}
+
 div.plant_body {
   padding: 0.1em;
   display: flex;
