@@ -7,3 +7,17 @@ div.externaltransport {
 div.PlantDiv {
     border: thin dotted black;
 }
+
+div.enterprise_overview {
+    display: block;
+    position: fixed;
+    align-self: left;
+    height: 100%;
+    background-color: mintcream;
+    border: medium outset grey;
+    width: 15%;
+}
+
+div.enterprise_plants {
+    margin-left: 15%;
+}

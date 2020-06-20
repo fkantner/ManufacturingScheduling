@@ -1,0 +1,13 @@
+div.erp {
+    border: thin black outset;
+}
+
+ul.erpPlantList {
+    border: thin paleturquoise outset;
+    padding: 0.3em;
+    margin: 0.2em 0.2em 1em 1em;
+}
+
+div.virtualPlants {
+    display: flex;
+}
