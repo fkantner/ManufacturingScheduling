@@ -17,11 +17,16 @@ div.plant_body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  flex-direction: column;
 }
 
 div.plant_leaf {
   flex-grow: 2;
   flex-shrink: 2;
+}
+
+div.plant_leaf.stage {
+  
 }
 
 div.plant_leaf.dock {

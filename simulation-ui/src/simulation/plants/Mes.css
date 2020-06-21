@@ -6,8 +6,16 @@ ul.mesWcList {
   border: thin pink outset;
   padding: 0.3em;
   margin: 0.2em 0.2em 1em 1em ;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 80%;
+  flex-grow: 1;
 }
 
 div.virtualWorkcenters {
   display: flex;
+  height: 10em;
+  justify-content: space-around;
+  align-items: flex-start;
 }
