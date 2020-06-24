@@ -15,6 +15,7 @@ namespace Core.Plant
     IReceive Dock();
     Dictionary<IWork, string> ShipToOtherPlants();
     void AddEnterprise(Enterprise enterprise);
+    void AddWorkorder(IWork workorder);
     bool CanWorkOnType(string type);
     void Work(DayTime dt);
   }
@@ -54,6 +55,19 @@ namespace Core.Plant
     {
       if(_enterprise != null) { return; }
       _enterprise = enterprise;
+    }
+
+    public void AddWorkorder(IWork workorder)
+    {
+      foreach(IAcceptWorkorders wc in Workcenters)
+      {
+        if(wc.ReceivesType(workorder.CurrentOpType))
+        {
+          Mes.AddWorkorder(wc.Name, workorder);
+          wc.AddToQueue(workorder);
+          break;
+        }
+      }
     }
 
     public Dictionary<IWork, string> ShipToOtherPlants()

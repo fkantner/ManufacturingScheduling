@@ -4,7 +4,6 @@ namespace Tests.Enterprise
     using Core.Enterprise;
     using Core.Plant;
     using Core.Resources;
-    using Core.Resources.Virtual;
     using NSubstitute;
     using NUnit.Framework;
     using System.Collections.Generic;
@@ -26,6 +25,7 @@ namespace Tests.Enterprise
             List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
 
             _subject = new Enterprise(_dayTime, list);
+            _subject.AddTransport(Substitute.For<ITransportWorkBetweenPlants>());
         }
 
         [Test]

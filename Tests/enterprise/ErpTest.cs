@@ -1,5 +1,6 @@
 namespace Tests.Enterprise
 {
+    using Core;
     using Core.Enterprise;
     using Core.Plant;
     using Core.Resources;
@@ -33,6 +34,7 @@ namespace Tests.Enterprise
             Assert.IsEmpty(_subject.Workorders);
         }
 
+        [Test]
         public void AddWorkorders_AddsAWorkorder()
         {
             IWork wo = Substitute.For<IWork>();
@@ -46,5 +48,19 @@ namespace Tests.Enterprise
             Assert.IsEmpty(_subject.LocationInventories[PLANT2_NAME]);
         }
 
+        [Test]
+        public void Work_SendsWorkordersToPlant()
+        {
+            string productType = "p1";
+            DayTime due = new DayTime().CreateTimestamp(50);
+            _plant1.CanWorkOnType(Arg.Any<string>()).Returns(false);
+            _plant2.CanWorkOnType(Arg.Any<string>()).Returns(true);
+
+            _subject.CreateWorkorder(productType, due);
+            _subject.Work(new DayTime());
+
+            _plant1.DidNotReceive().AddWorkorder(Arg.Any<IWork>());
+            _plant2.Received().AddWorkorder(Arg.Any<IWork>());
+        }
     }
 }

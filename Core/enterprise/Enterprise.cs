@@ -12,8 +12,9 @@ namespace Core.Enterprise
     IEnumerable<IPlant> Plants { get; }
     IErp Erp { get; }
     EnterpriseScheduler Scheduler { get; }
-    Transport Transport { get; }
-    void AddTransport(Transport transport);
+    ITransportWorkBetweenPlants Transport { get; }
+    void AddTransport(ITransportWorkBetweenPlants transport);
+    void CreateOrder(string type, DayTime due);
     void Work(DayTime dayTime);
   }
 
@@ -43,13 +44,19 @@ namespace Core.Enterprise
     public IEnumerable<IPlant> Plants { get; }
     public IErp Erp { get; }
     public EnterpriseScheduler Scheduler { get; }
-    public Transport Transport { get; private set; }
+    public ITransportWorkBetweenPlants Transport { get; private set; }
 
-    public void AddTransport(Transport transport)
+    public void AddTransport(ITransportWorkBetweenPlants transport)
     {
       if(Transport != null) { return; }
       Transport = transport;
     }
+
+    public void CreateOrder(string type, DayTime due)
+    {
+      Erp.CreateWorkorder(type, due);
+    }
+
     public void Work(DayTime dayTime)
     {
       foreach(IPlant plant in Plants)

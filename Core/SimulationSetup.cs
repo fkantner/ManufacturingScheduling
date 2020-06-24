@@ -84,37 +84,16 @@ namespace simulationCode
 
       foreach(Workorder wo in wo_list)
       {
-        bool placed = false;
-
-        foreach(IAcceptWorkorders wc in wc_listA)
+        foreach(Plant plant in plants)
         {
-          if(wc.ReceivesType(wo.CurrentOpType))
+          if(plant.CanWorkOnType(wo.CurrentOpType))
           {
-            plantA.Mes.AddWorkorder(wc.Name, wo);
-            wc.AddToQueue(wo);
-            placed = true;
+            plant.AddWorkorder(wo);
             break;
           }
-        }
-        if(placed) { continue; }
-
-        foreach(IAcceptWorkorders wc in wc_listB)
-        {
-          if(wc.ReceivesType(wo.CurrentOpType))
-          {
-            plantB.Mes.AddWorkorder(wc.Name, wo);
-            wc.AddToQueue(wo);
-            placed = true;
-            break;
-          }
-        }
-
-        if(!placed)
-        {
-          throw new System.ArgumentException("No WC for wo: " + wo.ToString());
         }
       }
-
+      
       return plants;
     }
 

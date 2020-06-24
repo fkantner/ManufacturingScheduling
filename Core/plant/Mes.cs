@@ -31,11 +31,7 @@ namespace Core.Plant
 
   public class Mes : IMes
   {
-    // Non conformance
-    // TODO - Create API for MES to ERP
-    // Send process data up? Similar to Workcenter data?
-    // Anything else needed?
-    // TODO - Connect MES to ERP
+    // TODO Non conformance
     // TODO - API for Machine Breakdowns
     private MesSchedule _schedule;
     private DayTime _nextDump;

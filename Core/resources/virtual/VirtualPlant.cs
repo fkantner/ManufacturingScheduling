@@ -9,6 +9,7 @@ namespace Core.Resources.Virtual
   public class VirtualPlant : IPlant
   {
     private Dock _dock;
+    private IPlant _original;
     public VirtualPlant(string name, IPlant original)
     {
       Name = name;
@@ -16,6 +17,7 @@ namespace Core.Resources.Virtual
       PlantScheduler = original.PlantScheduler;
       InternalTransportation = null;
       
+      _original = original;
       _dock = null;
 
       List<IAcceptWorkorders> temp = new List<IAcceptWorkorders>();
@@ -56,19 +58,18 @@ namespace Core.Resources.Virtual
 
     public void AddEnterprise(Enterprise enterprise)
     {
+      return; // Don't use
+    }
+
+    public void AddWorkorder(IWork workorder)
+    {
+      _original.AddWorkorder(workorder);
       return;
     }
 
     public bool CanWorkOnType(string type)
     {
-      foreach(var workcenter in Workcenters)
-      {
-        if(workcenter.ReceivesType(type))
-        {
-          return true;
-        }
-      }
-      return false;
+      return _original.CanWorkOnType(type);
     }
 
     public void Work(DayTime dt)
