@@ -1,27 +1,36 @@
 namespace Core.Enterprise
 {
+  using System.Collections.Generic;
   using Core;
   using Plant;
   using Resources;
   using Schedulers;
-  using System.Collections.Generic;
 
   public interface IEnterprise
   {
-    DayTime DayTime { get; }
-    IEnumerable<IPlant> Plants { get; }
     IRequestWork Customer { get; }
+    DayTime DayTime { get; }
     IErp Erp { get; }
+    IEnumerable<IPlant> Plants { get; }
     EnterpriseScheduler Scheduler { get; }
     ITransportWorkBetweenPlants Transport { get; }
-    void AddTransport(ITransportWorkBetweenPlants transport);
     void AddCustomer(IRequestWork customer);
-    void CreateOrder(string type, DayTime due);
+    void AddTransport(ITransportWorkBetweenPlants transport);
+    void StartOrder(string type, DayTime due);
     void Work(DayTime dayTime);
   }
 
   public class Enterprise : IEnterprise
   {
+// Properties
+    public IRequestWork Customer { get; private set;}
+    public IErp Erp { get; }
+    public DayTime DayTime { get; }
+    public IEnumerable<IPlant> Plants { get; }
+    public EnterpriseScheduler Scheduler { get; }
+    public ITransportWorkBetweenPlants Transport { get; private set; }
+
+// Constructor
     public Enterprise(DayTime dayTime, IEnumerable<IPlant> plants)
     {
       DayTime = dayTime;
@@ -43,13 +52,9 @@ namespace Core.Enterprise
       }
     }
 
-    public IRequestWork Customer { get; private set;}
-    public DayTime DayTime { get; }
-    public IEnumerable<IPlant> Plants { get; }
-    public IErp Erp { get; }
-    public EnterpriseScheduler Scheduler { get; }
-    public ITransportWorkBetweenPlants Transport { get; private set; }
+// Pure Methods
 
+// Impure Methods
     public void AddCustomer(IRequestWork customer)
     {
       if(Customer != null) { return; }
@@ -62,7 +67,7 @@ namespace Core.Enterprise
       Transport = transport;
     }
 
-    public void CreateOrder(string type, DayTime due)
+    public void StartOrder(string type, DayTime due)
     {
       Erp.CreateWorkorder(type, due);
     }
@@ -74,8 +79,11 @@ namespace Core.Enterprise
         plant.Work(dayTime);
       }
 
-      Transport.Work(dayTime);
+      Transport?.Work(dayTime);
       Erp.Work(dayTime);
     }
+
+// Private Methods
+
   }
 }

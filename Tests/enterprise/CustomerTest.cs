@@ -62,7 +62,7 @@ namespace Tests.Enterprise
             _subject.Work(_dayTime);
             
             _subject.Work(nextMinute);
-            _enterprise.Received(1).CreateOrder(test_type, _dayTime);
+            _enterprise.Received(1).StartOrder(test_type, _dayTime);
         }
 
         private string ConvertTime(DayTime time)

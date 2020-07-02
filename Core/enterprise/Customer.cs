@@ -25,14 +25,14 @@ namespace Core.Enterprise
         }
 
         public List<string> ActiveOrders {
-            get => _orders.Where(x => x.Complete == null)
-                .Select(x => x.Type + " ; " + x.DueString())
+            get => _orders.Where(x => x.IsIncomplete)
+                .Select(x => x.ToString())
                 .ToList();
         }
 
         public List<string> CompleteOrders {
-            get => _orders.Where(x => x.Complete != null)
-                .Select(x => x.Type + " ; " + x.DueString() + " ; " + x.CompleteString())
+            get => _orders.Where(x => x.IsComplete)
+                .Select(x => x.ToString())
                 .ToList();
         }
 
@@ -49,27 +49,33 @@ namespace Core.Enterprise
 
         public void ReceiveProduct(string type, DayTime dayTime)
         {
-            _orders.First(x => x.Type == type && x.Complete == null)
+            _orders.First(x => x.Type == type && x.IsIncomplete)
                 .CompletePo(dayTime);
         }
 
         public void Work(DayTime dayTime)
         {
+            if (_enterprise == null) { return; }
+
             var ordersToSend = _orders.Where(x => x.Sent == false);
             foreach(var order in ordersToSend)
             {
-                _enterprise?.CreateOrder(order.Type, order.Due);
-                order.Send();
+                _enterprise.StartOrder(order.Type, order.Due);
+                order.MarkAsSent();
             }
         }
 
         private class Order
         {
-            public string Type { get; }
+// Properties
             public DayTime Due { get; }
             public DayTime Complete { get; private set;}
+            public bool IsComplete { get => Complete != null; }
+            public bool IsIncomplete { get => Complete == null; }
             public bool Sent { get; private set; }
+            public string Type { get; }
 
+// Constructor
             public Order(string type, DayTime due)
             {
                 Type = type;
@@ -78,33 +84,38 @@ namespace Core.Enterprise
                 Sent = false;
             }
 
+// Pure Methods
+            public string CompleteString() 
+            { 
+                if (IsIncomplete) { return ""; }
+                return ConvertTime(Complete);
+            }
+
+            public string DueString() { return ConvertTime(Due); }
+
             public override string ToString()
             {
-                string answer = Type + " ; " + ConvertTime(Due);
-                if(Complete != null)
+                const string deliminator = " ; ";
+                string answer = Type + deliminator + ConvertTime(Due);
+                if(IsComplete)
                 {
-                    answer += " ; " + ConvertTime(Complete);
+                    answer += deliminator + ConvertTime(Complete);
                 }
                 return answer;
             }
 
+// Impure Methods
             public void CompletePo(DayTime dayTime)
             {
                 Complete = dayTime;
             }
 
-            public string DueString() { return ConvertTime(Due); }
-            public string CompleteString() 
-            { 
-                if (Complete == null) { return ""; }
-                return ConvertTime(Complete);
-            }
-
-            public void Send()
+            public void MarkAsSent()
             {
                 Sent = true;
             }
 
+// Private Methods
             private string ConvertTime(DayTime time)
             {
                 return time.Day + ":" + time.Time;
