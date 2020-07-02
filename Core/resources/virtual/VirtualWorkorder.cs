@@ -16,6 +16,7 @@ namespace Core.Resources.Virtual
       woToClone.Operations.ForEach((operation) => Operations.Add((Op) operation.Clone()));
       CurrentOpIndex = currentOp;
       _status = Statuses.Open;
+      ProductType = woToClone.ProductType;
     }
 
     public Op CurrentOp
@@ -28,6 +29,7 @@ namespace Core.Resources.Virtual
     public string CurrentOpType { get => CurrentOp.Type; }
     public int Id { get; }
     public List<Op> Operations { get; }
+    public string ProductType { get; }
 
     public void ChangeStatus(Statuses newStatus)
     {

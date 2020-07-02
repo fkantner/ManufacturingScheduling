@@ -25,7 +25,7 @@ namespace Tests.Workcenters
         new Op("type2", 1, 1)
       };
 
-      _wo1 = new Workorder(1, ops);
+      _wo1 = new Workorder(1, ops, "p1");
     }
 
     [Test]

@@ -86,7 +86,7 @@ namespace Tests.Workcenters
         new Op("type1", 1, 1),
         new Op("type2", 1, 1)
       };
-      Workorder wo = new Workorder(WO_ID, ops);
+      Workorder wo = new Workorder(WO_ID, ops, "p1");
       return wo;
     }
 

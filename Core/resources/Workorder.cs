@@ -4,11 +4,12 @@ namespace Core.Resources
 
   public class Workorder : IWork
   {
-    public Workorder(int number, List<Op> ops)
+    public Workorder(int number, List<Op> ops, string pType)
     {
       Operations = ops;
       CurrentOpIndex = 0;
       Id = number;
+      ProductType = pType;
     }
 
     // PROPERTIES //
@@ -47,6 +48,8 @@ namespace Core.Resources
     public int CurrentOpIndex { get; private set;}
 
     public List<Op> Operations { get; }
+
+    public string ProductType { get; }
 
     // PUBLIC METHODS //
     public void SetNextOp()

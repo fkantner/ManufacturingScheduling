@@ -33,6 +33,9 @@ namespace Core.Schedulers
     {
       IWork wo = _erp.Workorders[woid];
       string type = wo.CurrentOpType;
+      
+      if (type == "shippingOp") { return "customer"; }
+
       foreach( var location in _erp.Locations)
       {
         var plant = location.Value;

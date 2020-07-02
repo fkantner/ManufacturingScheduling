@@ -166,7 +166,8 @@ namespace simulationCode
       public Workorder GenerateWorkorder()
       {
         List<Op> p = SelectP();
-        Workorder answer = new Workorder(counter, p);
+        string type = string.Format("p{0}", (counter % 12) + 1);
+        Workorder answer = new Workorder(counter, p, type);
         if(counter % 3 == 0) { answer.SetNextOp(); }
         if(counter % 5 == 0) { answer.SetNextOp(); }
         counter++;

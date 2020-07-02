@@ -35,14 +35,24 @@ namespace simulationCode
             Transport transport = new Transport(ent, routes);
             ent.AddTransport(transport);
 
+            Customer customer = new Customer();
+            ent.AddCustomer(customer);
+            customer.AddEnterprise(ent);
+
+
             SimulationNode sn = new SimulationNode(dt, ent);
             WriteJson(sn);
 
-            for(int i = 0; i < 500; i++)
+            for(int i = 0; i < 10080; i++)
             {
                 dt.Next();
                 ent.Work(dt);
+                customer.Work(dt);
                 WriteJson(sn);
+                if (i%500 == 0) 
+                {
+                    customer.CreateOrder("p1", new DayTime((int) DayTime.Days.Tue, 800));
+                }
             }
 
             writer.WriteLine("]");

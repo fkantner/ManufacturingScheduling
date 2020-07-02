@@ -11,6 +11,7 @@ namespace Core.Resources
     int CurrentOpSetupTime { get; }
     string CurrentOpType { get; }
     int Id { get; }
+    string ProductType { get; }
     void SetNextOp();
   }
 }

@@ -111,6 +111,10 @@ namespace Core.Enterprise
       VirtualWorkorder newWo = new VirtualWorkorder(work.CurrentOpIndex, work);
       Workorders[newWo.Id] = newWo;
       AddWoToLocation(newWo, location);
+      if (work.Id >= _woCounter)
+      {
+        _woCounter = work.Id + 1;
+      }
     }
 
     public void CreateWorkorder(string type, DayTime due)
@@ -119,14 +123,17 @@ namespace Core.Enterprise
       List<int> productOpIndexes = products[productIndex];
       List<Op> newOps = new List<Op>();
 
+      newOps.Add(ops[1]); // Stage
       foreach(int productOpIndex in productOpIndexes)
       {
         newOps.Add(ops[productOpIndex]);
       }
+      newOps.Add(ops[0]); // Shipping
 
-      Workorder wo = new Workorder(_woCounter, newOps);
+      Workorder wo = new Workorder(_woCounter, newOps, type);
       _woCounter++;
 
+      AddWorkorder("none", wo);
       DueDates[wo.Id] = due;
       NewToSend.Add(wo);
     }
@@ -163,6 +170,7 @@ namespace Core.Enterprise
 
     private void AddWoToLocation(VirtualWorkorder wo, string location)
     {
+      if(location == "none") { return; }
       LocationInventories[location].Add(wo);
     }
 

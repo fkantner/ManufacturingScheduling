@@ -3,7 +3,7 @@ namespace Core
   public class DayTime
   {
     public enum Days {Sun, Mon, Tue, Wed, Thu, Fri, Sat};
-    private const int MinutesInDay = 24*60;
+    private const int MinutesInDay = 24*60; //1440 minutes in a day.
 
     // CONSTRUCTORS //
     public DayTime()

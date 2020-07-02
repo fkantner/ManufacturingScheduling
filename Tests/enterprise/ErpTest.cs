@@ -39,7 +39,9 @@ namespace Tests.Enterprise
         {
             IWork wo = Substitute.For<IWork>();
             wo.Id.Returns(1);
+            wo.ProductType.Returns("p1");
             wo.CurrentOpIndex.Returns(0);
+            wo.Operations.Returns(new List<Op>() { new Op("t1", 1, 1)});
             
             _subject.AddWorkorder(PLANT1_NAME, wo);
 

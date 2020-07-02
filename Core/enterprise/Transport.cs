@@ -47,7 +47,24 @@ namespace Core.Enterprise
     public void Work(DayTime dayTime)
     {
       if(!HasRouteStop(dayTime)) { 
-        if(TimeToLeave(dayTime)){ _current_location = null; }
+        if(TimeToLeave(dayTime)){ 
+          _current_location = null; // Leave Plant
+
+          List<Cargo> toCustomer = new List<Cargo>(); // Deliver to customer
+          foreach(Cargo item in _cargo)
+          {
+            if (item.Destination == "customer")
+            {
+              _company.Customer.ReceiveProduct(item.Wo.ProductType, dayTime);
+              toCustomer.Add(item);
+            }
+          }
+
+          foreach(Cargo item in toCustomer)
+          {
+            _cargo.Remove(item);
+          }
+        }
         return; 
       }
       var route = RouteStop(dayTime);
