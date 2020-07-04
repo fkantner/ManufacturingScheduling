@@ -39,7 +39,6 @@ namespace simulationCode
             ent.AddCustomer(customer);
             customer.AddEnterprise(ent);
 
-
             SimulationNode sn = new SimulationNode(dt, ent);
             WriteJson(sn);
 
@@ -48,7 +47,8 @@ namespace simulationCode
                 dt.Next();
                 ent.Work(dt);
                 customer.Work(dt);
-                WriteJson(sn);
+
+		WriteJson(sn);
                 if (i%500 == 0) 
                 {
                     customer.CreateOrder("p1", new DayTime((int) DayTime.Days.Tue, 800));

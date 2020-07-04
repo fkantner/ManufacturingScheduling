@@ -73,7 +73,6 @@ namespace Core.Plant
 
       int? woid = dock.ShippingBuffer.FirstId();
 
-      // TODO - Create an Enumeration for ICustomQueue
       while (woid.HasValue)
       {
         IWork wo = dock.Ship(woid.Value);

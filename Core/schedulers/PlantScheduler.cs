@@ -1,6 +1,5 @@
 namespace Core.Schedulers
 {
-  using System.Linq;
   using Core.Plant;
   using Core.Resources;
 

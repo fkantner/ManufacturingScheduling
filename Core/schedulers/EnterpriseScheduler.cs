@@ -2,7 +2,6 @@ namespace Core.Schedulers
 {
   using System.Linq;
   using Core.Enterprise;
-  using Core.Resources;
 
   public enum EnterpriseSchedule { DEFAULT=0 };
 

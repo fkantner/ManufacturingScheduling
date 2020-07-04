@@ -1,7 +1,7 @@
 namespace Core.Plant
 {
-  using System.Collections.Generic;
   using Core;
+  using System.Collections.Generic;
   using Enterprise;
   using Resources;
   using Resources.Virtual;
