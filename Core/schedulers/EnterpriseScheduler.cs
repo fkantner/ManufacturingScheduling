@@ -1,5 +1,6 @@
 namespace Core.Schedulers
 {
+  using System.Linq;
   using Core.Enterprise;
   using Core.Resources;
 
@@ -12,9 +13,6 @@ namespace Core.Schedulers
 
   public class EnterpriseScheduler : IScheduleEnterprise
   {
-    private readonly IErp _erp;
-    private readonly EnterpriseSchedule _schedule;
-
     public EnterpriseScheduler(IErp erp, EnterpriseSchedule schedule = (EnterpriseSchedule) 0)
     {
       _erp = erp;
@@ -31,21 +29,14 @@ namespace Core.Schedulers
 
     private string GetFirstValidDestination(int woid)
     {
-      IWork wo = _erp.Workorders[woid];
-      string type = wo.CurrentOpType;
+      string type = _erp.Workorders[woid].CurrentOpType;
       
       if (type == "shippingOp") { return "customer"; }
 
-      foreach( var location in _erp.Locations)
-      {
-        var plant = location.Value;
-        if(plant.CanWorkOnType(type))
-        {
-          return plant.Name;
-        }
-      }
-
-      throw new System.ArgumentOutOfRangeException("No plant can work on type {0}", type);
+      return _erp.Locations.First(x => x.Value.CanWorkOnType(type)).Value.Name;
     }
+
+    private readonly IErp _erp;
+    private readonly EnterpriseSchedule _schedule;
   }
 }

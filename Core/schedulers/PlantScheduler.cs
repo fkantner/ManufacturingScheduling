@@ -1,5 +1,6 @@
 namespace Core.Schedulers
 {
+  using System.Linq;
   using Core.Plant;
   using Core.Resources;
 
@@ -7,19 +8,25 @@ namespace Core.Schedulers
 
   public interface ISchedulePlants
   {
-    int ValidateWoForMachines(int woid, string location);
-    int ValidateWoForTransport(int woid, string location);
     string ValidateDestinationForTransport(int? woid, string location, string destination);
+    int ValidateWoForMachines(int woid, string location);
+    int? ValidateWoForTransport(int? woid, string location);
   }
 
   public class PlantScheduler : ISchedulePlants
   {
-    private readonly IMes _mes;
-    private readonly PlantSchedule _schedule;
     public PlantScheduler(IMes mes, PlantSchedule schedule=(PlantSchedule) 0)
     {
       _mes = mes;
       _schedule = schedule;
+    }
+
+    public string ValidateDestinationForTransport(int? woid, string location, string destination)
+    {
+      return _schedule switch
+      {
+        _ => destination
+      };
     }
 
     public int ValidateWoForMachines(int woid, string location)
@@ -30,20 +37,29 @@ namespace Core.Schedulers
       };
     }
 
-    public int ValidateWoForTransport(int woid, string location)
+    public int? ValidateWoForTransport(int? woid, string location)
     {
       return _schedule switch
       {
-        _ => woid
+        _ => UseWoIfInMes(woid, location)
       };
     }
 
-    public string ValidateDestinationForTransport(int? woid, string location, string destination)
+    private readonly IMes _mes;
+    private readonly PlantSchedule _schedule;
+
+    private int? UseWoIfInMes(int? woid, string location)
     {
-      return _schedule switch
+      if(!woid.HasValue) { return woid; }
+      if(_mes.Workorders.ContainsKey(woid.Value)) { return woid; }
+      
+      // Might not have made it to MES, yet.
+      foreach( IWork wo in _mes.Locations[location].OutputBuffer)
       {
-        _ => destination
-      };
+        if(_mes.Workorders.ContainsKey(wo.Id)) { return wo.Id; }
+      }
+
+      return null;
     }
   }
 }

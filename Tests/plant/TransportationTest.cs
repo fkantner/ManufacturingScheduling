@@ -49,7 +49,7 @@ namespace Tests.Plant
     public void Work_InitialWithoutDestination_ChecksTheSchedule()
     {
       const int TRANSPORT_TIME = 5;
-      _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
+      _scheduler.ScheduleNextStep(Arg.Any<IAcceptWorkorders>());
       _scheduler.GetCargoID().Returns((int?)null);
       _scheduler.Destination.Returns(_destination);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
@@ -67,7 +67,7 @@ namespace Tests.Plant
     public void Work_WhenEmptyButAssignedADestination_GoesThereAndPicksUpCargo()
     {
       const int TRANSPORT_TIME = 1;
-      _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
+      _scheduler.ScheduleNextStep(Arg.Any<IAcceptWorkorders>());
       _scheduler.GetCargoID().Returns(null, WORKORDER_ID);
       _scheduler.Destination.Returns(_destination, _start);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);
@@ -88,7 +88,7 @@ namespace Tests.Plant
     public void Work_WhenHasCargo_GoesToDestinationAndDropsOff()
     {
       const int TRANSPORT_TIME = 1;
-      _scheduler.ChooseNextCargo(Arg.Any<IAcceptWorkorders>());
+      _scheduler.ScheduleNextStep(Arg.Any<IAcceptWorkorders>());
       _scheduler.GetCargoID().Returns(WORKORDER_ID, null);
       _scheduler.Destination.Returns(_destination, _start);
       _scheduler.TransportTime.Returns(TRANSPORT_TIME);

@@ -1,10 +1,12 @@
 namespace Core.Plant
 {
   using System.Collections.Generic;
+  using System.Linq;
   using Core.Enterprise;
   using Core.Resources;
   using Core.Schedulers;
   using Core.Workcenters;
+
   public interface IPlant
   {
     IMes Mes { get; }
@@ -12,18 +14,25 @@ namespace Core.Plant
     ISchedulePlants PlantScheduler { get; }
     IEnumerable<IAcceptWorkorders> Workcenters { get; }
     ITransportWork InternalTransportation { get; set; }
-    IReceive Dock();
-    Dictionary<IWork, string> ShipToOtherPlants();
+    
     void AddEnterprise(Enterprise enterprise);
     void AddWorkorder(IWork workorder);
     bool CanWorkOnType(string type);
+    IReceive Dock();
+    Dictionary<IWork, string> ShipToOtherPlants();
     void Work(DayTime dt);
   }
 
   public class Plant : IPlant
   {
-    private Enterprise _enterprise;
-
+// Properties
+    public ITransportWork InternalTransportation { get; set; }
+    public IMes Mes { get; }
+    public string Name { get; }
+    public ISchedulePlants PlantScheduler { get; }
+    public IEnumerable<IAcceptWorkorders> Workcenters { get; }
+    
+// Constructor
     public Plant(string name, IEnumerable<IAcceptWorkorders> workcenters)
     {
       Name = name;
@@ -36,7 +45,7 @@ namespace Core.Plant
         locations.Add(wc.Name, wc);
         wc.AddPlant(this);
       }
-      Mes = (IMes) new Mes("MES", locations);
+      Mes = (IMes) new Mes(name, locations);
 
       PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes, PlantSchedule.DEFAULT);
 
@@ -44,30 +53,17 @@ namespace Core.Plant
       Dock();
     }
 
-    public IMes Mes { get; }
-    public string Name { get; }
-    public ISchedulePlants PlantScheduler { get; }
-    public IEnumerable<IAcceptWorkorders> Workcenters { get; }
-    public ITransportWork InternalTransportation { get; set; }
-    private Dock _dock;
-
-    public void AddEnterprise(Enterprise enterprise)
+// Pure Methods
+    public bool CanWorkOnType(string type)
     {
-      if(_enterprise != null) { return; }
-      _enterprise = enterprise;
+      return Workcenters.Where(x => x.ReceivesType(type)).Any();
     }
 
-    public void AddWorkorder(IWork workorder)
+    public IReceive Dock()
     {
-      foreach(IAcceptWorkorders wc in Workcenters)
-      {
-        if(wc.ReceivesType(workorder.CurrentOpType))
-        {
-          Mes.AddWorkorder(wc.Name, workorder);
-          wc.AddToQueue(workorder);
-          break;
-        }
-      }
+      if(_dock != null) { return _dock; }
+      _dock = (Dock) Workcenters.First(x => x.Name == "Shipping Dock");
+      return _dock;
     }
 
     public Dictionary<IWork, string> ShipToOtherPlants()
@@ -77,6 +73,7 @@ namespace Core.Plant
 
       int? woid = dock.ShippingBuffer.FirstId();
 
+      // TODO - Create an Enumeration for ICustomQueue
       while (woid.HasValue)
       {
         IWork wo = dock.Ship(woid.Value);
@@ -90,32 +87,18 @@ namespace Core.Plant
       return answer;
     }
 
-    public bool CanWorkOnType(string type)
+// Impure Methods
+    public void AddEnterprise(Enterprise enterprise)
     {
-      foreach(var workcenter in Workcenters)
-      {
-        if(workcenter.ReceivesType(type))
-        {
-          return true;
-        }
-      }
-      return false;
+      if(_enterprise != null) { return; }
+      _enterprise = enterprise;
     }
 
-    public IReceive Dock()
+    public void AddWorkorder(IWork workorder)
     {
-      if(_dock != null) { return _dock; }
-
-      foreach(IAcceptWorkorders wc in Workcenters)
-      {
-        if(wc.Name == "Shipping Dock")
-        {
-          _dock = (Dock) wc;
-          return _dock;
-        }
-      }
-
-      throw new System.ArgumentOutOfRangeException("No Dock Found!");
+      var wc = Workcenters.First(x => x.ReceivesType(workorder.CurrentOpType));
+      Mes.AddWorkorder(wc.Name, workorder);
+      wc.AddToQueue(workorder);
     }
 
     public void Work( DayTime dt )
@@ -129,5 +112,10 @@ namespace Core.Plant
 
       Mes.Work(dt);
     }
+
+// Private
+    private Dock _dock;
+    private Enterprise _enterprise;
+
   }
 }

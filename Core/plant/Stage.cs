@@ -5,42 +5,42 @@ namespace Core.Plant
 
   public class Stage : IAcceptWorkorders
   {
-    private IMes _mes;
-    private int _stage_counter;
-
+// Properties
+    public string Name { get; }
+    public ICustomQueue OutputBuffer { get; }
+    public ICustomQueue Queue { get; }
+    
+// Constructor
     public Stage()
     {
       OutputBuffer = new NeoQueue();
       Queue = new NeoQueue();
       Name = "Stage";
       _mes = null;
-      ResetCounter();
+      _stage_counter = COUNTER_RESET_VALUE;
     }
 
-    public ICustomQueue OutputBuffer { get; }
-    public ICustomQueue Queue { get; }
-    public string Name { get; }
-
-    public void AddPlant(Plant plant)
+// Pure Methods
+    public string ListOfValidTypes()
     {
-      // TODO Implement Stage scheduling
-      return;
-    }
-
-    public void AddToQueue(IWork workorder)
-    {
-      _mes?.StopTransit(workorder.Id, Name);
-      Queue.Enqueue(workorder);
+      return VALID_TYPE;
     }
 
     public bool ReceivesType(string type)
     {
-      return type == "stageOp";
+      return type == VALID_TYPE;
     }
 
-    public string ListOfValidTypes()
+// Impure Methods
+    public void AddPlant(Plant plant)
     {
-      return "stageOp";
+      return; // Noop.
+    }
+    
+    public void AddToQueue(IWork workorder)
+    {
+      _mes?.StopTransit(workorder.Id, Name);
+      Queue.Enqueue(workorder);
     }
 
     public void SetMes(IMes mes)
@@ -61,15 +61,16 @@ namespace Core.Plant
         IWork process = Queue.Dequeue();
         process.SetNextOp();
         OutputBuffer.Enqueue(process);
-        ResetCounter();
+        _stage_counter = COUNTER_RESET_VALUE;
       }
 
       _stage_counter--;
     }
 
-    private void ResetCounter()
-    {
-      _stage_counter = 10;
-    }
+// Private
+    private IMes _mes;
+    private int _stage_counter;
+    private const int COUNTER_RESET_VALUE = 10;
+    private const string VALID_TYPE = "stageOp";
   }
 }

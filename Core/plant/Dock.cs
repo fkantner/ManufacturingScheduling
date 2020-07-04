@@ -5,14 +5,19 @@ namespace Core.Plant
 
   public interface IReceive : IAcceptWorkorders
   {
-    void ReceiveFromExternal(IWork workorder);
     ICustomQueue ShippingBuffer { get; }
+    void ReceiveFromExternal(IWork workorder);
     IWork Ship(int wo_id);
   }
 
   public class Dock : IReceive
   {
-    private IMes _mes;
+// Properties
+    public string Name { get; }
+    public ICustomQueue OutputBuffer { get; } // To be picked from plant
+    public ICustomQueue ShippingBuffer { get; } // To ship out
+    
+// Constructor
     public Dock()
     {
       OutputBuffer = new NeoQueue();
@@ -21,14 +26,21 @@ namespace Core.Plant
       _mes = null;
     }
 
-    public ICustomQueue OutputBuffer { get; } // To be picked from plant
-    public ICustomQueue ShippingBuffer { get; } // To ship out
-    public string Name { get; }
+// Pure Methods
+    public string ListOfValidTypes()
+    {
+      return VALID_TYPE ;
+    }
 
+    public bool ReceivesType(string type)
+    {
+      return type == VALID_TYPE ;
+    }
+
+// Impure Methods
     public void AddPlant(Plant plant)
     {
-      // TODO - Implement Dock scheduling.
-      return;
+      return; // Noop. Doesn't need to connect to Plant like other WC's.
     }
 
     public void AddToQueue(IWork workorder)
@@ -42,9 +54,10 @@ namespace Core.Plant
       OutputBuffer.Enqueue(workorder);
     }
 
-    public bool ReceivesType(string type)
+    public void SetMes(IMes mes)
     {
-      return type == "shippingOp";
+      if(_mes != null) { return; }
+      _mes = mes;
     }
 
     public IWork Ship(int wo_id)
@@ -54,21 +67,14 @@ namespace Core.Plant
       return wo;
     }
 
-    public string ListOfValidTypes()
-    {
-      return "shippingOp";
-    }
-
-    public void SetMes(IMes mes)
-    {
-      if(_mes != null) { return; }
-      _mes = mes;
-    }
-
     public void Work(DayTime dayTime)
     {
-      // TODO - Implement Dock -> Work
-      return;
+      return; // Noop.
     }
+
+// Private
+    private IMes _mes;
+    private const string VALID_TYPE = "shippingOp";
+    
   }
 }

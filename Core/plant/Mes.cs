@@ -1,18 +1,20 @@
 namespace Core.Plant
 {
-  using Core;
   using System.Collections.Generic;
+  using Core;
   using Enterprise;
   using Resources;
   using Resources.Virtual;
   using Workcenters;
 
+  // TODO Non conformance
+  // TODO - API for Machine Breakdowns
   public enum MesSchedule { DEFAULT=0 };
 
   public interface IMes
   {
-    Dictionary<string, VirtualWorkcenter> Locations { get; }
     Dictionary<string, List<IWork>> LocationInventories { get; }
+    Dictionary<string, VirtualWorkcenter> Locations { get; }
     Dictionary<int, IWork> Workorders { get; }
 
     void AddErp(IErp erp);
@@ -31,11 +33,13 @@ namespace Core.Plant
 
   public class Mes : IMes
   {
-    // TODO Non conformance
-    // TODO - API for Machine Breakdowns
-    private MesSchedule _schedule;
-    private DayTime _nextDump;
+// Properties
+    public Dictionary<string, List<IWork>> LocationInventories { get; }
+    public Dictionary<string, VirtualWorkcenter> Locations { get; }
+    public string Name { get; }
+    public Dictionary<int, IWork> Workorders { get; }
 
+// Constructor
     public Mes(string name, Dictionary<string, IAcceptWorkorders> locations, MesSchedule schedule=(MesSchedule) 0)
     {
       Erp = null;
@@ -61,13 +65,18 @@ namespace Core.Plant
       }
     }
 
-    private List<Change> Changes { get; }
-    private IErp Erp { get; set; }
-    public Dictionary<string, VirtualWorkcenter> Locations { get; }
-    public Dictionary<string, List<IWork>> LocationInventories { get; }
-    public string Name { get; }
-    public Dictionary<int, IWork> Workorders { get; }
+// Pure Methods
+    public List<int> GetLocationWoIds(string location)
+    {
+      return LocationInventories[location].ConvertAll<int>(x => x.Id);
+    }
+    
+    public IWork GetWorkorder(int id)
+    {
+      return Workorders[id];
+    }
 
+// Impure Methods
     public void AddErp(IErp erp)
     {
       if(Erp != null) { return; }
@@ -81,8 +90,9 @@ namespace Core.Plant
         throw new System.ArgumentException("Workorder already exists in MES");
       }
       VirtualWorkorder newWo = new VirtualWorkorder(wo.CurrentOpIndex, wo);
+      
       Workorders[newWo.Id] = newWo;
-      AddWoToLocation(newWo, location);
+      LocationInventories[location].Add(newWo);
       Changes.Add(new Change(newWo.Id, true));
     }
 
@@ -93,43 +103,33 @@ namespace Core.Plant
       wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
     }
 
-    public List<int> GetLocationWoIds(string location)
-    {
-      return LocationInventories[location].ConvertAll<int>(x => x.Id);
-    }
-
-    public IWork GetWorkorder(int id)
-    {
-      return Workorders[id];
-    }
-
     public void Move(int wo_id, string source_name, string destination_name)
     {
-      bool exists = Workorders.ContainsKey(wo_id);
-      if (!exists)
+      if (!Workorders.ContainsKey(wo_id))
       {
         throw new System.ArgumentOutOfRangeException("Workorder does not exist");
       }
-      exists = Locations.ContainsKey(source_name);
-      if (!exists)
+      
+      if (!Locations.ContainsKey(source_name))
       {
         throw new System.ArgumentException("Source Location does not exist");
       }
-      exists = Locations.ContainsKey(destination_name);
-      if (!exists)
+      
+      if (!Locations.ContainsKey(destination_name))
       {
-        throw new System.ArgumentException("DestinationLocation does not exist");
+        throw new System.ArgumentException("Destination Location does not exist");
       }
+
       VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
-      RemoveWoFromLocation(wo, source_name);
-      AddWoToLocation(wo, destination_name);
+      LocationInventories[source_name].Remove(wo);
+      LocationInventories[destination_name].Add(wo);
     }
 
     public void Ship(int wo_id)
     {
       VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       Workorders.Remove(wo_id);
-      RemoveWoFromLocation(wo, "Shipping Dock");
+      LocationInventories["Shipping Dock"].Remove(wo);
       Changes.Add(new Change(wo_id, false));
     }
 
@@ -142,7 +142,7 @@ namespace Core.Plant
     {
       VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
       wo.ChangeStatus(VirtualWorkorder.Statuses.OnRoute);
-      RemoveWoFromLocation(wo, workcenterName);
+      LocationInventories[workcenterName].Remove(wo);
     }
 
     public void StopProgress(int wo_id)
@@ -156,46 +156,41 @@ namespace Core.Plant
       wo.ChangeStatus(VirtualWorkorder.Statuses.Open);
       if (!LocationInventories[workcenterName].Contains(wo))
       {
-        AddWoToLocation(wo, workcenterName);
+        LocationInventories[workcenterName].Add(wo);
       }
     }
 
     public void Work(DayTime dayTime)
     {
-      if(_nextDump.Equals(dayTime))
+      if(!_nextDump.Equals(dayTime)) { return; }
+      
+      foreach(Change change in Changes)
       {
-        foreach(Change change in Changes)
+        if(change.IsAddToPlant)
         {
-          if(change.IsAddToPlant)
-          {
-            Erp.Receive(change.Woid, Name);
-          }
-          else
-          {
-            Erp.Ship(change.Woid, Name);
-          }
+          Erp.Receive(change.Woid, Name);
         }
-
-        IncrementDumpTime();
+        else
+        {
+          Erp.Ship(change.Woid, Name);
+        }
       }
+
+      _nextDump = NextDumpTime(dayTime);
     }
 
-    private void IncrementDumpTime()
+// Private
+    private DayTime _nextDump;
+    private MesSchedule _schedule;
+    private List<Change> Changes { get; }
+    private IErp Erp { get; set; }
+
+    private DayTime NextDumpTime(DayTime currentDumpTime)
     {
-      _nextDump = _schedule switch
+      return _schedule switch
       {
-          _ => _nextDump.CreateTimestamp(24*60)
+        _ => currentDumpTime.CreateTimestamp(24*60)
       };
-    }
-
-    private void AddWoToLocation(VirtualWorkorder wo, string location)
-    {
-      LocationInventories[location].Add(wo);
-    }
-
-    private void RemoveWoFromLocation(VirtualWorkorder wo, string location)
-    {
-      LocationInventories[location].Remove(wo);
     }
 
     private class Change

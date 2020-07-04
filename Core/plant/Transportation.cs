@@ -6,8 +6,8 @@ namespace Core.Plant
 
   public interface ITransportWork
   {
-    string CurrentLocation { get; }
     int CargoNumber { get; }
+    string CurrentLocation { get; }
     string Destination { get; }
     int TransportTime { get; }
     void Work(DayTime dayTime);
@@ -15,12 +15,13 @@ namespace Core.Plant
 
   public class Transportation : ITransportWork
   {
-    private IAcceptWorkorders _current_location;
-    private IAcceptWorkorders _destination;
-    private IWork _cargo;
-    private readonly IScheduleTransport _scheduler;
-    private readonly IMes _mes;
+// Properties
+    public int CargoNumber { get => _cargo?.Id ?? 0; }
+    public string CurrentLocation { get => _current_location.Name; }
+    public string Destination { get => _destination?.Name ?? "None"; }
+    public int TransportTime { get; private set; }
 
+// Constructor
     public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
     {
       _current_location = start;
@@ -31,11 +32,9 @@ namespace Core.Plant
       _mes = ts.Mes;
     }
 
-    public string CurrentLocation { get => _current_location.Name; }
-    public int CargoNumber { get => _cargo?.Id ?? 0; }
-    public string Destination { get => _destination?.Name ?? "None"; }
-    public int TransportTime { get; private set; }
+// Pure Methods
 
+// Impure Methods
     public void Work(DayTime dayTime)
     {
       if(IsAtLocationWithoutCargo()) // Pickup cargo.
@@ -59,22 +58,14 @@ namespace Core.Plant
       }
     }
 
-    private void Arrive()
-    {
-      if(_destination != null)
-      {
-        _current_location = _destination;
-      }
-      _destination = null;
-    }
+// Private
+    private IAcceptWorkorders _current_location;
+    private IAcceptWorkorders _destination;
+    private IWork _cargo;
+    private readonly IScheduleTransport _scheduler;
+    private readonly IMes _mes;
 
-    private void DropOffCargo()
-    {
-      if (_cargo == null) { return; }
-      _current_location.AddToQueue(_cargo);
-      _cargo = null;
-    }
-
+// Private Pure Methods
     private bool HasADestination()
     {
       return _destination != null;
@@ -87,7 +78,24 @@ namespace Core.Plant
 
     private bool IsAtLocationWithoutCargo()
     {
-      return _cargo == null && TransportTime == 0;
+      return _cargo == null && IsAtLocation();
+    }
+
+// Private Impure Methods
+    private void Arrive()
+    {
+      if(_destination == null) { return; }
+      
+      _current_location = _destination;
+      _destination = null;
+    }
+
+    private void DropOffCargo()
+    {
+      if (_cargo == null) { return; }
+
+      _current_location.AddToQueue(_cargo);
+      _cargo = null;
     }
 
     private void Transport()
@@ -97,16 +105,17 @@ namespace Core.Plant
 
     private void UpdateSelfFromScheduler()
     {
-      _scheduler.ChooseNextCargo(_current_location);
+      _scheduler.ScheduleNextStep(_current_location);
       int? cargoId = _scheduler.GetCargoID();
-      if(cargoId.HasValue)
-      {
-        _cargo = _current_location.OutputBuffer.Remove(cargoId.Value);
-        _mes.StartTransit(cargoId.Value, _current_location.Name);
-      }
 
       _destination = _scheduler.Destination;
       TransportTime = _scheduler.TransportTime;
+
+      if(!cargoId.HasValue) { return; }
+
+      _cargo = _current_location.OutputBuffer.Remove(cargoId.Value);
+      _mes.StartTransit(cargoId.Value, _current_location.Name);
     }
+
   }
 }

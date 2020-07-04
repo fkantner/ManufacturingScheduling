@@ -1,6 +1,8 @@
 namespace Core.Resources
 {
+  using System.Collections;
   using System.Collections.Generic;
+  using System.Linq;
 
   public interface ICustomQueue
   {
@@ -12,11 +14,12 @@ namespace Core.Resources
     void Enqueue(IWork wo);
     IWork Find(int id);
     int? FirstId();
+    IEnumerator<IWork> GetEnumerator();
     int? LastId();
     IWork Remove(int id);
   }
 
-  public class NeoQueue : ICustomQueue
+  public class NeoQueue : ICustomQueue, IEnumerable<IWork>
   {
     private readonly Dictionary<int, IWork> _dict;
     private readonly Dictionary<int, int> _wo_order;
@@ -83,6 +86,20 @@ namespace Core.Resources
       return _order_wo[_min];
     }
 
+    public IEnumerator<IWork> GetEnumerator()
+    {
+      foreach (int order in _order_wo.Keys)
+      {
+        int woid = _order_wo[order];
+        yield return _dict[woid];
+      }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+
     public int? LastId()
     {
       if (_max == 0) { return null; }
@@ -135,5 +152,6 @@ namespace Core.Resources
 
       return;
     }
+
   }
 }

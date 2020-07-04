@@ -1,9 +1,9 @@
 namespace Core.Enterprise
 {
-  using Core.Plant;
-  using Core.Resources;
   using System.Collections.Generic;
   using System.Linq;
+  using Core.Plant;
+  using Core.Resources;
 
   public interface ITransportWorkBetweenPlants
   {
@@ -14,16 +14,13 @@ namespace Core.Enterprise
 
   public class Transport : ITransportWorkBetweenPlants
   {
-    private IPlant _current_location;
-    public string CurrentLocation { get => _current_location?.Name; }
+// Properties
     public string CurrentCargo {
       get => string.Join(',', _cargo.Select(x => x.Wo.Id));
     }
+    public string CurrentLocation { get => _current_location?.Name; }
 
-    private readonly IEnterprise _company;
-    private readonly Dictionary<DayTime, string> _routes;
-    private readonly List<Cargo> _cargo;
-
+// Constructor
     public Transport(IEnterprise company, Dictionary<DayTime, string> routes)
     {
       _current_location = null;
@@ -32,110 +29,71 @@ namespace Core.Enterprise
       _cargo = new List<Cargo>();
     }
 
+// Pure Methods
     public Dictionary<int, string> Inventory()
     {
       Dictionary<int, string> answer = new Dictionary<int, string>();
 
-      foreach(Cargo c in _cargo)
-      {
-        answer.Add(c.Wo.Id, c.Destination);
-      }
+      _cargo.ForEach(x => answer.Add(x.Wo.Id, x.Destination));
       
       return answer;
     }
 
+// Impure Methods
     public void Work(DayTime dayTime)
     {
-      if(!HasRouteStop(dayTime)) { 
-        if(TimeToLeave(dayTime)){ 
-          _current_location = null; // Leave Plant
-
-          List<Cargo> toCustomer = new List<Cargo>(); // Deliver to customer
-          foreach(Cargo item in _cargo)
-          {
-            if (item.Destination == "customer")
-            {
-              _company.Customer.ReceiveProduct(item.Wo.ProductType, dayTime);
-              toCustomer.Add(item);
-            }
-          }
-
-          foreach(Cargo item in toCustomer)
-          {
-            _cargo.Remove(item);
-          }
-        }
+      if(!HasRouteStop(dayTime)) 
+      { 
+        if (!TimeToLeave(dayTime)) { return; }
+        
+        // Leave Plant
+        _current_location = null; 
+        
+        // Deliver to customer
+        List<Cargo> toCustomer = _cargo.Where(x => x.Destination == "customer").ToList();
+        toCustomer.ForEach(x => _company.Customer.ReceiveProduct(x.Wo.ProductType, dayTime));
+        toCustomer.ForEach(x => _cargo.Remove(x));
+      
         return; 
       }
+
       var route = RouteStop(dayTime);
       
-      //Find current location;
-      foreach( IPlant p in _company.Plants)
-      {
-        if(p.Name == route)
-        {
-          _current_location = p;
-          break;
-        }
-      }
+      _current_location = _company.Plants.FirstOrDefault(x => x.Name == route);
+      if (_current_location == null) { return; } // Shouldn't hit this
 
-      if (_current_location == null) { return; }
       // Dropoff Shipments
-      List<Cargo> deliveries = new List<Cargo>();
-      foreach(Cargo item in _cargo)
-      {
-        if(item.Destination == CurrentLocation)
-        {
-          _current_location.Dock().ReceiveFromExternal(item.Wo);
-          deliveries.Add(item);
-        }
-      }
-      
-      foreach(Cargo item in deliveries)
-      {
-        _cargo.Remove(item);
-      }
+      List<Cargo> deliveries = _cargo.Where( x => x.Destination == CurrentLocation).ToList();
+      deliveries.ForEach(x => _current_location.Dock().ReceiveFromExternal(x.Wo));
+      deliveries.ForEach(x => _cargo.Remove(x));
 
       // Pickup Shipments
       Dictionary<IWork, string> list = _current_location.ShipToOtherPlants();
-
-      foreach(IWork wo in list.Keys)
-      {
-        _cargo.Add(new Cargo(wo, list[wo]));
-      }
+      list.Keys.ToList().ForEach(wo => _cargo.Add(new Cargo(wo, list[wo])));
     }
 
+// Private
+    private readonly List<Cargo> _cargo;
+    private readonly IEnterprise _company;
+    private IPlant _current_location;
+    private readonly Dictionary<DayTime, string> _routes;
+    
     private bool HasRouteStop(DayTime dayTime)
     {
-      foreach( var time in _routes.Keys)
-      {
-        if(time.Equals(dayTime)) { return true; }
-      }
-      return false;
+      return _routes.Keys.Where(x => x.Equals(dayTime)).Any();
     }
-
+    
     private string RouteStop(DayTime dayTime)
     {
-      DayTime key = null;
-      foreach( var time in _routes.Keys)
-      {
-        if(time.Equals(dayTime)) 
-        { 
-          key = time; 
-          break;
-        }
-      }
+      DayTime key = _routes.Keys.FirstOrDefault(x => x.Equals(dayTime));
+      
       if(key == null) return "No Stop";
       return _routes[key];
     }
 
     private bool TimeToLeave(DayTime dayTime)
     {
-      foreach( var time in _routes.Keys )
-      {
-        if(time.CreateTimestamp(5).Equals(dayTime) ) { return true; }
-      }
-      return false;
+      return _routes.Keys.Where(x => x.CreateTimestamp(5).Equals(dayTime)).Any();
     }
 
     private class Cargo
