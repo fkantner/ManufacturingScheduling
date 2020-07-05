@@ -47,7 +47,7 @@ namespace Core.Plant
       }
       Mes = (IMes) new Mes(name, locations);
 
-      PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes, PlantSchedule.DEFAULT);
+      PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes);
 
       _dock = null;
       Dock();

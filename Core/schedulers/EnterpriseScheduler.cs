@@ -12,15 +12,15 @@ namespace Core.Schedulers
 
   public class EnterpriseScheduler : IScheduleEnterprise
   {
-    public EnterpriseScheduler(IErp erp, EnterpriseSchedule schedule = (EnterpriseSchedule) 0)
+    public EnterpriseScheduler(IErp erp)
     {
       _erp = erp;
-      _schedule = schedule;
     }
 
     public string SelectDestinationForExternalTransport(int woid)
     {
-      return _schedule switch
+      EnterpriseSchedule schedule = (EnterpriseSchedule) Configuration.EnterpriseSchedule;
+      return schedule switch
       {
         _ => GetFirstValidDestination(woid)
       };
@@ -36,6 +36,5 @@ namespace Core.Schedulers
     }
 
     private readonly IErp _erp;
-    private readonly EnterpriseSchedule _schedule;
   }
 }

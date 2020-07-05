@@ -13,10 +13,9 @@ namespace Core.Schedulers
   {
     public enum Schedule { DEFAULT=0 };
 
-    public MachineScheduler(Schedule schedule=(Schedule) 0)
+    public MachineScheduler()
     {
       _plant = null;
-      _schedule = schedule;
     }
 
     public void AddPlant(Plant plant)
@@ -28,7 +27,8 @@ namespace Core.Schedulers
 
     public int ChooseNextWoId(string machineName, ICustomQueue queue)
     {
-      int proposed = _schedule switch
+      Schedule schedule = (Schedule) Configuration.MachineSchedule;
+      int proposed = schedule switch
       {
         _ => queue.FirstId().Value
       };
@@ -36,7 +36,6 @@ namespace Core.Schedulers
       return _plant.PlantScheduler.ValidateWoForMachines(proposed, machineName);
     }
 
-    private readonly Schedule _schedule;
     private Plant _plant;
   }
 }

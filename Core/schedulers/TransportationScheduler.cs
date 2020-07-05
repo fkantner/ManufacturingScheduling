@@ -23,13 +23,13 @@ namespace Core.Schedulers
     public IMes Mes { get => _plant.Mes; }
     public int TransportTime { get; private set; }
 
-    public TransportationScheduler(IPlant plant, Schedule schedule=(Schedule) 0)
+    public TransportationScheduler(IPlant plant)
     {
       _plant = plant;
       CargoID = null;
       Destination = null;
       TransportTime = 0;
-      _schedule = schedule;
+      _schedule = (Schedule) Configuration.TransportationSchedule;
     }
 
     public void ScheduleNextStep(IAcceptWorkorders current_location)

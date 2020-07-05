@@ -3,6 +3,7 @@ using Core;
 
 namespace simulationCode
 {
+    using Core;
     using Core.Resources;
     using Core.Plant;
     using Core.Enterprise;
@@ -12,7 +13,7 @@ namespace simulationCode
 
     public static class Program
     {
-        private const string filename = "../simulation-ui/src/data/test.json";
+        private static readonly string filename = Configuration.ResultFileName;
         static private bool hasWritten;
         static private StreamWriter writer;
 
@@ -42,7 +43,7 @@ namespace simulationCode
             SimulationNode sn = new SimulationNode(dt, ent);
             WriteJson(sn);
 
-            for(int i = 0; i < 10080; i++)
+            for(int i = 0; i < Configuration.MinutesForProgramToTest; i++)
             {
                 dt.Next();
                 ent.Work(dt);

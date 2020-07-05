@@ -14,10 +14,10 @@ namespace Core.Schedulers
 
   public class PlantScheduler : ISchedulePlants
   {
-    public PlantScheduler(IMes mes, PlantSchedule schedule=(PlantSchedule) 0)
+    public PlantScheduler(IMes mes)
     {
       _mes = mes;
-      _schedule = schedule;
+      _schedule = (PlantSchedule) Configuration.PlantSchedule;
     }
 
     public string ValidateDestinationForTransport(int? woid, string location, string destination)
