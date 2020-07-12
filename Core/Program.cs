@@ -13,17 +13,8 @@ namespace simulationCode
 
     public static class Program
     {
-        private static readonly string filename = Configuration.ResultFileName;
-        static private bool hasWritten;
-        static private StreamWriter writer;
-
         public static void Main()
         {
-            File.Delete(filename);
-            writer = new StreamWriter(filename);
-            hasWritten = false;
-            writer.WriteLine("[");
-
             Console.WriteLine("Starting Simulation");
             DayTime dt = new DayTime();
 
@@ -40,25 +31,22 @@ namespace simulationCode
             ent.AddCustomer(customer);
             customer.AddEnterprise(ent);
 
-            SimulationNode sn = new SimulationNode(dt, ent);
-            WriteJson(sn);
+            SimulationNode sn = new SimulationNode(dt, ent, customer);
+            SaveToFile("default", 0, sn);
 
-            for(int i = 0; i < Configuration.MinutesForProgramToTest; i++)
+            for(int i = 1; i < Configuration.MinutesForProgramToTest; i++)
             {
                 dt.Next();
                 ent.Work(dt);
                 customer.Work(dt);
 
-		WriteJson(sn);
                 if (i%500 == 0) 
                 {
                     customer.CreateOrder("p1", new DayTime((int) DayTime.Days.Tue, 800));
                 }
+                SaveToFile("default", i, sn);
             }
 
-            writer.WriteLine("]");
-            writer.Dispose();
-            writer.Close();
             Console.WriteLine("Finished with Simulation");
         }
 
@@ -67,17 +55,23 @@ namespace simulationCode
             return JsonConvert.SerializeObject(obj);
         }
 
-        static private void WriteJson(Object obj)
+        static private void SaveToFile(string test, int time, SimulationNode simulationNode)
         {
-            if(hasWritten)
+            string path = Configuration.ResultFolder;
+            string filename = path + test + time.ToString() + ".json";
+            if(File.Exists(filename))
             {
-                writer.WriteLine("," + ToJson(obj));
+                File.Delete(filename);
             }
-            else
-            {
-                writer.WriteLine(ToJson(obj));
-                hasWritten = true;
-            }
+
+            StreamWriter writer = new StreamWriter(filename);
+            //writer.WriteLine("[");
+
+            writer.WriteLine(ToJson(simulationNode));
+
+            //writer.WriteLine("]");
+            writer.Dispose();
+            writer.Close();
         }
     }
 }

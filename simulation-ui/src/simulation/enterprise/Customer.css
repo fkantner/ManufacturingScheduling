@@ -1,0 +1,11 @@
+div.customer {
+  background-color: lavender;
+}
+
+ul.activeOrders {
+  background-color: aliceblue;
+}
+
+ul.completeOrders {
+  background-color: aliceblue;
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SimulationData from '../data/test.json';
+import Customer from './enterprise/Customer';
 import Day from './Day';
 import Enterprise from './enterprise/Enterprise';
 import './Reset.css';
@@ -44,11 +44,28 @@ function ParseTime(time) {
 }
 
 function FrontLoadZeros(number) {
-  var answer;
-  if (number === 0){ answer = "00"; }
-  else if (number < 10) { answer = "0" + number; }
-  else { answer = number.toString(); }
-  return answer;
+  if (number === 0){ return "00"; }
+  if (number < 10) { return "0" + number; }
+  return number.toString();
+}
+
+function GenerateOption(num) {
+  const minutesInDay = 24*60;
+  const day = (Math.floor(num / minutesInDay) + 3) % 7;
+  const minute = num % minutesInDay;
+  return <option key={"select:" + num} value={num}>{ParseDay(day) + "--" + ParseTime(minute)}</option>
+}
+
+function CombineOptions(opts, newopt){
+  return opts.concat(newopt());
+}
+
+function GenerateOptions(max) {
+  let arry = [];
+  for(let i=0; i<max; i++){
+    arry.push(GenerateOption(i));
+  }
+  return arry;
 }
 
 class Simulation extends Component {
@@ -68,10 +85,9 @@ class Simulation extends Component {
   }
 
   render () {
-    var index = this.state.node;
-    var simulationDetail = SimulationData[index];
-    
-    var daytime = simulationDetail.DayTime;
+    const index = this.state.node;
+    const simulationDetail = require('../data/default' + index + '.json');
+    const daytime = simulationDetail.DayTime;
     
     return (
       <div>
@@ -80,19 +96,17 @@ class Simulation extends Component {
         <div className='node_selectors'>
           <LastButton 
             node={this.state.node}
-            length={SimulationData.length}
+            length={200}
             onClick={this.changeNode.bind(this)}
           />
 
           <select className="dayTimeSelect" value={this.state.node} onChange={this.handleChange} >
-            {SimulationData.map((data, index) => {
-              return <option key={"select:"+ index} value={index}>{ParseDay(data.DayTime.Day) + "--" + ParseTime(data.DayTime.Time)}</option>
-            })}
+            { GenerateOptions(1000) }
           </select>
 
           <NextButton 
             node={this.state.node}
-            length={SimulationData.length}
+            length={200}
             onClick={this.changeNode.bind(this)}
           />
         </div>  
@@ -102,6 +116,7 @@ class Simulation extends Component {
             <Day day={ParseDay(daytime.Day)} time={ParseTime(daytime.Time)} />
           </div>
 
+          <Customer customer={simulationDetail.Customer} />
           <Enterprise enterprise={simulationDetail.Enterprise} index = {index} />
           
         </div>

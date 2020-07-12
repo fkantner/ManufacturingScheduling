@@ -5,6 +5,10 @@ div.workorder {
   padding: 0.2em;
 }
 
+div.workorder.short {
+  width: 20em;
+}
+
 div.workorder.short h4 {
   margin-top: 0.1em;
   margin-bottom: 0.1em;
