@@ -17,15 +17,16 @@ class Customer extends Component {
   render () {
     const activeOrders = this.props.customer.ActiveOrders;
     const completeOrders = this.props.customer.CompleteOrders;
-
+    
     return (
       <div key="customer" className="customer">
         <h2>Customer</h2>
         <ul className="activeOrders">
           {activeOrders.map((order, i) => {
+            
             return (
               <li key={"ActiveOrder" + i} className="Order">
-                {Type(order)} {Due(order)}
+                {order}
               </li>
             )
           })}
