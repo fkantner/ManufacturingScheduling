@@ -11,7 +11,6 @@ namespace Tests.Workcenters
   public class WorkcenterTest
   {
     private Workcenter _subject;
-    private IDoWork _testMachine;
     private DayTime _dayTime;
     private IWork _workorder;
     private IMes _mes;
@@ -19,11 +18,14 @@ namespace Tests.Workcenters
     [SetUp]
     protected void SetUp()
     {
-      _testMachine = Substitute.For<IDoWork>();
       _workorder = Substitute.For<IWork>();
+      _workorder.CurrentOpType.Returns(Op.OpTypes.DrillOpType1);
+      _workorder.CurrentOpSetupTime.Returns(0);
+      _workorder.CurrentOpEstTimeToComplete.Returns(1);
+          
       _mes = Substitute.For<IMes>();
       _dayTime = new DayTime();
-      _subject = new Workcenter("TestWC", _testMachine);
+      _subject = new Workcenter("TestWC", Machine.Types.BigDrill);
       _subject.SetMes(_mes);
     }
 
@@ -31,30 +33,22 @@ namespace Tests.Workcenters
     public void Work_WhenEmpty_DoesNothing()
     {
       _dayTime = new DayTime();
-      IDoWork _emptyTestMachine = Substitute.For<IDoWork>();
-      _emptyTestMachine.Work(_dayTime).ReturnsForAnyArgs((IWork) null);
-      _emptyTestMachine.Work(null).Returns((IWork) null);
 
-      Workcenter subject = new Workcenter("TestWC", _emptyTestMachine);
-      subject.SetMes(_mes);
+      _subject.Work(_dayTime);
 
-      subject.Work(_dayTime);
-
-      Assert.IsFalse(subject.OutputBuffer.Any());
-      Assert.IsTrue(subject.Inspection.Buffer.Empty());
-      Assert.IsNull(subject.Inspection.CurrentWo);
-      _emptyTestMachine.Received().Work(Arg.Any<DayTime>());
+      Assert.IsFalse(_subject.OutputBuffer.Any());
+      Assert.IsTrue(_subject.Inspection.Buffer.Empty());
+      Assert.IsNull(_subject.Inspection.CurrentWo);
     }
 
     [Test]
     public void Work_WhenWoInBuffer_StartsWork()
     {
-      _testMachine.Work(Arg.Any<DayTime>()).Returns(_workorder);
+      _subject.AddToQueue(_workorder);
 
       _subject.Work(_dayTime);
 
       Assert.IsFalse(_subject.OutputBuffer.Any());
-      _testMachine.Received().Work(_dayTime);
       Assert.IsNull(_subject.Inspection.CurrentWo);
       Assert.IsFalse(_subject.Inspection.Buffer.Empty());
     }
@@ -62,11 +56,7 @@ namespace Tests.Workcenters
     [Test]
     public void Work_WhenWoIsInspected_PutsWoInBuffer()
     {
-      //IWork returnValue = _workorder;
-      _testMachine.Work(Arg.Any<DayTime>()).Returns(
-        _workorder,
-        (IWork) null
-      );
+      _subject.AddToQueue(_workorder);
 
       for(int i = 0; i < 5; i++)
       {

@@ -2,6 +2,7 @@ namespace Tests.Enterprise
 {
     using Core;
     using Core.Enterprise;
+    using Core.Resources;
     using NSubstitute;
     using NUnit.Framework;
     using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Tests.Enterprise
         private DayTime _dayTime;
         private Customer _subject;
         private IEnterprise _enterprise;
-        private readonly string test_type = "test";
+        private readonly Workorder.PoType test_type = Workorder.PoType.p0;
 
         [SetUp]
         protected void Setup()

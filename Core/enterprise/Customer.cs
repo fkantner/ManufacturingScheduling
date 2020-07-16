@@ -2,14 +2,15 @@ namespace Core.Enterprise
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Core.Resources;
 
     public interface IRequestWork
     {
         List<string> ActiveOrders { get; }
         List<string> CompleteOrders { get; }
         void AddEnterprise(IEnterprise enterprise);
-        void CreateOrder(string po_type, DayTime due);
-        void ReceiveProduct(string type, DayTime dayTime);
+        void CreateOrder(Workorder.PoType po_type, DayTime due, int initialOp=0);
+        void ReceiveProduct(Workorder.PoType type, DayTime dayTime);
         void Work(DayTime dayTime);
     }
 
@@ -42,12 +43,12 @@ namespace Core.Enterprise
             _enterprise = enterprise;
         }
 
-        public void CreateOrder(string po, DayTime due)
+        public void CreateOrder(Workorder.PoType po, DayTime due, int initialOp=0)
         {
-            _orders.Add(new Order(po, due));
+            _orders.Add(new Order(po, due, initialOp));
         }
 
-        public void ReceiveProduct(string type, DayTime dayTime)
+        public void ReceiveProduct(Workorder.PoType type, DayTime dayTime)
         {
             _orders.First(x => x.Type == type && x.IsIncomplete)
                 .CompletePo(dayTime);
@@ -60,7 +61,7 @@ namespace Core.Enterprise
             var ordersToSend = _orders.Where(x => x.Sent == false);
             foreach(var order in ordersToSend)
             {
-                _enterprise.StartOrder(order.Type, order.Due);
+                _enterprise.StartOrder(order.Type, order.Due,order.InitialOp);
                 order.MarkAsSent();
             }
         }
@@ -70,16 +71,18 @@ namespace Core.Enterprise
 // Properties
             public DayTime Due { get; }
             public DayTime Complete { get; private set;}
+            public int InitialOp { get; }
             public bool IsComplete { get => Complete != null; }
             public bool IsIncomplete { get => Complete == null; }
             public bool Sent { get; private set; }
-            public string Type { get; }
+            public Workorder.PoType Type { get; }
 
 // Constructor
-            public Order(string type, DayTime due)
+            public Order(Workorder.PoType type, DayTime due, int initialOp=0)
             {
                 Type = type;
                 Due = due;
+                InitialOp = initialOp;
                 Complete = null;
                 Sent = false;
             }

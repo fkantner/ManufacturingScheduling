@@ -17,6 +17,7 @@ namespace Core.Plant
     Dictionary<string, VirtualWorkcenter> Locations { get; }
     Dictionary<int, IWork> Workorders { get; }
 
+    void Add(IAcceptWorkorders workcenter);
     void AddErp(IErp erp);
     void AddWorkorder(string location, IWork wo);
     void Complete(int wo_id);
@@ -40,7 +41,7 @@ namespace Core.Plant
     public Dictionary<int, IWork> Workorders { get; }
 
 // Constructor
-    public Mes(string name, Dictionary<string, IAcceptWorkorders> locations, MesSchedule schedule=(MesSchedule) 0)
+    public Mes(string name, MesSchedule schedule=(MesSchedule) 0)
     {
       Erp = null;
       Name = name;
@@ -52,17 +53,6 @@ namespace Core.Plant
       _schedule = schedule;
       _nextDump = new DayTime();
 
-      foreach(var location in locations)
-      {
-        var value = location.Value;
-        Locations.Add(location.Key, new VirtualWorkcenter(value.Name, value.ListOfValidTypes()));
-        location.Value.SetMes(this);
-      }
-
-      foreach(var location in Locations)
-      {
-        LocationInventories.Add(location.Key, new List<IWork>());
-      }
     }
 
 // Pure Methods
@@ -81,6 +71,12 @@ namespace Core.Plant
     {
       if(Erp != null) { return; }
       Erp = erp;
+    }
+
+    public void Add(IAcceptWorkorders workcenter)
+    {
+      Locations.Add(workcenter.Name, new VirtualWorkcenter(workcenter.Name, workcenter.ListOfValidTypes()));
+      LocationInventories.Add(workcenter.Name, new List<IWork>());
     }
 
     public void AddWorkorder(string location, IWork wo)

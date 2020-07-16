@@ -1,34 +1,42 @@
 namespace Core.Workcenters
 {
+  using System.Collections.Generic;
   using Core.Plant;
   using Core.Resources;
   using Core.Schedulers;
-  using System.Collections.Generic;
 
   public class Machine : IDoWork
   {
-    private readonly IScheduleMachines _scheduler;
-    private readonly List<string> _type;
+    public enum Types {
+      SmallDrill,BigDrill,Lathe,WetCnc,DryCnc,Press
+    }
 
-    public Machine(string name, IScheduleMachines ms, List<string> type)
+    // Public Properties
+    public IWork CurrentWorkorder { get; private set; }
+    public int EstTimeToComplete { get; private set; }
+    public ICustomQueue InputBuffer { get; }
+    public Op.OpTypes LastType { get; private set; }
+    public string Name { get; }
+    public int SetupTime { get; private set; }
+
+    // Private Members
+    private readonly IScheduleMachines _scheduler;
+    private readonly Types _type;
+    private readonly List<Op.OpTypes> _validTypes;
+
+    public Machine(string name, Types type)
     {
-      Name = "Machine " + name;
-      _scheduler = ms;
+      Name = name;
+      _scheduler = new MachineScheduler();
       _type = type;
+      _validTypes = GetValidTypes(type);
 
       CurrentWorkorder = null;
       EstTimeToComplete = 0;
       InputBuffer = new NeoQueue();
-      LastType = null;
+      LastType = _validTypes[0];
       SetupTime = 0;
     }
-
-    public IWork CurrentWorkorder { get; private set; }
-    public int EstTimeToComplete { get; private set; }
-    public ICustomQueue InputBuffer { get; }
-    public string LastType { get; private set; }
-    public string Name { get; }
-    public int SetupTime { get; private set; }
 
     public void AddPlant(Plant plant)
     {
@@ -38,26 +46,21 @@ namespace Core.Workcenters
     public void AddToQueue(IWork wc)
     {
       InputBuffer.Enqueue(wc);
-      return;
     }
 
-    public bool ReceivesType(string type)
+    public bool ReceivesType(Op.OpTypes type)
     {
-      return _type.Contains(type);
+      return _validTypes.Contains(type);
     }
 
-    public string ListOfValidTypes()
+    public List<Op.OpTypes> ListOfValidTypes()
     {
-      return string.Join(",", _type);
+      return _validTypes;
     }
 
     public IWork Work(DayTime dayTime)
     {
       // TODO - Implement Machine Breakdown
-
-      // TODO - Implement Machine Tooling
-
-      // TODO - Implement Machine Resourcing
 
       if (CurrentWorkorder == null)
       {
@@ -65,7 +68,7 @@ namespace Core.Workcenters
 
         int nextWoId = _scheduler.ChooseNextWoId(Name, InputBuffer);
         CurrentWorkorder = InputBuffer.Remove(nextWoId);
-        if ( LastType == null || LastType != CurrentWorkorder.CurrentOpType )
+        if ( LastType != CurrentWorkorder.CurrentOpType )
         {
           SetupTime = CurrentWorkorder.CurrentOpSetupTime;
         }
@@ -82,10 +85,6 @@ namespace Core.Workcenters
 
       EstTimeToComplete--;
 
-      // TODO - Implement Machine Tooling replacement
-
-      // TODO - Implement Machine Resource replacement
-
       if (EstTimeToComplete > 0) { return null; }
 
       IWork answer = CurrentWorkorder;
@@ -93,5 +92,37 @@ namespace Core.Workcenters
       CurrentWorkorder = null;
       return answer;
     } // Work()
+
+    private List<Op.OpTypes> GetValidTypes(Types machineType)
+    {
+      return machineType switch {
+        Types.SmallDrill => new List<Op.OpTypes>(){ 
+          Op.OpTypes.DrillOpType2, 
+          Op.OpTypes.DrillOpType3 
+        },
+        Types.BigDrill => new List<Op.OpTypes>(){ 
+          Op.OpTypes.DrillOpType1, 
+          Op.OpTypes.DrillOpType2
+        },
+        Types.Lathe => new List<Op.OpTypes>(){ 
+          Op.OpTypes.LatheOpType1, 
+          Op.OpTypes.LatheOpType2
+        },
+        Types.WetCnc => new List<Op.OpTypes>(){ 
+          Op.OpTypes.CncOpType1,
+          Op.OpTypes.CncOpType2
+        },
+        Types.DryCnc => new List<Op.OpTypes>(){ 
+          Op.OpTypes.CncOpType2,
+          Op.OpTypes.CncOpType3,
+          Op.OpTypes.CncOpType4
+        },
+        Types.Press => new List<Op.OpTypes>(){ 
+          Op.OpTypes.PressOpType1,
+          Op.OpTypes.PressOpType2
+        },
+        _ => new List<Op.OpTypes>()
+      };
+    }
   }
 }

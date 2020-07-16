@@ -19,13 +19,7 @@ namespace Tests.Workcenters
     [SetUp]
     protected void SetUp()
     {
-      machineScheduler = Substitute.For<IScheduleMachines>();
-      machineScheduler
-        .ChooseNextWoId(Arg.Any<string>(), Arg.Any<ICustomQueue>())
-        .Returns(WO_ID);
-
-      List<string> types = new List<string>(){"type1", "type2"};
-      _subject = new Machine("test subject", machineScheduler, types);
+      _subject = new Machine("test subject", Machine.Types.SmallDrill);
       _dayTime = new DayTime();
     }
 
@@ -72,28 +66,17 @@ namespace Tests.Workcenters
       var answer = _subject.Work(_dayTime);
 
       Assert.AreEqual(WO_ID, answer.Id);
-      Assert.AreEqual("type1", _subject.LastType);
+      Assert.AreEqual(Op.OpTypes.DrillOpType2, _subject.LastType);
       Assert.IsNull(_subject.CurrentWorkorder);
       Assert.IsTrue(_subject.InputBuffer.Empty());
       Assert.AreEqual(0, _subject.SetupTime);
       Assert.AreEqual(0, _subject.EstTimeToComplete);
     }
 
-    // Generators
-    public Workorder GenerateWorkorder()
-    {
-      List<Op> ops = new List<Op>{
-        new Op("type1", 1, 1),
-        new Op("type2", 1, 1)
-      };
-      Workorder wo = new Workorder(WO_ID, ops, "p1");
-      return wo;
-    }
-
     //Prep Helpers
     public void SetupSubject(int workIterations)
     {
-      Workorder wo = GenerateWorkorder();
+      Workorder wo = new Workorder(1, Workorder.PoType.p7,3);
       _subject.AddToQueue(wo);
 
       for(int i = 0; i < workIterations; i++)

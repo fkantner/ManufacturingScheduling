@@ -15,25 +15,43 @@ namespace simulationCode
     {
         public static void Main()
         {
-            Console.WriteLine("Starting Simulation");
+            Console.WriteLine("Hello Simulation");
             DayTime dt = new DayTime();
 
-            Console.WriteLine("Generating Plants");
-            List<IPlant> plants = SimulationSetup.GeneratePlants();
+            Console.WriteLine("Creating Customer and Enterprise");
+            Customer customer = new Customer();
+            Enterprise ent = new Enterprise(customer);
 
-            Enterprise ent = new Enterprise(dt, plants);
+            Console.WriteLine("Generating Plants");
+            List<Plant> plants = SimulationSetup.GeneratePlants();
+            foreach(Plant plant in plants)
+            {
+                ent.Add(plant);
+            }
+
             Console.WriteLine("Generating Transport Routes");
             var routes = SimulationSetup.GenerateRoutes(plants);
             Transport transport = new Transport(ent, routes);
-            ent.AddTransport(transport);
+            ent.Add(transport);
 
-            Customer customer = new Customer();
-            ent.AddCustomer(customer);
-            customer.AddEnterprise(ent);
-
+            Console.WriteLine("Generating Simulation Node");
             SimulationNode sn = new SimulationNode(dt, ent, customer);
+            
+            Console.WriteLine("Loading Workorders");
+            int woCounter = 0;
+            while(woCounter < Configuration.InitialNumberOfWorkorders)
+            {
+                Workorder.PoType type = SimulationSetup.SelectWoPoType(woCounter);
+                DayTime due = SimulationSetup.SelectWoDueDate(dt, woCounter);
+                int initialOp = SimulationSetup.SelectWoInitialOp(woCounter);
+                customer.CreateOrder(type, due, initialOp);
+                woCounter++;
+            }
+            customer.Work(dt); // Load Workorders into Enterprise
+
             SaveToFile("default", 0, sn);
 
+            Console.WriteLine("Starting Simulation");
             for(int i = 1; i < Configuration.MinutesForProgramToTest; i++)
             {
                 dt.Next();
@@ -42,7 +60,7 @@ namespace simulationCode
 
                 if (i%500 == 0) 
                 {
-                    customer.CreateOrder("p1", new DayTime((int) DayTime.Days.Tue, 800));
+                    customer.CreateOrder(Workorder.PoType.p1, new DayTime((int) DayTime.Days.Tue, 800));
                 }
                 SaveToFile("default", i, sn);
             }
@@ -65,11 +83,9 @@ namespace simulationCode
             }
 
             StreamWriter writer = new StreamWriter(filename);
-            //writer.WriteLine("[");
 
             writer.WriteLine(ToJson(simulationNode));
 
-            //writer.WriteLine("]");
             writer.Dispose();
             writer.Close();
         }

@@ -1,16 +1,16 @@
 namespace Core.Workcenters
 {
   using Resources;
-  using System.Collections.Generic;
   using Core.Plant;
+  using System.Collections.Generic;
 
   public class Workcenter : IAcceptWorkorders
   {
     private IMes _mes;
 
-    public Workcenter(string name, IDoWork machine)
+    public Workcenter(string name, Machine.Types machineType)
     {
-      Machine = machine;
+      Machine = new Machine("Machine " + name, machineType);
       Name = name;
       OutputBuffer = new NeoQueue();
       Inspection = new Quality();
@@ -35,12 +35,12 @@ namespace Core.Workcenters
       return;
     }
 
-    public string ListOfValidTypes()
+    public List<Op.OpTypes> ListOfValidTypes()
     {
       return Machine.ListOfValidTypes();
     }
 
-    public bool ReceivesType(string type)
+    public bool ReceivesType(Op.OpTypes type)
     {
       return Machine.ReceivesType(type);
     }

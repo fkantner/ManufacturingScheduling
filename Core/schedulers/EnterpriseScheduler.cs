@@ -2,6 +2,7 @@ namespace Core.Schedulers
 {
   using System.Linq;
   using Core.Enterprise;
+  using Core.Resources;
 
   public enum EnterpriseSchedule { DEFAULT=0 };
 
@@ -28,9 +29,9 @@ namespace Core.Schedulers
 
     private string GetFirstValidDestination(int woid)
     {
-      string type = _erp.Workorders[woid].CurrentOpType;
+      Op.OpTypes type = _erp.Workorders[woid].CurrentOpType;
       
-      if (type == "shippingOp") { return "customer"; }
+      if (type == Op.OpTypes.ShippingOp) { return "customer"; }
 
       return _erp.Locations.First(x => x.Value.CanWorkOnType(type)).Value.Name;
     }

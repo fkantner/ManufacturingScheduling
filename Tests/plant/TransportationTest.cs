@@ -19,6 +19,7 @@ namespace Tests.Plant
     private DayTime _dayTime;
     private IWork _workorder;
     private ICustomQueue _nQueue;
+    private IPlant _plant;
 
     private const int WORKORDER_ID = 1;
     private const int EMPTY_WO_ID = 0;
@@ -26,14 +27,14 @@ namespace Tests.Plant
     [SetUp]
     protected void SetUp()
     {
-      _scheduler = Substitute.For<IScheduleTransport>();
       _mes = Substitute.For<IMes>();
-      _scheduler.Mes.Returns(_mes);
       _start = Substitute.For<IAcceptWorkorders>();
       _start.Name.Returns("Start Location");
       _destination = Substitute.For<IAcceptWorkorders>();
       _destination.Name.Returns("Destination");
-      _subject = new Transportation(_start, _scheduler);
+      _plant = Substitute.For<IPlant>();
+      _plant.Mes.Returns(_mes);
+      _subject = new Transportation(_start, (Plant) _plant);
       _dayTime = new DayTime();
       _workorder = Substitute.For<IWork>();
       _workorder.Id.Returns(WORKORDER_ID);

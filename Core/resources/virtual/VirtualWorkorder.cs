@@ -26,10 +26,10 @@ namespace Core.Resources.Virtual
     public int CurrentOpEstTimeToComplete { get => CurrentOp.EstTimeToComplete; }
     public int CurrentOpIndex { get; private set; }
     public int CurrentOpSetupTime { get => CurrentOp.SetupTime; }
-    public string CurrentOpType { get => CurrentOp.Type; }
+    public Op.OpTypes CurrentOpType { get => CurrentOp.Type; }
     public int Id { get; }
     public List<Op> Operations { get; }
-    public string ProductType { get; }
+    public Workorder.PoType ProductType { get; }
 
     public void ChangeStatus(Statuses newStatus)
     {

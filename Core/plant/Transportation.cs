@@ -22,14 +22,14 @@ namespace Core.Plant
     public int TransportTime { get; private set; }
 
 // Constructor
-    public Transportation(IAcceptWorkorders start, IScheduleTransport ts)
+    public Transportation(IAcceptWorkorders start, IPlant plant)
     {
       _current_location = start;
       _destination = null;
       TransportTime = 0;
       _cargo = null;
-      _scheduler = ts;
-      _mes = ts.Mes;
+      _scheduler = new TransportationScheduler(plant);
+      _mes = _scheduler.Mes;
     }
 
 // Pure Methods

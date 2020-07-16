@@ -1,6 +1,7 @@
 namespace Core.Enterprise
 {
   using System.Collections.Generic;
+  using System.Linq;
   using Core;
   using Plant;
   using Resources;
@@ -9,14 +10,14 @@ namespace Core.Enterprise
   public interface IEnterprise
   {
     IRequestWork Customer { get; }
-    DayTime DayTime { get; }
     IErp Erp { get; }
     IEnumerable<IPlant> Plants { get; }
     EnterpriseScheduler Scheduler { get; }
     ITransportWorkBetweenPlants Transport { get; }
-    void AddCustomer(IRequestWork customer);
-    void AddTransport(ITransportWorkBetweenPlants transport);
-    void StartOrder(string type, DayTime due);
+    void Add(IPlant plant);
+    void Add(ITransportWorkBetweenPlants transport);
+    void Add(IWork workorder);
+    void StartOrder(Workorder.PoType type, DayTime due, int initialOp=0);
     void Work(DayTime dayTime);
   }
 
@@ -25,49 +26,50 @@ namespace Core.Enterprise
 // Properties
     public IRequestWork Customer { get; private set;}
     public IErp Erp { get; }
-    public DayTime DayTime { get; }
-    public IEnumerable<IPlant> Plants { get; }
+    public IEnumerable<IPlant> Plants { get => _plants; }
     public EnterpriseScheduler Scheduler { get; }
     public ITransportWorkBetweenPlants Transport { get; private set; }
 
+    private List<Plant> _plants { get; }
+
 // Constructor
-    public Enterprise(DayTime dayTime, IEnumerable<IPlant> plants)
+    public Enterprise(Customer customer)
     {
-      DayTime = dayTime;
-      Plants = plants;
-      Erp = (IErp) new Erp("ERP", Plants);
+      _plants = new List<Plant>();
+      Erp = (IErp) new Erp("ERP");
       Scheduler = new EnterpriseScheduler(Erp);
       Transport = null;
-      Customer = null;
-
-      foreach(IPlant plant in Plants)
-      {
-        plant.Mes.AddErp(Erp);
-        plant.AddEnterprise(this);
-
-        foreach(IWork wo in plant.Mes.Workorders.Values)
-        {
-          Erp.AddWorkorder(plant.Name, wo);
-        }
-      }
+      Customer = customer;
+      customer.AddEnterprise(this);
     }
 
 // Pure Methods
 
 // Impure Methods
-    public void AddCustomer(IRequestWork customer)
+    public void Add(IPlant plant)
     {
-      if(Customer != null) { return; }
-      Customer = customer;
+      Erp.Add(plant);
+      plant.Mes.AddErp(Erp);
+      plant.Add(this);
+      _plants.Add((Plant) plant);
     }
 
-    public void AddTransport(ITransportWorkBetweenPlants transport)
+    public void Add(ITransportWorkBetweenPlants transport)
     {
       if(Transport != null) { return; }
       Transport = transport;
     }
 
-    public void StartOrder(string type, DayTime due)
+    public void Add(IWork workorder)
+    {
+      Op.OpTypes type = workorder.CurrentOpIndex > 0 ? workorder.CurrentOpType : workorder.Operations[1].Type;
+      Plant plant = _plants.FirstOrDefault(x => x.CanWorkOnType(type));
+      
+      plant.Add(workorder);
+      Erp.AddWorkorder(plant.Name, workorder);
+    }
+
+    public void StartOrder(Workorder.PoType type, DayTime due, int initialOp=0)
     {
       Erp.CreateWorkorder(type, due);
     }

@@ -25,7 +25,9 @@ namespace Tests.Enterprise
             _plant2.Name.Returns(PLANT2_NAME);
             List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
 
-            _subject = new Erp(ERP_NAME, list);
+            _subject = new Erp(ERP_NAME);
+            _subject.Add(_plant1);
+            _subject.Add(_plant2);
         }
 
         [Test]
@@ -39,9 +41,9 @@ namespace Tests.Enterprise
         {
             IWork wo = Substitute.For<IWork>();
             wo.Id.Returns(1);
-            wo.ProductType.Returns("p1");
+            wo.ProductType.Returns(Workorder.PoType.p1);
             wo.CurrentOpIndex.Returns(0);
-            wo.Operations.Returns(new List<Op>() { new Op("t1", 1, 1)});
+            wo.Operations.Returns(new List<Op>() { new Op(Op.OpTypes.DrillOpType2) });
             
             _subject.AddWorkorder(PLANT1_NAME, wo);
 
@@ -53,16 +55,16 @@ namespace Tests.Enterprise
         [Test]
         public void Work_SendsWorkordersToPlant()
         {
-            string productType = "p1";
+            Workorder.PoType productType = Workorder.PoType.p1;
             DayTime due = new DayTime().CreateTimestamp(50);
-            _plant1.CanWorkOnType(Arg.Any<string>()).Returns(false);
-            _plant2.CanWorkOnType(Arg.Any<string>()).Returns(true);
+            _plant1.CanWorkOnType(Arg.Any<Op.OpTypes>()).Returns(false);
+            _plant2.CanWorkOnType(Arg.Any<Op.OpTypes>()).Returns(true);
 
             _subject.CreateWorkorder(productType, due);
             _subject.Work(new DayTime());
 
-            _plant1.DidNotReceive().AddWorkorder(Arg.Any<IWork>());
-            _plant2.Received().AddWorkorder(Arg.Any<IWork>());
+            _plant1.DidNotReceive().Add(Arg.Any<IWork>());
+            _plant2.Received().Add(Arg.Any<IWork>());
         }
     }
 }

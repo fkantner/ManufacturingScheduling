@@ -1,5 +1,6 @@
 namespace Core.Workcenters
 {
+  using System.Collections.Generic;
   using Core.Plant;
   using Core.Resources;
 
@@ -7,9 +8,9 @@ namespace Core.Workcenters
   {
     void AddPlant(Plant plant);
     void AddToQueue(IWork workorder);
-    bool ReceivesType(string type);
+    bool ReceivesType(Op.OpTypes type);
     IWork Work(DayTime dayTime);
-    string ListOfValidTypes();
+    List<Op.OpTypes> ListOfValidTypes();
     IWork CurrentWorkorder { get; }
   }
 }

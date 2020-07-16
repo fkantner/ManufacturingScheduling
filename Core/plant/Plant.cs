@@ -12,12 +12,13 @@ namespace Core.Plant
     IMes Mes { get; }
     string Name { get; }
     ISchedulePlants PlantScheduler { get; }
-    IEnumerable<IAcceptWorkorders> Workcenters { get; }
-    ITransportWork InternalTransportation { get; set; }
+    List<IAcceptWorkorders> Workcenters { get; }
+    ITransportWork InternalTransportation { get; }
     
-    void AddEnterprise(Enterprise enterprise);
-    void AddWorkorder(IWork workorder);
-    bool CanWorkOnType(string type);
+    void Add(IEnterprise enterprise);
+    void Add(IAcceptWorkorders workcenter);
+    void Add(IWork workorder);
+    bool CanWorkOnType(Op.OpTypes type);
     IReceive Dock();
     Dictionary<IWork, string> ShipToOtherPlants();
     void Work(DayTime dt);
@@ -26,43 +27,45 @@ namespace Core.Plant
   public class Plant : IPlant
   {
 // Properties
-    public ITransportWork InternalTransportation { get; set; }
+    public ITransportWork InternalTransportation { get; }
     public IMes Mes { get; }
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }
-    public IEnumerable<IAcceptWorkorders> Workcenters { get; }
+    public List<IAcceptWorkorders> Workcenters { get; }
     
 // Constructor
-    public Plant(string name, IEnumerable<IAcceptWorkorders> workcenters)
+    public Plant(string name)
     {
       Name = name;
-      Workcenters = workcenters;
+      Workcenters = new List<IAcceptWorkorders>();
+      _dock = new Dock();
+      Workcenters.Add(_dock);
+      Workcenters.Add(new Stage());
+      
+      Mes = (IMes) new Mes(name);
+
       _enterprise = null;
 
-      Dictionary<string, IAcceptWorkorders> locations = new Dictionary<string, IAcceptWorkorders>();
       foreach(IAcceptWorkorders wc in Workcenters)
       {
-        locations.Add(wc.Name, wc);
+        wc.SetMes(Mes);
+        Mes.Add(wc);
         wc.AddPlant(this);
       }
-      Mes = (IMes) new Mes(name, locations);
+      
 
       PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes);
-
-      _dock = null;
-      Dock();
+      InternalTransportation = new Transportation(_dock, this);
     }
 
 // Pure Methods
-    public bool CanWorkOnType(string type)
+    public bool CanWorkOnType(Op.OpTypes type)
     {
       return Workcenters.Where(x => x.ReceivesType(type)).Any();
     }
 
     public IReceive Dock()
     {
-      if(_dock != null) { return _dock; }
-      _dock = (Dock) Workcenters.First(x => x.Name == "Shipping Dock");
       return _dock;
     }
 
@@ -87,17 +90,25 @@ namespace Core.Plant
     }
 
 // Impure Methods
-    public void AddEnterprise(Enterprise enterprise)
+    public void Add(IEnterprise enterprise)
     {
       if(_enterprise != null) { return; }
       _enterprise = enterprise;
     }
 
-    public void AddWorkorder(IWork workorder)
+    public void Add(IWork workorder)
     {
       var wc = Workcenters.First(x => x.ReceivesType(workorder.CurrentOpType));
       Mes.AddWorkorder(wc.Name, workorder);
       wc.AddToQueue(workorder);
+    }
+
+    public void Add(IAcceptWorkorders workcenter)
+    {
+      Workcenters.Add(workcenter);
+      Mes.Add(workcenter);
+      workcenter.SetMes(Mes);
+      workcenter.AddPlant(this);
     }
 
     public void Work( DayTime dt )
@@ -114,7 +125,7 @@ namespace Core.Plant
 
 // Private
     private Dock _dock;
-    private Enterprise _enterprise;
+    private IEnterprise _enterprise;
 
   }
 }

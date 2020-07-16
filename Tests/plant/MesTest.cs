@@ -15,7 +15,8 @@ namespace Tests.Mes
     private IAcceptWorkorders _wc2;
 
     private const string WC1 = "wc1", WC2 = "wc2";
-    private const string TYPE1 = "type1", TYPE2 = "type2";
+    private const Op.OpTypes TYPE1 = Op.OpTypes.DrillOpType1, 
+      TYPE2 = Op.OpTypes.DrillOpType2;
 
     [SetUp]
     protected void SetUp()
@@ -29,13 +30,9 @@ namespace Tests.Mes
       _wc2.ReceivesType(TYPE1).Returns(false);
       _wc2.ReceivesType(TYPE2).Returns(true);
 
-      Dictionary<string, IAcceptWorkorders> list = new Dictionary<string, IAcceptWorkorders>()
-      {
-        { WC1, _wc1 },
-        { WC2, _wc2 }
-      };
-
-      _subject = new Mes("mes1", list);
+      _subject = new Mes("mes");
+      _subject.Add(_wc1);
+      _subject.Add(_wc2);
     }
 
     [Test]
@@ -71,8 +68,8 @@ namespace Tests.Mes
     [Test]
     public void Complete_CompletesOp()
     {
-      Op op1 = new Op(TYPE1, 1, 1);
-      Op op2 = new Op(TYPE2, 1, 1);
+      Op op1 = new Op(TYPE1);
+      Op op2 = new Op(TYPE2);
       List<Op> lo = new List<Op>(){op1, op2};
 
       IWork wo = CreateSubstituteWo(1, TYPE1, lo);
@@ -102,7 +99,7 @@ namespace Tests.Mes
       Assert.That( answer, Has.No.Member(3));
     }
 
-    private IWork CreateSubstituteWo(int id, string type, List<Op> ops)
+    private IWork CreateSubstituteWo(int id, Op.OpTypes type, List<Op> ops)
     {
       IWork wo = Substitute.For<IWork>();
       wo.Id.Returns(id);

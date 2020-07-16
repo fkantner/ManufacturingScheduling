@@ -1,13 +1,13 @@
 namespace Core.Resources.Virtual
 {
+  using System.Collections.Generic;
   using Core.Plant;
   using Core.Resources;
   using Core.Workcenters;
-  using System.Collections.Generic;
 
   public class VirtualWorkcenter : IAcceptWorkorders
   {
-    public VirtualWorkcenter(string name, string types)
+    public VirtualWorkcenter(string name, List<Op.OpTypes> types)
     {
       Name = name;
       Types = types;
@@ -18,7 +18,7 @@ namespace Core.Resources.Virtual
     public List<IWork> InputBuffer { get; }
     public string Name { get; }
     public ICustomQueue OutputBuffer { get; }
-    private string Types { get; }
+    private List<Op.OpTypes> Types { get; }
 
     public void AddPlant(Plant plant)
     { // Doesn't need to respond to Plant.
@@ -30,12 +30,9 @@ namespace Core.Resources.Virtual
       InputBuffer.Add(wo);
     }
 
-    public string ListOfValidTypes() { return Types; }
+    public List<Op.OpTypes> ListOfValidTypes() { return Types; }
 
-    public bool ReceivesType(string type)
-    {
-      return Types.Contains(type);
-    }
+    public bool ReceivesType(Op.OpTypes type) { return Types.Contains(type); }
 
     public void SetMes(IMes mes) { return ; }
 

@@ -31,7 +31,7 @@ namespace Core.Resources.Virtual
     public IMes Mes { get; }
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }
-    public IEnumerable<IAcceptWorkorders> Workcenters { get; }
+    public List<IAcceptWorkorders> Workcenters { get; }
     public ITransportWork InternalTransportation { get; set; }
 
     public IReceive Dock()
@@ -56,18 +56,24 @@ namespace Core.Resources.Virtual
       return new Dictionary<IWork, string>();
     }
 
-    public void AddEnterprise(Enterprise enterprise)
+    public void Add(IEnterprise enterprise)
     {
       return; // Don't use
     }
 
-    public void AddWorkorder(IWork workorder)
+    public void Add(IAcceptWorkorders workcenter)
     {
-      _original.AddWorkorder(workorder);
+      // Don't use;
+    }
+
+    public void Add(IWork workorder)
+    {
+      //TODO Investigate VirtualPlant Add(IWork)
+      _original.Add(workorder);
       return;
     }
 
-    public bool CanWorkOnType(string type)
+    public bool CanWorkOnType(Op.OpTypes type)
     {
       return _original.CanWorkOnType(type);
     }

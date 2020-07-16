@@ -2,6 +2,7 @@ namespace Core.Workcenters
 {
   using Core.Plant;
   using Core.Resources;
+  using System.Collections.Generic;
 
   public interface IAcceptWorkorders
   {
@@ -10,8 +11,8 @@ namespace Core.Workcenters
 
     void AddPlant(Plant plant);
     void AddToQueue(IWork wo);
-    string ListOfValidTypes();
-    bool ReceivesType(string type);
+    List<Op.OpTypes> ListOfValidTypes();
+    bool ReceivesType(Op.OpTypes type);
     void Work(DayTime dayTime);
     void SetMes(IMes mes);
   }

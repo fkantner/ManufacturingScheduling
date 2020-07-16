@@ -9,9 +9,9 @@ namespace Core.Resources
     List<Op> Operations { get; }
     int CurrentOpEstTimeToComplete { get; }
     int CurrentOpSetupTime { get; }
-    string CurrentOpType { get; }
+    Op.OpTypes CurrentOpType { get; }
     int Id { get; }
-    string ProductType { get; }
+    Workorder.PoType ProductType { get; }
     void SetNextOp();
   }
 }

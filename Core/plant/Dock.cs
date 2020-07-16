@@ -1,5 +1,6 @@
 namespace Core.Plant
 {
+  using System.Collections.Generic;
   using Core.Workcenters;
   using Core.Resources;
 
@@ -27,12 +28,12 @@ namespace Core.Plant
     }
 
 // Pure Methods
-    public string ListOfValidTypes()
+    public List<Op.OpTypes> ListOfValidTypes()
     {
-      return VALID_TYPE ;
+      return new List<Op.OpTypes>() { VALID_TYPE };
     }
 
-    public bool ReceivesType(string type)
+    public bool ReceivesType(Op.OpTypes type)
     {
       return type == VALID_TYPE ;
     }
@@ -74,7 +75,7 @@ namespace Core.Plant
 
 // Private
     private IMes _mes;
-    private const string VALID_TYPE = "shippingOp";
+    private const Op.OpTypes VALID_TYPE = Op.OpTypes.ShippingOp;
     
   }
 }

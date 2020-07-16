@@ -1,5 +1,6 @@
 namespace Core.Plant
 {
+  using System.Collections.Generic;
   using Core.Workcenters;
   using Core.Resources;
 
@@ -21,12 +22,12 @@ namespace Core.Plant
     }
 
 // Pure Methods
-    public string ListOfValidTypes()
+    public List<Op.OpTypes> ListOfValidTypes()
     {
-      return VALID_TYPE;
+      return new List<Op.OpTypes>(){ VALID_TYPE };
     }
 
-    public bool ReceivesType(string type)
+    public bool ReceivesType(Op.OpTypes type)
     {
       return type == VALID_TYPE;
     }
@@ -71,6 +72,6 @@ namespace Core.Plant
     private IMes _mes;
     private int _stage_counter;
     private const int COUNTER_RESET_VALUE = 10;
-    private const string VALID_TYPE = "stageOp";
+    private const Op.OpTypes VALID_TYPE = Op.OpTypes.StageOp;
   }
 }

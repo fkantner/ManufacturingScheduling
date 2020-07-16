@@ -1,17 +1,19 @@
 namespace Tests.Workcenters
 {
+  using System.Collections.Generic;
   using Core;
   using Core.Workcenters;
   using Core.Resources;
   using NUnit.Framework;
-  using System.Collections.Generic;
+  using NSubstitute;
+  
 
   [TestFixture]
   public class QualityTest
   {
     private Quality _subject;
     private DayTime _dayTime;
-    private Workorder _wo1;
+    private IWork _wo1;
 
     [SetUp]
     protected void SetUp()
@@ -21,11 +23,14 @@ namespace Tests.Workcenters
 
       List<Op> ops = new List<Op>()
       {
-        new Op("type1", 1, 1),
-        new Op("type2", 1, 1)
+        new Op(Op.OpTypes.DrillOpType1),
+        new Op(Op.OpTypes.DrillOpType1)
       };
 
-      _wo1 = new Workorder(1, ops, "p1");
+
+      _wo1 = Substitute.For<IWork>();
+      _wo1.Id.Returns(1);
+      _wo1.Operations.Returns(ops);
     }
 
     [Test]

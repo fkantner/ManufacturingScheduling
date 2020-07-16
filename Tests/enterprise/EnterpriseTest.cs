@@ -12,6 +12,7 @@ namespace Tests.Enterprise
     public class EnterpriseTest
     {
         private DayTime _dayTime;
+        private Customer _customer;
         private Enterprise _subject;
         private IPlant _plant1, _plant2;
 
@@ -23,9 +24,11 @@ namespace Tests.Enterprise
             _plant2 = GeneratePlant("P2", 2);
             
             List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
-
-            _subject = new Enterprise(_dayTime, list);
-            _subject.AddTransport(Substitute.For<ITransportWorkBetweenPlants>());
+            _customer = new Customer();
+            
+            _subject = new Enterprise(_customer);
+            _subject.Add(_plant1);
+            _subject.Add(_plant2);
         }
 
         [Test]
@@ -46,7 +49,7 @@ namespace Tests.Enterprise
             IWork wo = Substitute.For<IWork>();
             Dictionary<int, IWork> dic = new Dictionary<int, IWork>();
             wo.Id.Returns(wonumber);
-            wo.Operations.Returns(new List<Op>() { new Op("Op", 1, 1) });
+            wo.Operations.Returns(new List<Op>() { new Op(Op.OpTypes.DrillOpType1) });
             wo.CurrentOpIndex.Returns(1);
             dic.Add(wonumber, wo);
             mes.Workorders.Returns(dic);
