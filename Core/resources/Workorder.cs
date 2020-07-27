@@ -30,6 +30,11 @@ namespace Core.Resources
     }
 
     // PUBLIC METHODS //
+    public static int GetMaxOps(PoType type)
+    {
+      return GetMiddleOperations(type).Count + 2;
+    }
+
     public void SetNextOp()
     {
       if(CurrentOpIndex < Operations.Count - 1)
@@ -47,7 +52,7 @@ namespace Core.Resources
       return answer;
     }
 
-    private List<Op> GetMiddleOperations(PoType type)
+    private static List<Op> GetMiddleOperations(PoType type)
     {
       return type switch 
       {

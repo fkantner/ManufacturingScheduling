@@ -97,7 +97,10 @@ namespace Core.Enterprise
       {
         foreach(IPlant plant in Locations.Values)
         {
-          if(plant.CanWorkOnType(wo.Operations[1].Type))
+          int importantOp = 1;
+          if(wo.CurrentOpIndex > importantOp){ importantOp = wo.CurrentOpIndex; }
+
+          if(plant.CanWorkOnType(wo.Operations[importantOp].Type))
           {
             // Only adding to Plant. Will update back to ERP from
             // MES later.

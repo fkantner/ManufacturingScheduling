@@ -90,13 +90,13 @@ namespace simulationCode
       return dayTime.CreateTimestamp(increment);
     }
 
-    public static int SelectWoInitialOp(int counter)
+    public static int SelectWoInitialOp(int counter, int max)
     {
       int answer = 0;
+      if(counter % 2 == 0) { answer++; }
       if(counter % 3 == 0) { answer++; }
       if(counter % 5 == 0) { answer++; }
-      if(counter % 10 == 0) { answer++; }
-      return answer;
+      return answer > max ? max : answer;
     }
      
   }

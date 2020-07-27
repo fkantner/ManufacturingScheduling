@@ -43,7 +43,7 @@ namespace simulationCode
             {
                 Workorder.PoType type = SimulationSetup.SelectWoPoType(woCounter);
                 DayTime due = SimulationSetup.SelectWoDueDate(dt, woCounter);
-                int initialOp = SimulationSetup.SelectWoInitialOp(woCounter);
+                int initialOp = SimulationSetup.SelectWoInitialOp(woCounter, Workorder.GetMaxOps(type) - 1);
                 customer.CreateOrder(type, due, initialOp);
                 woCounter++;
             }
@@ -60,11 +60,12 @@ namespace simulationCode
 
                 if (i%500 == 0) 
                 {
+                    Console.Write(".");
                     customer.CreateOrder(Workorder.PoType.p1, new DayTime((int) DayTime.Days.Tue, 800));
                 }
                 SaveToFile("default", i, sn);
             }
-
+            Console.WriteLine(".");
             Console.WriteLine("Finished with Simulation");
         }
 

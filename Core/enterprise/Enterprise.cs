@@ -71,7 +71,7 @@ namespace Core.Enterprise
 
     public void StartOrder(Workorder.PoType type, DayTime due, int initialOp=0)
     {
-      Erp.CreateWorkorder(type, due);
+      Erp.CreateWorkorder(type, due, initialOp);
     }
 
     public void Work(DayTime dayTime)
