@@ -4,6 +4,7 @@ namespace Tests.Enterprise
     using Core.Enterprise;
     using Core.Plant;
     using Core.Resources;
+    using Core.Workcenters;
     using NSubstitute;
     using NUnit.Framework;
     using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Tests.Enterprise
             _plant1 = GeneratePlant("P1", 1);
             _plant2 = GeneratePlant("P2", 2);
             
-            List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
+            //List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
             _customer = new Customer();
             
             _subject = new Enterprise(_customer);
@@ -54,6 +55,11 @@ namespace Tests.Enterprise
             dic.Add(wonumber, wo);
             mes.Workorders.Returns(dic);
             plant.Mes.Returns(mes);
+
+            IAcceptWorkorders wc = Substitute.For<IAcceptWorkorders>();
+            wc.Name.Returns("Wc" + wonumber);
+            wc.ListOfValidTypes().Returns(new List<Op.OpTypes>(){Op.OpTypes.DrillOpType1});
+            plant.Workcenters.Returns(new List<IAcceptWorkorders>(){ wc });
             
             return plant;
         }

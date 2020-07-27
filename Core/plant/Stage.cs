@@ -33,7 +33,7 @@ namespace Core.Plant
     }
 
 // Impure Methods
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     {
       return; // Noop.
     }

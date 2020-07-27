@@ -5,7 +5,7 @@ namespace Core.Schedulers
 
   public interface IScheduleMachines
   {
-    void AddPlant(Plant plant);
+    void AddPlant(IPlant plant);
     int ChooseNextWoId(string machineName, ICustomQueue queue);
   }
 
@@ -18,7 +18,7 @@ namespace Core.Schedulers
       _plant = null;
     }
 
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     {
       if(_plant != null) { return; }
       
@@ -36,6 +36,6 @@ namespace Core.Schedulers
       return _plant.PlantScheduler.ValidateWoForMachines(proposed, machineName);
     }
 
-    private Plant _plant;
+    private IPlant _plant;
   }
 }

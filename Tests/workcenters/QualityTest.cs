@@ -24,7 +24,7 @@ namespace Tests.Workcenters
       List<Op> ops = new List<Op>()
       {
         new Op(Op.OpTypes.DrillOpType1),
-        new Op(Op.OpTypes.DrillOpType1)
+        new Op(Op.OpTypes.DrillOpType2)
       };
 
 
@@ -79,7 +79,7 @@ namespace Tests.Workcenters
       Assert.IsNotNull(answer);
       Assert.AreEqual(1, answer.Id);
       Assert.IsNull(_subject.CurrentWo);
-      Assert.AreEqual("type2", answer.CurrentOpType);
+      _wo1.Received().SetNextOp();
     }
   }
 }

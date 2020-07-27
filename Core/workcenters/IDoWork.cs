@@ -6,7 +6,7 @@ namespace Core.Workcenters
 
   public interface IDoWork
   {
-    void AddPlant(Plant plant);
+    void AddPlant(IPlant plant);
     void AddToQueue(IWork workorder);
     bool ReceivesType(Op.OpTypes type);
     IWork Work(DayTime dayTime);

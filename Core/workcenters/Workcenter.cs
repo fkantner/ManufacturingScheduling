@@ -22,7 +22,7 @@ namespace Core.Workcenters
     public string Name { get; }
     public ICustomQueue OutputBuffer { get; }
 
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     {
       Machine.AddPlant(plant);
     }

@@ -39,7 +39,7 @@ namespace Core.Plant
     }
 
 // Impure Methods
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     {
       return; // Noop. Doesn't need to connect to Plant like other WC's.
     }

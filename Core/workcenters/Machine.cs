@@ -38,7 +38,7 @@ namespace Core.Workcenters
       SetupTime = 0;
     }
 
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     {
       _scheduler.AddPlant(plant);
     }

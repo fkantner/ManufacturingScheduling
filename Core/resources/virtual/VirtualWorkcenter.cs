@@ -20,7 +20,7 @@ namespace Core.Resources.Virtual
     public ICustomQueue OutputBuffer { get; }
     private List<Op.OpTypes> Types { get; }
 
-    public void AddPlant(Plant plant)
+    public void AddPlant(IPlant plant)
     { // Doesn't need to respond to Plant.
       return;
     }

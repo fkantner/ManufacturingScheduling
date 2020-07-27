@@ -4,6 +4,8 @@ namespace Tests.Enterprise
     using Core.Enterprise;
     using Core.Plant;
     using Core.Resources;
+    using Core.Schedulers;
+    using Core.Workcenters;
     using NSubstitute;
     using NUnit.Framework;
     using System.Collections.Generic;
@@ -21,8 +23,20 @@ namespace Tests.Enterprise
         {
             _plant1 = Substitute.For<IPlant>();
             _plant1.Name.Returns(PLANT1_NAME);
+            IMes mes1 = Substitute.For<IMes>();
+            ISchedulePlants isp1 = Substitute.For<ISchedulePlants>();
+            _plant1.Mes.Returns(mes1);
+            _plant1.PlantScheduler.Returns(isp1);
+            _plant1.Workcenters.Returns(new List<IAcceptWorkorders>());
+            
             _plant2 = Substitute.For<IPlant>();
             _plant2.Name.Returns(PLANT2_NAME);
+            IMes mes2 = Substitute.For<IMes>();
+            ISchedulePlants isp2 = Substitute.For<ISchedulePlants>();
+            _plant2.Mes.Returns(mes2);
+            _plant2.PlantScheduler.Returns(isp2);
+            _plant2.Workcenters.Returns(new List<IAcceptWorkorders>());
+
             List<IPlant> list = new List<IPlant>() { _plant1, _plant2 };
 
             _subject = new Erp(ERP_NAME);

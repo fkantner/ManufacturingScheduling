@@ -30,12 +30,12 @@ namespace Core.Enterprise
     public EnterpriseScheduler Scheduler { get; }
     public ITransportWorkBetweenPlants Transport { get; private set; }
 
-    private List<Plant> _plants { get; }
+    private List<IPlant> _plants { get; }
 
 // Constructor
     public Enterprise(Customer customer)
     {
-      _plants = new List<Plant>();
+      _plants = new List<IPlant>();
       Erp = (IErp) new Erp("ERP");
       Scheduler = new EnterpriseScheduler(Erp);
       Transport = null;
@@ -51,7 +51,7 @@ namespace Core.Enterprise
       Erp.Add(plant);
       plant.Mes.AddErp(Erp);
       plant.Add(this);
-      _plants.Add((Plant) plant);
+      _plants.Add(plant);
     }
 
     public void Add(ITransportWorkBetweenPlants transport)
@@ -63,7 +63,7 @@ namespace Core.Enterprise
     public void Add(IWork workorder)
     {
       Op.OpTypes type = workorder.CurrentOpIndex > 0 ? workorder.CurrentOpType : workorder.Operations[1].Type;
-      Plant plant = _plants.FirstOrDefault(x => x.CanWorkOnType(type));
+      IPlant plant = _plants.FirstOrDefault(x => x.CanWorkOnType(type));
       
       plant.Add(workorder);
       Erp.AddWorkorder(plant.Name, workorder);
