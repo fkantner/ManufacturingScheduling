@@ -12,7 +12,7 @@ div.plant_header > h4 {
   font-weight: bold;
 }
 
-div.plant_body {
+ul.plant_body {
   padding: 0.1em;
   display: flex;
   flex-wrap: wrap;

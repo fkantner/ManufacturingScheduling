@@ -16,6 +16,7 @@ div.enterprise_overview {
     background-color: mintcream;
     border: medium outset grey;
     width: 15%;
+    top: 0;
 }
 
 div.enterprise_plants {

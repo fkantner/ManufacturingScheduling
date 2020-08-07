@@ -15,7 +15,7 @@ ul.mesWcList {
 
 div.virtualWorkcenters {
   display: flex;
-  height: 10em;
+  height: 5em;
   justify-content: space-around;
   align-items: flex-start;
 }

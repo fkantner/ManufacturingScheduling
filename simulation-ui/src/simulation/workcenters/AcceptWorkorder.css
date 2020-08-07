@@ -1,0 +1,20 @@
+li.acceptWorkorder:not(.workcenter){
+  border-bottom: 0.1em dotted black;
+}
+li.acceptWorkorder h4 {
+  font-weight: bold;
+}
+
+.wc_header {
+
+}
+
+.wc_body {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.wc_body > div{
+  flex-grow: 2;
+  flex-shrink: 2;
+}

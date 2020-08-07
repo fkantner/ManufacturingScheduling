@@ -1,47 +1,74 @@
 import React, { Component } from 'react';
 import './Customer.css';
 
-function Due(props) {
-  return props.Due;
+function CreateOrderObject(order) {
+  const set = order.split(';').map(function(part){ return part.trim(); });
+  const complete = set.length > 2 ? set[2] : null;
+  return {
+    type: set[0],
+    due: parseInt(set[1]),
+    complete: parseInt(complete)
+  };
+}
+
+const days = [
+  'Sun',
+  'Mon',
+  'Tue',
+  'Wed',
+  'Thu', 
+  'Fri',
+  'Sat'
+];
+
+function filteredCount(type, day, list) {
+  return list.filter(x => x.due === day && x.type === type).length;
 } 
 
-function Complete(props) {
-  return props.Complete;
-}
-
-function Type(props) {
-  return props.Type;
-}
-
 class Customer extends Component {
+  
+
   render () {
-    const activeOrders = this.props.customer.ActiveOrders;
-    const completeOrders = this.props.customer.CompleteOrders;
+    const activeOrders = this.props.customer.ActiveOrders.map(function(order) { return CreateOrderObject(order); });
+    const completeOrders = this.props.customer.CompleteOrders.map(function(order) { return CreateOrderObject(order); });
     
+    const setup = days.map(function(dayTxt, dayIdx){
+      const types = activeOrders.map((x) => x.type).concat(completeOrders.map((x) => x.type));
+      const distinctTypes = [...new Set(types)];
+
+      const obj = distinctTypes.map((type) => { 
+        return {
+          type: type,
+          active: filteredCount(type, dayIdx, activeOrders),
+          complete: filteredCount(type, dayIdx, completeOrders)
+        }
+      });
+
+      return { day: dayTxt, obj: obj };
+    });
+
     return (
       <div key="customer" className="customer">
         <h2>Customer</h2>
-        <ul className="activeOrders">
-          {activeOrders.map((order, i) => {
-            
+
+        <ul className="customerDays">
+          {setup.map((obj) => {
             return (
-              <li key={"ActiveOrder" + i} className="Order">
-                {order}
+              <li className="customerDay">
+                <h6>{obj.day}</h6>
+                <ol className="customerTypes">
+                  {obj.obj.map((lowerObj) => {
+                    return (<li>
+                      <div>{lowerObj.type}</div>
+                      <div>{lowerObj.complete}/{lowerObj.active + lowerObj.complete}</div>
+                    </li>
+                    );
+                  })}
+                </ol>
               </li>
-            )
+            );
           })}
         </ul>
-
-        <ul className="completeOrders">
-          {completeOrders.map((order, i) => {
-            return (
-              <li key={"CompleteOrder" + i} className="Order">
-                {Type(order)} {Due(order)} {Complete(order)}
-              </li>
-            )
-          })}
-        </ul>
-
       </div>
     );
   }

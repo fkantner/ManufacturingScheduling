@@ -27,12 +27,14 @@ namespace Core.Enterprise
 
         public List<string> ActiveOrders {
             get => _orders.Where(x => x.IsIncomplete)
+                .OrderBy(x => x.DueString())
                 .Select(x => x.ToString())
                 .ToList();
         }
 
         public List<string> CompleteOrders {
             get => _orders.Where(x => x.IsComplete)
+                .OrderBy(x => x.DueString())
                 .Select(x => x.ToString())
                 .ToList();
         }
@@ -121,7 +123,7 @@ namespace Core.Enterprise
 // Private Methods
             private string ConvertTime(DayTime time)
             {
-                return time.Day + ":" + time.Time;
+                return time.Day.ToString(); // + ":" + time.Time;
             }
         }
     }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Customer from './enterprise/Customer';
 import Day from './Day';
 import Enterprise from './enterprise/Enterprise';
 import './Reset.css';
@@ -7,7 +6,8 @@ import './Simulation.css';
 
 function LastButton(props) {
   const notAtFront = props.node > 0;
-  if (notAtFront){
+  const hidden = props.hide;
+  if (notAtFront || hidden){
     return (<a href="#" key={"last"} className="lastButton" onClick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
   }
   else { return <a href="#" className="disabled hidden" >{"<="}</a> }
@@ -15,7 +15,8 @@ function LastButton(props) {
 
 function NextButton(props) {
   const notAtEnd = props.node < props.length - 1;
-  if (notAtEnd) {
+  const hidden = props.hide;
+  if (notAtEnd || hidden) {
     return (<a href="#" key={"next"} className="nextButton" onClick={props.onClick.bind(this, props.node + 1)}>{"=>"}</a>);
   }
   else { return <a href="#" className="disabled hidden" >{"=>"}</a> }
@@ -71,13 +72,15 @@ function GenerateOptions(max) {
 class Simulation extends Component {
   constructor(props) {
     super(props);
-    this.state = { node: 0 };
+    this.state = { node: 0, hideButtons: false};
     this.changeNode = this.changeNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   changeNode(i) {
+    this.setState( { hideButtons: true }) ;
     this.setState( { node: i } );
+    this.setState( { hideButtons: false }) ;
   }
 
   handleChange(event) {
@@ -88,6 +91,7 @@ class Simulation extends Component {
     const index = this.state.node;
     const simulationDetail = require('../data/default' + index + '.json');
     const daytime = simulationDetail.DayTime;
+    const hideButtons = this.state.hideButtons;
     
     return (
       <div>
@@ -97,6 +101,7 @@ class Simulation extends Component {
           <LastButton 
             node={this.state.node}
             length={200}
+            hide={hideButtons}
             onClick={this.changeNode.bind(this)}
           />
 
@@ -107,6 +112,7 @@ class Simulation extends Component {
           <NextButton 
             node={this.state.node}
             length={200}
+            hide={hideButtons}
             onClick={this.changeNode.bind(this)}
           />
         </div>  
@@ -116,7 +122,6 @@ class Simulation extends Component {
             <Day day={ParseDay(daytime.Day)} time={ParseTime(daytime.Time)} />
           </div>
 
-          <Customer customer={simulationDetail.Customer} />
           <Enterprise enterprise={simulationDetail.Enterprise} index = {index} />
           
         </div>

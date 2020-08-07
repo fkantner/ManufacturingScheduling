@@ -2,10 +2,16 @@ div.customer {
   background-color: lavender;
 }
 
-ul.activeOrders {
-  background-color: aliceblue;
+li.customerDay {
+  border: thin lightblue solid;
 }
 
-ul.completeOrders {
+ul.customerDays {
+  background-color: aliceblue;
+  display: flex;
+  justify-content: space-around;
+}
+
+ul.customerTypes {
   background-color: aliceblue;
 }

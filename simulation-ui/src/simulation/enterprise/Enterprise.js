@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Customer from './Customer';
 import Plant from '../plants/Plant';
 import Erp from './Erp';
 import './Enterprise.css';
@@ -29,6 +30,7 @@ class Enterprise extends Component {
       <div key="enterprise" className="enterprise">
         <h1>Test Enterprise Simulation</h1>
         <div className='enterprise_overview'>
+          <Customer customer={this.props.enterprise.Customer} />
           <Erp erp={this.props.enterprise.Erp} />
           <Transport transport={transport} />
         </div>

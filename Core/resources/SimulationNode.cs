@@ -4,14 +4,12 @@ namespace Core.Resources
 
   public class SimulationNode
   {
-    public SimulationNode(DayTime dayTime, Enterprise ent, Customer customer)
+    public SimulationNode(DayTime dayTime, Enterprise ent)
     {
       DayTime = dayTime;
       Enterprise = ent;
-      Customer = customer;
     }
 
-    public Customer Customer { get; }
     public DayTime DayTime { get; }
     public Enterprise Enterprise { get; }
   }

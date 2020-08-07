@@ -35,7 +35,7 @@ namespace simulationCode
             ent.Add(transport);
 
             Console.WriteLine("Generating Simulation Node");
-            SimulationNode sn = new SimulationNode(dt, ent, customer);
+            SimulationNode sn = new SimulationNode(dt, ent);
             
             Console.WriteLine("Loading Workorders");
             int woCounter = 0;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './Plant.css';
 import Workcenter from '../workcenters/Workcenter';
-import Dock from './Dock';
+import Dock from '../workcenters/Dock';
 import Mes from './Mes';
-import Stage from './Stage';
+import Stage from '../workcenters/Stage';
 
 function Transport(props) {
   if (props.workcenter.Name === props.transport.CurrentLocation){
@@ -17,7 +17,9 @@ function Transport(props) {
     </div>
   }
   else{
-    return ''
+    return <div className='transport hidden'>
+      
+    </div>
   }
 }
 
@@ -60,9 +62,9 @@ class Plant extends Component {
         <h4>Plant: {this.props.plant.Name}</h4>
         <Mes mes={this.props.plant.Mes} />
       </div>
-      <div className='plant_body'>
+      <ul className='plant_body'>
         { wc_list }
-      </div>
+      </ul>
     </div>
   }
 }
