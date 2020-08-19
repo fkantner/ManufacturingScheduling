@@ -5,7 +5,7 @@ namespace Core
     // Program Settings
     public static readonly string ResultFileName = "../simulation-ui/src/data/test.json";
     public static readonly string ResultFolder = "../simulation-ui/src/data/";
-    public static readonly int MinutesForProgramToTest = 1000;
+    public static readonly int MinutesForProgramToTest = 24*60*7;
 
     public static readonly int InitialNumberOfWorkorders = 40;
 
