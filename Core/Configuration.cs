@@ -3,8 +3,8 @@ namespace Core
   public static class Configuration
   {
     // Program Settings
-    public static readonly string ResultFileName = "../simulation-ui/src/data/test.json";
-    public static readonly string ResultFolder = "../simulation-ui/src/data/";
+    public static readonly string ResultFileName = "../ui-api/public/data/test.json";
+    public static readonly string ResultFolder = "../ui-api/public/data/";
     public static readonly int MinutesForProgramToTest = 24*60*7;
 
     public static readonly int InitialNumberOfWorkorders = 40;
