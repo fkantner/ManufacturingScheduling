@@ -10,12 +10,17 @@ class FileController < ApplicationController
   def get
     filename = params[:filename]
     @json = @fr.get(filename)
-    json_response(@json)
+    json_response(@json.to_json)
   end
 
   def list
     filter = params[:filter]
     @json = @fr.list(filter)
+    json_response(@json)
+  end
+
+  def list_types
+    @json = @fr.list_types
     json_response(@json)
   end
 

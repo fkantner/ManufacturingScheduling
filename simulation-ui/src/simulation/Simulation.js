@@ -7,7 +7,7 @@ import * as foo from './Functions.js';
 
 class Simulation extends Component {
   render () {
-    debugger;
+    //debugger;
     const index = this.props.node;
     const details = this.props.options;
     const daytime = details.DayTime;

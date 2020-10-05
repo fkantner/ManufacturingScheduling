@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import * as foo from './Functions.js';
 
-const maxTimeNodes = 10080;
-
 function LastButton(props) {
   const notAtFront = props.node > 0;
   const hidden = props.hide;
   if (notAtFront || hidden){
-    return (<a href="#" key={"last"} className="lastButton" onClick={props.onClick.bind(this, props.node - 1)}>{"<="}</a>);
+    return (<a href="#" key={"last"} className="lastButton" onClick={() => props.onClick(props.node - 1)}>{"<="}</a>);
   }
   else { return <a href="#" className="disabled hidden" >{"<="}</a> }
 }
@@ -16,7 +14,7 @@ function NextButton(props) {
   const notAtEnd = props.node < props.length - 1;
   const hidden = props.hide;
   if (notAtEnd || hidden) {
-    return (<a href="#" key={"next"} className="nextButton" onClick={props.onClick.bind(this, props.node + 1)}>{"=>"}</a>);
+    return (<a href="#" key={"next"} className="nextButton" onClick={() => props.onClick(props.node + 1)}>{"=>"}</a>);
   }
   else { return <a href="#" className="disabled hidden" >{"=>"}</a> }
 }
@@ -36,72 +34,78 @@ function GenerateOptions(max) {
   return arry;
 }
 
-function NodeSelectors(props) {
-  const node = props.node;
-  const hideButtons = props.hideButtons;
-
-  return <div>MENU</div>;
-  /*
-  return (
-    <nav className='menu'>
-      <div className='node_selectors'>
-        <LastButton 
-        node={this.state.node}
-        length={10080}
-        hide={hideButtons}
-        onClick={this.changeNode.bind(this)}
-        />
-
-        <select className="dayTimeSelect" value={this.state.node} onChange={this.handleChange} >
-        { GenerateOptions(1000) }
-        </select>
-
-        <NextButton 
-        node={this.state.node}
-        length={10080}
-        hide={hideButtons}
-        onClick={this.changeNode.bind(this)}
-        />
-      </div>
-    </nav>
-  );
-  */
-} 
-
 class Menu extends Component {
 
   constructor(props) {
     super(props);
-    /*
-    const options = props.options;
-    const currentNode = options[0] ? options[0] : 0;
-    const hideFirstButton = currentNode === 0;
-    const hideLastButton = currentNode === maxTimeNodes - 1;
-
-    this.state = { 
-      node: currentNode, 
-      hideFirstButton: hideFirstButton,
-      hideLastButton: hideLastButton,
-      hideButtons: false
+    this.handleDataChange = this.props.handleDataChange;
+    this.state = {
+      index: this.props.index,
+      length: 0,
+      hideButtons: false,
+      error: null,
+      test: 'default'
     };
-
+    
+    this.getCount();
     this.changeNode = this.changeNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    */
+  }
+
+  getCount() {
+    fetch("http://localhost:3003/count/" + this.state.test)
+    .then(res => { return res.json(); })
+    .then(data => {
+      this.setState({
+        length: data
+      });
+    })
+    .catch((error) => {
+      this.setState({
+        length: 0,
+        error
+      });
+    });
   }
 
   changeNode(i) {
     this.setState( { hideButtons: true }) ;
-    this.setState( { node: i } );
-    this.setState( { hideButtons: false }) ;
+    this.handleDataChange('default', i);
+    this.setState( { index: i, hideButtons: false }) ;
   }
-  
+ 
   handleChange(event) {
-    this.setState( { node: event.target.selectedIndex } );
+    const newI = event.target.selectedIndex;
+    this.handleDataChange('default', newI)
+    this.setState( { index: newI } );
   }
-  
+
   render() {
-    return <NodeSelectors />;
+    return (
+      <nav className='menu'>
+        <div className='node_selectors'>
+          
+          <LastButton 
+          node={this.state.index}
+          length={this.state.length}
+          hide={this.state.hideButtons}
+          onClick={this.changeNode}
+          />
+          
+          <select className="dayTimeSelect" value={this.state.index} onChange={this.handleChange} >
+            { GenerateOptions(this.state.length) }
+          </select>
+
+          <NextButton 
+          node={this.state.index}
+          length={this.state.length}
+          hide={this.state.hideButtons}
+          onClick={this.changeNode}
+          />
+
+        </div>
+      </nav>
+    );
   }
 }
 

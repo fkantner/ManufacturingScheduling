@@ -77,7 +77,7 @@ namespace simulationCode
         static private void SaveToFile(string test, int time, SimulationNode simulationNode)
         {
             string path = Configuration.ResultFolder;
-            string filename = path + test + time.ToString() + ".json";
+            string filename = path + test + "_" + time.ToString() + ".json";
             if(File.Exists(filename))
             {
                 File.Delete(filename);
