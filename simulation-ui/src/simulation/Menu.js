@@ -5,18 +5,18 @@ function LastButton(props) {
   const notAtFront = props.node > 0;
   const hidden = props.hide;
   if (notAtFront || hidden){
-    return (<a href="#" key={"last"} className="lastButton" onClick={() => props.onClick(props.node - 1)}>{"<="}</a>);
+    return (<button key={"last"} className="lastButton" onClick={() => props.onClick(props.node - 1)}>{"<="}</button>);
   }
-  else { return <a href="#" className="disabled hidden" >{"<="}</a> }
+  else { return <button className="disabled hidden" >{"<="}</button> }
 }
 
 function NextButton(props) {
   const notAtEnd = props.node < props.length - 1;
   const hidden = props.hide;
   if (notAtEnd || hidden) {
-    return (<a href="#" key={"next"} className="nextButton" onClick={() => props.onClick(props.node + 1)}>{"=>"}</a>);
+    return (<button key={"next"} className="nextButton" onClick={() => props.onClick(props.node + 1)}>{"=>"}</button>);
   }
-  else { return <a href="#" className="disabled hidden" >{"=>"}</a> }
+  else { return <button className="disabled hidden" >{"=>"}</button> }
 }
 
 function GenerateOption(num) {
