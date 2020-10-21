@@ -4,30 +4,8 @@ import './Workorder.css'
 
 function fullDisplay(workorder){
   return <div>
-      <h5>Current Op</h5><Op op={workorder.CurrentOp} />
+      <h5>Current Op</h5><Op op={workorder.CurrentOp} fullDisplay={true} />
     </div>
-}
-
-function partialDisplay(workorder){
-  return <div>
-      <h5>Current Op: {workorder.CurrentOpType}</h5>
-    </div>
-}
-
-function Display(workorder, showAll) {
-  var opPart;
-  if (showAll) { opPart = fullDisplay(workorder); }
-  else { opPart = partialDisplay(workorder); }
-
-  var classname = showAll ? 'workorder' : 'short workorder';
-    
-  return <div className = {classname}>
-    <div>
-      <h4>Workorder: {workorder.Id}</h4>
-      <div><label>C/T</label> <span>{workorder.CountCompletedOps}/{workorder.CountTotalOps}</span></div>
-    </div>
-    { opPart }
-  </div>
 }
 
 function emptyDisplay(){
@@ -45,8 +23,27 @@ class Workorder extends Component {
     const wo = this.props.workorder;
     if(wo === null){
       return emptyDisplay();
-    } else {
-      return Display(wo, this.state.showAll);
+    }
+    else if (this.state.showAll) {
+      var opPart;
+      opPart = fullDisplay(wo);
+              
+      return <div className='workorder'>
+        <div>
+          <h4>Workorder: {wo.Id}</h4>
+          <div><label>C/T</label> <span>{wo.CountCompletedOps}/{wo.CountTotalOps}</span></div>
+        </div>
+        { opPart }
+      </div>
+    }
+    else {
+      return <div className='short workorder'>
+        <div>
+          <span>WO: {wo.Id}</span> 
+          <span> @ <Op op={wo.CurrentOp} fullDisplay={false} /></span> 
+          <span> <label>C/T</label> <span>{wo.CountCompletedOps}/{wo.CountTotalOps}</span></span>
+        </div>
+      </div>
     }
   }
 }

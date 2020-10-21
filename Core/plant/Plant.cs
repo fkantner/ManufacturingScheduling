@@ -80,7 +80,7 @@ namespace Core.Plant
       {
         IWork wo = dock.Ship(woid.Value);
 
-        string destination = _enterprise.Scheduler.SelectDestinationForExternalTransport(wo.Id);
+        string destination = _enterprise.Scheduler.SelectDestinationForExternalTransport(wo.Id, wo.CurrentOp);
         answer.Add(wo, destination);
 
         woid = dock.ShippingBuffer.FirstId();

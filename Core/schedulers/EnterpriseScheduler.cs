@@ -8,7 +8,7 @@ namespace Core.Schedulers
 
   public interface IScheduleEnterprise
   {
-    string SelectDestinationForExternalTransport(int woid);
+    string SelectDestinationForExternalTransport(int woid, Op currentOp);
   }
 
   public class EnterpriseScheduler : IScheduleEnterprise
@@ -18,21 +18,21 @@ namespace Core.Schedulers
       _erp = erp;
     }
 
-    public string SelectDestinationForExternalTransport(int woid)
+    public string SelectDestinationForExternalTransport(int woid, Op currentOp)
     {
+      if(currentOp.Type == Op.OpTypes.ShippingOp) { return "customer"; }
+
       EnterpriseSchedule schedule = (EnterpriseSchedule) Configuration.EnterpriseSchedule;
       return schedule switch
       {
-        _ => GetFirstValidDestination(woid)
+        _ => GetFirstValidDestination(woid, currentOp)
       };
     }
 
-    private string GetFirstValidDestination(int woid)
+    private string GetFirstValidDestination(int woid, Op currentOp)
     {
-      Op.OpTypes type = _erp.Workorders[woid].CurrentOpType;
+      Op.OpTypes type = currentOp.Type;
       
-      if (type == Op.OpTypes.ShippingOp) { return "customer"; }
-
       return _erp.Locations.First(x => x.Value.CanWorkOnType(type)).Value.Name;
     }
 

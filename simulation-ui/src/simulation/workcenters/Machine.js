@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Workorder from '../resources/Workorder'
 import './Machine.css'
 import Buffer from '../resources/Buffer'
+import * as foo from '../Functions'
 
 class Machine extends Component {
   render() {
@@ -29,7 +30,7 @@ class Machine extends Component {
               <tr>
                 <td>{this.props.machine.SetupTime}</td>
                 <td>{this.props.machine.EstTimeToComplete}</td>
-                <td>{this.props.machine.LastType}</td>
+                <td>{foo.GetOpType(this.props.machine.LastType)}</td>
               </tr>              
             </tbody>
           </table>
