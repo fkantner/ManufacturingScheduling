@@ -20,6 +20,11 @@ ul.plant_body {
   flex-direction: column;
 }
 
+div.plant_branch {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 div.plant_leaf {
   flex-grow: 5;
   flex-shrink: 5;
@@ -28,11 +33,15 @@ div.plant_leaf {
 div.plant_leaf.stage {
   flex-grow: 1;
   flex-shrink: 1;
+  border: thin black solid;
+  margin: 0.1em;
 }
 
 div.plant_leaf.dock {
   flex-grow: 1;
   flex-shrink: 1;
+  border: thin black solid;
+  margin: 0.1em;
 }
 
 div.transport {
