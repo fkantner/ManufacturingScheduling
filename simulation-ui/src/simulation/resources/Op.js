@@ -5,7 +5,7 @@ import './Op.css'
 class Op extends Component {
 
   render() {
-    if (this.props.fullDisplay != true) {
+    if (this.props.fullDisplay !== true) {
       return <span>{foo.GetOpType(this.props.op.Type)}</span>
     }
     else {

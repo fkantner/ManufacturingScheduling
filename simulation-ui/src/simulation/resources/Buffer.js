@@ -2,7 +2,7 @@ import React from 'react';
 import Workorder from '../resources/Workorder'
 
 function Buffer (title, buffer){
-  if (buffer.length === 0) { return <div className="buffer"><h5>Empty {title}</h5></div> }
+  if (buffer.length === 0) { return <div className="buffer" key={title}><h5>Empty {title}</h5></div> }
    
   var inputbuffer = buffer.map((wo, index) =>
     {
@@ -13,7 +13,7 @@ function Buffer (title, buffer){
     }
   )
   return( 
-    <div className="buffer">
+    <div className="buffer" key={title}>
       <h5>{title}</h5>
       <ul>
         {inputbuffer}

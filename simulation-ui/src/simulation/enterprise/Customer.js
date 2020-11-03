@@ -52,13 +52,13 @@ class Customer extends Component {
         <h2>Customer</h2>
 
         <ul className="customerDays">
-          {setup.map((obj) => {
+          {setup.map((obj, index) => {
             return (
-              <li className="customerDay">
+              <li className="customerDay" key={"customerDay" + index}>
                 <h6>{obj.day}</h6>
                 <ol className="customerTypes">
-                  {obj.obj.map((lowerObj) => {
-                    return (<li>
+                  {obj.obj.map((lowerObj, indexj) => {
+                    return (<li key={"customerType" + lowerObj.type + index + indexj}>
                       <div>{lowerObj.type}</div>
                       <div>{lowerObj.complete}/{lowerObj.active + lowerObj.complete}</div>
                     </li>

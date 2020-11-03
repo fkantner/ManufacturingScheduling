@@ -9,7 +9,7 @@ class Machine extends Component {
     const buffer = this.props.machine.InputBuffer;
     var inputbuffer = Buffer("Input Buffer", buffer);
 
-    return (<div className='machine'>
+    return (<div className='machine' key={"Machine" + this.props.machine.Name}>
       <div className='machine_header'>
         <h4>Machine Type: {this.props.machine.Name}</h4>
       </div>

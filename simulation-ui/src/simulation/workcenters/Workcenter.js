@@ -8,8 +8,8 @@ import AcceptWorkorder from './AcceptWorkorder';
 class Workcenter extends Component {
   render() {
     const outputBuffer = Buffer("Output Buffer:", this.props.wc.OutputBuffer);
-    const machine = <Machine machine={this.props.wc.Machine} />
-    const inspection = <Quality inspection={this.props.wc.Inspection} />
+    const machine = <Machine machine={this.props.wc.Machine} key={"WorkcenterMachine" + this.props.wc.Name} />
+    const inspection = <Quality inspection={this.props.wc.Inspection} key={"WorkcenterQuality" + this.props.wc.Name} />
 
     const options = {
       name: 'workcenter',

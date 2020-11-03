@@ -21,12 +21,13 @@ ul.plant_body {
 }
 
 div.plant_leaf {
-  flex-grow: 2;
-  flex-shrink: 2;
+  flex-grow: 5;
+  flex-shrink: 5;
 }
 
 div.plant_leaf.stage {
-  
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 div.plant_leaf.dock {
