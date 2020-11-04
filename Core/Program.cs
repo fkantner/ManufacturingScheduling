@@ -61,7 +61,7 @@ namespace simulationCode
                 if (i%500 == 0) 
                 {
                     Console.Write(".");
-                    customer.CreateOrder(Workorder.PoType.p1, new DayTime((int) DayTime.Days.Tue, 800));
+                    customer.CreateOrder(Workorder.PoType.p1, new DayTime((int) DayTime.Days.Sat, 800));
                 }
                 SaveToFile("default", i, sn);
             }

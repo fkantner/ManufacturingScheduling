@@ -7,7 +7,7 @@ namespace Core
     // CONSTRUCTORS //
     public DayTime()
     {
-      Day = (int) Days.Wed;
+      Day = (int) Days.Sun;
       Time = 0;
     }
 

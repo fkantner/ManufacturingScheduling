@@ -21,7 +21,7 @@ function NextButton(props) {
 
 function GenerateOption(num) {
   const minutesInDay = 24*60;
-  const day = (Math.floor(num / minutesInDay) + 3) % 7;
+  const day = (Math.floor(num / minutesInDay)) % 7;
   const minute = num % minutesInDay;
   return <option key={"select:" + num} value={num}>{foo.ParseDay(day) + "--" + foo.ParseTime(minute)}</option>
 }
