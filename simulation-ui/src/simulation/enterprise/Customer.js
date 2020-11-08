@@ -45,7 +45,7 @@ class Customer extends Component {
     const completeOrders = this.props.customer.CompleteOrders.map(function(order) { return CreateOrderObject(order); });
     const that = this;
 
-    const fullotif = that.otif(activeOrders, completeOrders, null, null).toFixed(1);
+    const fullotif = that.otif(activeOrders, completeOrders, null, null).toFixed(3);
 
     const setup = days.map(function(dayTxt, dayIdx){
       const types = activeOrders.map((x) => x.type).concat(completeOrders.map((x) => x.type));
@@ -66,7 +66,7 @@ class Customer extends Component {
 
     return (
       <div key="customer" className="customer">
-        <h2>Customer<span className="otif">{fullotif}%</span></h2>
+        <h2>Customer <span className="otif">{fullotif}%</span></h2>
 
         <ul className="customerDays">
           {setup.map((obj, index) => {

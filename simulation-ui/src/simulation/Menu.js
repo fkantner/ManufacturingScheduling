@@ -34,6 +34,14 @@ function GenerateOptions(max) {
   return arry;
 }
 
+function GenerateTestOptions(list) {
+  let arry = [];
+  list.forEach((x) => {
+    arry.push(<option key={"selectTest:" + x} value={x}>{x}</option>);
+  });
+  return arry;
+}
+
 class Menu extends Component {
 
   constructor(props) {
@@ -44,10 +52,12 @@ class Menu extends Component {
       length: 0,
       hideButtons: false,
       error: null,
-      test: 'default'
+      test: 'default',
+      list: ['default']
     };
     
     this.getCount();
+    this.getTests();
     this.changeNode = this.changeNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -68,21 +78,49 @@ class Menu extends Component {
     });
   }
 
+  getTests() {
+    fetch("http://localhost:3003/types")
+    .then(res => { return res.json(); })
+    .then(data => {
+      this.setState({
+        list: data
+      });
+    })
+    .catch((error) => {
+      this.setState({
+        length: 0,
+        error
+      });
+    });
+  }
+
   changeNode(i) {
     this.setState( { hideButtons: true }) ;
-    this.handleDataChange('default', i);
+    this.handleDataChange(this.state.test, i);
     this.setState( { index: i, hideButtons: false }) ;
   }
  
   handleChange(event) {
     const newI = event.target.selectedIndex;
-    this.handleDataChange('default', newI)
+    this.handleDataChange(this.state.test, newI);
     this.setState( { index: newI } );
+  }
+
+  handleTestChange(event) {
+    const test = event.target.selectedTest;
+    this.handleDataChange(test, this.state.index);
+    this.setState( { test: test } );
   }
 
   render() {
     return (
       <nav className='menu'>
+        <div className='test_selectors'>
+          <select className="testSelect" value={this.state.test} onChange={this.handleTestChange} >
+            { GenerateTestOptions(this.state.list) }
+          </select>
+        </div>
+
         <div className='node_selectors'>
           
           <LastButton 

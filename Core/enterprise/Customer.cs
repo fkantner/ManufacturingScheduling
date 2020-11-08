@@ -28,6 +28,7 @@ namespace Core.Enterprise
         public List<string> ActiveOrders {
             get => _orders.Where(x => x.IsIncomplete)
                 .OrderBy(x => x.DueString())
+                .ThenBy(x => x.Type)
                 .Select(x => x.ToString())
                 .ToList();
         }
@@ -35,6 +36,7 @@ namespace Core.Enterprise
         public List<string> CompleteOrders {
             get => _orders.Where(x => x.IsComplete)
                 .OrderBy(x => x.DueString())
+                .ThenBy(x => x.Type)
                 .Select(x => x.ToString())
                 .ToList();
         }
@@ -52,7 +54,7 @@ namespace Core.Enterprise
 
         public void ReceiveProduct(Workorder.PoType type, DayTime dayTime)
         {
-            _orders.First(x => x.Type == type && x.IsIncomplete)
+            _orders.OrderBy(x => x.DueString()).First(x => x.Type == type && x.IsIncomplete)
                 .CompletePo(dayTime);
         }
 
@@ -83,7 +85,7 @@ namespace Core.Enterprise
             public Order(Workorder.PoType type, DayTime due, int initialOp=0)
             {
                 Type = type;
-                Due = due;
+                Due = due.CreateTimestamp(0);
                 InitialOp = initialOp;
                 Complete = null;
                 Sent = false;
@@ -112,7 +114,7 @@ namespace Core.Enterprise
 // Impure Methods
             public void CompletePo(DayTime dayTime)
             {
-                Complete = dayTime;
+                Complete = dayTime.CreateTimestamp(0);
             }
 
             public void MarkAsSent()
