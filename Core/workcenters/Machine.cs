@@ -61,6 +61,7 @@ namespace Core.Workcenters
     public IWork Work(DayTime dayTime)
     {
       // TODO - Implement Machine Breakdown
+      if(dayTime == null) { return null; }
 
       if (CurrentWorkorder == null)
       {

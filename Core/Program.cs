@@ -21,13 +21,21 @@ namespace simulationCode
             Console.WriteLine("Creating Customer and Enterprise");
             Customer customer = new Customer();
             Enterprise ent = new Enterprise(customer);
+            BigData bigData = new BigData();
 
             Console.WriteLine("Generating Plants");
             List<Plant> plants = SimulationSetup.GeneratePlants();
             foreach(Plant plant in plants)
             {
                 ent.Add(plant);
+                foreach(var wc in plant.Workcenters)
+                {
+                    if(wc.Name == "Shipping Dock" || wc.Name == "Stage") { continue; }
+                    bigData.AddWorkcenter(wc.Name);
+                    ((Core.Workcenters.Workcenter) wc).AddBigData(bigData);
+                }
             }
+            ent.Add(bigData);
 
             Console.WriteLine("Generating Transport Routes");
             var routes = SimulationSetup.GenerateRoutes(plants);

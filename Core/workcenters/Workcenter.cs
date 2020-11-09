@@ -7,6 +7,7 @@ namespace Core.Workcenters
   public class Workcenter : IAcceptWorkorders
   {
     private IMes _mes;
+    private Enterprise.IHandleBigData _bigData;
 
     public Workcenter(string name, Machine.Types machineType)
     {
@@ -15,6 +16,7 @@ namespace Core.Workcenters
       OutputBuffer = new NeoQueue();
       Inspection = new Quality();
       _mes = null;
+      _bigData = null;
     }
 
     public Quality Inspection { get; }
@@ -25,6 +27,12 @@ namespace Core.Workcenters
     public void AddPlant(IPlant plant)
     {
       Machine.AddPlant(plant);
+    }
+
+    public void AddBigData(Enterprise.IHandleBigData bigData)
+    {
+      if (_bigData != null) { return; }
+      _bigData = bigData;
     }
 
     public void AddToQueue(IWork wo)
@@ -56,7 +64,7 @@ namespace Core.Workcenters
         // TODO - Implement Notify Scheduler when WC done
       }
 
-      wo = Machine.Work(dayTime);
+      wo = Machine.Work(_bigData.IsBreakdown(this.Name, dayTime));
 
       if(wo != null)
       {

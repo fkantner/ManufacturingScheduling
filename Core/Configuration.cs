@@ -17,6 +17,7 @@ namespace Core
     public static readonly int MachineSchedule = 0;
     public static readonly int PlantSchedule = 0;
     public static readonly int TransportationSchedule = 0;
+    public static readonly int BigDataSchedule = 0;
 
   }
 }

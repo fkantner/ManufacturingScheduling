@@ -14,6 +14,7 @@ namespace Core.Enterprise
     IEnumerable<IPlant> Plants { get; }
     EnterpriseScheduler Scheduler { get; }
     ITransportWorkBetweenPlants Transport { get; }
+    void Add(IHandleBigData bigData);
     void Add(IPlant plant);
     void Add(ITransportWorkBetweenPlants transport);
     void Add(IWork workorder);
@@ -29,6 +30,7 @@ namespace Core.Enterprise
     public IEnumerable<IPlant> Plants { get => _plants; }
     public EnterpriseScheduler Scheduler { get; }
     public ITransportWorkBetweenPlants Transport { get; private set; }
+    public IHandleBigData BigData { get; private set; }
 
     private List<IPlant> _plants { get; }
 
@@ -41,6 +43,7 @@ namespace Core.Enterprise
       Transport = null;
       Customer = customer;
       customer.AddEnterprise(this);
+      BigData = null;
     }
 
 // Pure Methods
@@ -58,6 +61,12 @@ namespace Core.Enterprise
     {
       if(Transport != null) { return; }
       Transport = transport;
+    }
+
+    public void Add(IHandleBigData bigData)
+    {
+      if(BigData != null) { return; }
+      BigData = bigData;
     }
 
     public void Add(IWork workorder)
