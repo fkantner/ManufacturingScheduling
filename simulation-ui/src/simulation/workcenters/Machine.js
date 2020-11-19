@@ -7,9 +7,10 @@ import * as foo from '../Functions'
 class Machine extends Component {
   render() {
     const buffer = this.props.machine.InputBuffer;
+    const machine_class = this.props.machine.Breakdown ? 'machine breakdown' : 'machine';
     var inputbuffer = Buffer("Input Buffer", buffer);
 
-    return (<div className='machine' key={"Machine" + this.props.machine.Name}>
+    return (<div className={machine_class} key={"Machine" + this.props.machine.Name}>
       <div className='machine_header'>
         <h4>Machine Type: {this.props.machine.Name}</h4>
       </div>

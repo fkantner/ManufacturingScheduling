@@ -45,6 +45,11 @@ namespace Core
       return this.Day < other.Day || (this.Day == other.Day && this.Time < other.Time);
     }
 
+    public bool GreaterThan(DayTime other)
+    {
+      return this.Day > other.Day || (this.Day == other.Day && this.Time > other.Time);
+    }
+
     public void Next()
     {
       Time++;

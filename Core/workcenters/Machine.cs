@@ -18,6 +18,7 @@ namespace Core.Workcenters
     public Op.OpTypes LastType { get; private set; }
     public string Name { get; }
     public int SetupTime { get; private set; }
+    public bool Breakdown { get; private set; }
 
     // Private Members
     private readonly IScheduleMachines _scheduler;
@@ -36,6 +37,7 @@ namespace Core.Workcenters
       InputBuffer = new NeoQueue();
       LastType = _validTypes[0];
       SetupTime = 0;
+      Breakdown = false;
     }
 
     public void AddPlant(IPlant plant)
@@ -60,8 +62,12 @@ namespace Core.Workcenters
 
     public IWork Work(DayTime dayTime)
     {
-      // TODO - Implement Machine Breakdown
-      if(dayTime == null) { return null; }
+      if(dayTime == null) { 
+        Breakdown = true;
+        return null; 
+      }
+
+      Breakdown = false;
 
       if (CurrentWorkorder == null)
       {

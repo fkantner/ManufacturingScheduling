@@ -2,6 +2,10 @@ div.machine {
   border: 4px solid black;
 }
 
+div.machine.breakdown {
+  border: 5px solid red;
+}
+
 div.machine_body {
   display: flex;
 }
