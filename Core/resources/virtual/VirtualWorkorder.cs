@@ -17,6 +17,7 @@ namespace Core.Resources.Virtual
       CurrentOpIndex = currentOp;
       _status = Statuses.Open;
       ProductType = woToClone.ProductType;
+      NonConformance = false;
     }
 
     public Op CurrentOp
@@ -29,6 +30,7 @@ namespace Core.Resources.Virtual
     public Op.OpTypes CurrentOpType { get => CurrentOp.Type; }
     public int Id { get; }
     public List<Op> Operations { get; }
+    public bool NonConformance { get; set; }
     public Workorder.PoType ProductType { get; }
 
     public void ChangeStatus(Statuses newStatus)

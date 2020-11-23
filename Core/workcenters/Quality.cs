@@ -1,5 +1,6 @@
 namespace Core.Workcenters
 {
+  using Core.Enterprise;
   using Core.Resources;
 
   public class Quality
@@ -22,7 +23,7 @@ namespace Core.Workcenters
     {
       Buffer.Enqueue(workorder);
     }
-    public IWork Work(DayTime dayTime)
+    public IWork Work(DayTime dayTime, IHandleBigData bigData, string name)
     {
       if(CurrentWo == null)
       {
@@ -41,8 +42,11 @@ namespace Core.Workcenters
         answer = CurrentWo;
         CurrentWo = null;
 
-        // TODO - Implement Psudo Random Success Inspections
-        answer.SetNextOp();
+        answer.NonConformance = bigData.IsNonConformance(name);
+        if (!answer.NonConformance)
+        {
+          answer.SetNextOp();
+        }
       }
 
       return answer;

@@ -13,5 +13,6 @@ namespace Core.Resources
     int Id { get; }
     Workorder.PoType ProductType { get; }
     void SetNextOp();
+    bool NonConformance { get; set; }
   }
 }

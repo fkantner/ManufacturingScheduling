@@ -6,30 +6,35 @@ namespace Core.Enterprise
   {
     void AddWorkcenter(string wc);
     DayTime IsBreakdown(string workcenterName, DayTime dayTime);
+    bool IsNonConformance(string workcenterName);
   }
 
   public class BigData : IHandleBigData
   {
-    private Dictionary<string, (DayTime, DayTime)> _workcenters;
+    private Dictionary<string, (DayTime, DayTime)> _workcenterBreakdowns;
+    private Dictionary<string, (int, int)> _workcenterNonconformance;
     private int _schedule;
     private int _WC_counter;
 
     public BigData()
     {
-      _workcenters = new Dictionary<string, (DayTime, DayTime)>();
+      _workcenterBreakdowns = new Dictionary<string, (DayTime, DayTime)>();
+      _workcenterNonconformance = new Dictionary<string, (int, int)>();
       _schedule = Core.Configuration.BigDataSchedule;
       _WC_counter = 0;
     }
 
     public void AddWorkcenter(string wc)
     {
-      _workcenters.Add(wc, GetDayTimeSet(_WC_counter));
+      _workcenterBreakdowns.Add(wc, GetWorkcenterDayTimeSet(_WC_counter));
+      int nonCom = _WC_counter * 10 + 10;
+      _workcenterNonconformance.Add(wc, ( nonCom, nonCom ));
       _WC_counter++;
     }
 
     public DayTime IsBreakdown(string workcenterName, DayTime dayTime)
     {
-      var set = _workcenters[workcenterName];
+      var set = _workcenterBreakdowns[workcenterName];
       if(dayTime.GreaterThan(set.Item1) && dayTime.LessThan(set.Item2))
       {
         return null;
@@ -37,7 +42,23 @@ namespace Core.Enterprise
       return dayTime;
     }
 
-    private (DayTime, DayTime) GetDayTimeSet(int index)
+    public bool IsNonConformance(string workcenterName )
+    {
+      var set = _workcenterNonconformance[workcenterName];
+      var orig = set.Item1;
+      var next = set.Item2 - 1;
+      
+      if (next == 0)
+      {
+        next = orig;
+      }
+
+      _workcenterNonconformance[workcenterName] = (orig, next);
+
+      return orig == next;
+    }
+
+    private (DayTime, DayTime) GetWorkcenterDayTimeSet(int index)
     {
       //1440 mins / day
       var tuplelist = new List<(DayTime start, DayTime end)>

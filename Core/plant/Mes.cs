@@ -24,6 +24,7 @@ namespace Core.Plant
     List<int> GetLocationWoIds(string location);
     IWork GetWorkorder(int id);
     void Move(int wo_id, string source_name, string destination_name);
+    void NonConformance(int wo_id);
     void Ship(int wo_id);
     void StartProgress(int wo_id);
     void StartTransit(int wo_id, string workcenterName);
@@ -121,6 +122,12 @@ namespace Core.Plant
       LocationInventories[destination_name].Add(wo);
     }
 
+    public void NonConformance(int wo_id)
+    {
+      ((VirtualWorkorder) Workorders[wo_id]).NonConformance = true;
+      StopProgress(wo_id);
+    }
+
     public void Ship(int wo_id)
     {
       VirtualWorkorder wo = (VirtualWorkorder) Workorders[wo_id];
@@ -131,7 +138,9 @@ namespace Core.Plant
 
     public void StartProgress(int wo_id)
     {
-      ((VirtualWorkorder) Workorders[wo_id]).ChangeStatus(VirtualWorkorder.Statuses.InProgress);
+      var wo = (VirtualWorkorder) Workorders[wo_id];
+      wo.ChangeStatus(VirtualWorkorder.Statuses.InProgress);
+      wo.NonConformance = false;
     }
 
     public void StartTransit(int wo_id, string workcenterName)

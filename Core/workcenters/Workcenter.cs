@@ -55,19 +55,28 @@ namespace Core.Workcenters
 
     public void Work(DayTime dayTime)
     {
-      IWork wo = Inspection.Work(dayTime);
+      IWork wo = Inspection.Work(dayTime, _bigData, Name);
 
       if(wo != null)
       {
-        OutputBuffer.Enqueue(wo);
-        _mes.Complete(wo.Id);
-        // TODO - Implement Notify Scheduler when WC done
+        if (wo.NonConformance)
+        {
+          Machine.AddToQueue(wo);
+          _mes.NonConformance(wo.Id);
+        }
+        else
+        {
+          OutputBuffer.Enqueue(wo);
+          _mes.Complete(wo.Id);
+          // TODO - Implement Notify Scheduler when WC done
+        }
       }
 
       wo = Machine.Work(_bigData.IsBreakdown(this.Name, dayTime));
 
       if(wo != null)
       {
+        wo.NonConformance = false;
         Inspection.AddToQueue(wo);
       }
       else

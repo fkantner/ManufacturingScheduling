@@ -20,6 +20,7 @@ namespace Core.Resources
     public int Id { get; }
     public List<Op> Operations { get; }
     public PoType ProductType { get; }
+    public bool NonConformance { get; set; }
 
     public Workorder(int number, PoType type, int initialOpIndex=0)
     {
@@ -27,6 +28,7 @@ namespace Core.Resources
       ProductType = type;
       CurrentOpIndex = initialOpIndex;
       Operations = GetOperations(type);
+      NonConformance = false;
     }
 
     // PUBLIC METHODS //

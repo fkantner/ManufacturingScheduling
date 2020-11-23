@@ -21,14 +21,20 @@ class Workorder extends Component {
 
   render() {
     const wo = this.props.workorder;
+    
     if(wo === null){
       return emptyDisplay();
     }
-    else if (this.state.showAll) {
+    
+    var noncon = wo.NonConformance;
+    var nonconClass = '';
+    if (noncon === true) {nonconClass = " nonconformance";}
+
+    if (this.state.showAll) {
       var opPart;
       opPart = fullDisplay(wo);
-              
-      return <div className='workorder'>
+                
+      return <div className={'workorder' + nonconClass} >
         <div>
           <h4>Workorder: {wo.Id}</h4>
           <div><label>C/T</label> <span>{wo.CountCompletedOps}/{wo.CountTotalOps}</span></div>
@@ -37,7 +43,7 @@ class Workorder extends Component {
       </div>
     }
     else {
-      return <div className='short workorder'>
+      return <div className={'short workorder' + nonconClass}>
         <div>
           <span>WO: {wo.Id}</span> 
           <span> @ <Op op={wo.CurrentOp} fullDisplay={false} /></span> 
