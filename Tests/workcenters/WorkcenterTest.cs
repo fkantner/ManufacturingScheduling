@@ -1,6 +1,7 @@
 namespace Tests.Workcenters
 {
   using Core;
+  using Core.Enterprise;
   using Core.Plant;
   using Core.Resources;
   using Core.Schedulers;
@@ -16,6 +17,7 @@ namespace Tests.Workcenters
     private IWork _workorder;
     private IMes _mes;
     private IPlant _plant;
+    private IHandleBigData _bigData;
 
     [SetUp]
     protected void SetUp()
@@ -31,12 +33,17 @@ namespace Tests.Workcenters
       _plant = Substitute.For<IPlant>();
       _plant.PlantScheduler.Returns(ps);
 
+      _bigData = Substitute.For<IHandleBigData>();
+      _bigData.IsBreakdown(Arg.Any<string>(), Arg.Any<DayTime>()).Returns(x => x[1]);
+      _bigData.IsNonConformance(Arg.Any<string>()).Returns(false);
+
       _mes = Substitute.For<IMes>();
       _dayTime = new DayTime();
       _subject = new Workcenter("TestWC", Machine.Types.BigDrill);
       _subject.SetMes(_mes);
 
       _subject.AddPlant(_plant);
+      _subject.AddBigData(_bigData);
     }
 
     [Test]

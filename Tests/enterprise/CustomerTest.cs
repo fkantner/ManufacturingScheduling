@@ -63,12 +63,12 @@ namespace Tests.Enterprise
             _subject.Work(_dayTime);
             
             _subject.Work(nextMinute);
-            _enterprise.Received(1).StartOrder(test_type, _dayTime);
+            _enterprise.Received(1).StartOrder(test_type, Arg.Any<DayTime>(), 0);
         }
 
         private string ConvertTime(DayTime time)
         {
-            return time.Day + ":" + time.Time;
+            return time.Day.ToString(); // + ":" + time.Time;
         }
     }
 }

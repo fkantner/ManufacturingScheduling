@@ -29,7 +29,7 @@ namespace Tests
     [Test]
     public void InitialAtWed0()
     {
-      const int expectedDay = 3; //Wed
+      const int expectedDay = 0; //Sun
       const int expectedTime = 0;
 
       Assert.AreEqual(_dayTime.Day, expectedDay);
@@ -41,7 +41,7 @@ namespace Tests
     [Test]
     public void CreateTimeStamp_FromInitial_CreatesATimestampAMinuteInFuture()
     {
-      const int expectedDay = 3;
+      const int expectedDay = 0;
       const int expectedTime = 1;
       const int expectedOriginalTime = 0;
 
@@ -56,8 +56,8 @@ namespace Tests
     [Test]
     public void CreateTimeStamp_FromInitial_CreateATimestampADayInFuture()
     {
-      const int expectedDay = 4;
-      const int expectedOriginalDay = 3;
+      const int expectedDay = 1;
+      const int expectedOriginalDay = 0;
       const int expectedTime = 0;
       const int expectedOriginalTime = 0;
 
@@ -75,7 +75,7 @@ namespace Tests
     [Test]
     public void Next_FromInitial_Increments1Minute()
     {
-      const int expectedDay = 3;
+      const int expectedDay = 0;
       const int expectedTime = 1;
 
       _dayTime.Next();
@@ -87,9 +87,10 @@ namespace Tests
     [Test]
     public void LessThan_WhenLess_ReturnsTrue()
     {
+      _dayTime = _dayTime.CreateTimestamp(1440);
       _dayTime.Next();
-      DayTime lessDay = new DayTime((int) DayTime.Days.Tue, 0);
-      DayTime lessTime = new DayTime((int) DayTime.Days.Wed, 0);
+      DayTime lessDay = new DayTime((int) DayTime.Days.Sun, 0);
+      DayTime lessTime = new DayTime((int) DayTime.Days.Mon, 0);
 
       Assert.IsTrue(lessDay.LessThan(_dayTime));
       Assert.IsFalse(_dayTime.LessThan(lessDay));

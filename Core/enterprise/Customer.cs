@@ -65,7 +65,7 @@ namespace Core.Enterprise
             var ordersToSend = _orders.Where(x => x.Sent == false);
             foreach(var order in ordersToSend)
             {
-                _enterprise.StartOrder(order.Type, order.Due,order.InitialOp);
+                _enterprise.StartOrder(order.Type, order.Due, order.InitialOp);
                 order.MarkAsSent();
             }
         }
