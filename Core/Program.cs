@@ -66,11 +66,17 @@ namespace simulationCode
                 ent.Work(dt);
                 customer.Work(dt);
 
+                var next = bigData.GetNextOrder(i);
+                if(next.HasValue)
+                {
+                    customer.CreateOrder(next.Value.Item1, new DayTime((int) next.Value.Item2, 800));
+                }
+
                 if (i%500 == 0) 
                 {
                     Console.Write(".");
-                    customer.CreateOrder(Workorder.PoType.p1, new DayTime((int) DayTime.Days.Sat, 800));
                 }
+                
                 SaveToFile("default", i, sn);
             }
             Console.WriteLine(".");

@@ -1,10 +1,14 @@
 namespace Core.Enterprise
 {
+  using System;
   using System.Collections.Generic;
+  using Core;
+  using Core.Resources;
 
   public interface IHandleBigData
   {
     void AddWorkcenter(string wc);
+    (Workorder.PoType, int)? GetNextOrder(int time);
     DayTime IsBreakdown(string workcenterName, DayTime dayTime);
     bool IsNonConformance(string workcenterName);
   }
@@ -15,6 +19,7 @@ namespace Core.Enterprise
     private Dictionary<string, (int, int)> _workcenterNonconformance;
     private int _schedule;
     private int _WC_counter;
+    private int _order_counter;
 
     public BigData()
     {
@@ -22,6 +27,7 @@ namespace Core.Enterprise
       _workcenterNonconformance = new Dictionary<string, (int, int)>();
       _schedule = Core.Configuration.BigDataSchedule;
       _WC_counter = 0;
+      _order_counter = 0;
     }
 
     public void AddWorkcenter(string wc)
@@ -30,6 +36,21 @@ namespace Core.Enterprise
       int nonCom = _WC_counter * 10 + 10;
       _workcenterNonconformance.Add(wc, ( nonCom, nonCom ));
       _WC_counter++;
+    }
+
+    public (Workorder.PoType, int)? GetNextOrder(int time)
+    {
+      if (time % 60 == 0)
+      {
+        int day = time / Configuration.MinutesInDay;
+        if (day < 6) day = day + 1;
+
+        Workorder.PoType type = (Workorder.PoType) _order_counter;
+        _order_counter = (_order_counter + 1) % 13;
+
+        return (type, day);
+      }
+      return null;
     }
 
     public DayTime IsBreakdown(string workcenterName, DayTime dayTime)
