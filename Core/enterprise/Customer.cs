@@ -26,18 +26,18 @@ namespace Core.Enterprise
         }
 
         public List<string> ActiveOrders {
-            get => _orders.Where(x => x.IsIncomplete)
-                .OrderBy(x => x.DueString())
-                .ThenBy(x => x.Type)
-                .Select(x => x.ToString())
-                .ToList();
+            get => Orders(false).Select(x => x.ToString()).ToList();
         }
 
         public List<string> CompleteOrders {
-            get => _orders.Where(x => x.IsComplete)
+            get => Orders(true).Select(x => x.ToString()).ToList();
+        }
+
+        private List<Order> Orders(bool complete) {
+            return _orders
+                .Where(x => complete ? x.IsComplete : x.IsIncomplete )
                 .OrderBy(x => x.DueString())
                 .ThenBy(x => x.Type)
-                .Select(x => x.ToString())
                 .ToList();
         }
 
@@ -54,8 +54,7 @@ namespace Core.Enterprise
 
         public void ReceiveProduct(Workorder.PoType type, DayTime dayTime)
         {
-            _orders.OrderBy(x => x.DueString()).First(x => x.Type == type && x.IsIncomplete)
-                .CompletePo(dayTime);
+            Orders(false).First(x => x.Type == type).CompletePo(dayTime);
         }
 
         public void Work(DayTime dayTime)
@@ -73,7 +72,7 @@ namespace Core.Enterprise
         private class Order
         {
 // Properties
-            public DayTime Due { get; }
+            public DayTime Due { get; private set;}
             public DayTime Complete { get; private set;}
             public int InitialOp { get; }
             public bool IsComplete { get => Complete != null; }

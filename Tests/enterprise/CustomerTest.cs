@@ -55,6 +55,43 @@ namespace Tests.Enterprise
         }
 
         [Test]
+        public void ReceiveProduct_ShouldKeepCompletedOrderDate()
+        {
+            DayTime day2 = _dayTime.CreateTimestamp(1440);
+            DayTime day3 = day2.CreateTimestamp(1440);
+            DayTime day4 = day3.CreateTimestamp(1440);
+
+             List<string> expected = new List<string>();
+
+             _subject.CreateOrder(test_type, _dayTime);
+             _subject.CreateOrder(test_type, day2);
+             _subject.CreateOrder(test_type, day3);
+             _subject.CreateOrder(test_type, day4);
+
+            CollectionAssert.AreEquivalent(expected, _subject.CompleteOrders);
+
+            _subject.ReceiveProduct(test_type, _dayTime);
+
+            expected.Add(test_type + " ; 0 ; 0");
+            CollectionAssert.AreEquivalent(expected, _subject.CompleteOrders);
+            
+            _subject.ReceiveProduct(test_type, day2);
+
+            expected.Add(test_type + " ; 1 ; 1");
+            CollectionAssert.AreEquivalent(expected, _subject.CompleteOrders);
+
+            _subject.ReceiveProduct(test_type, day2);
+
+            expected.Add(test_type + " ; 2 ; 1");
+            CollectionAssert.AreEquivalent(expected, _subject.CompleteOrders);
+
+            _subject.ReceiveProduct(test_type, day4);
+
+            expected.Add(test_type + " ; 3 ; 3");
+            CollectionAssert.AreEquivalent(expected, _subject.CompleteOrders);
+        }
+
+        [Test]
         public void Work_SendsToEnterpriseOnce()
         {
             DayTime nextMinute = _dayTime.CreateTimestamp(1);
