@@ -48,7 +48,7 @@ class Customer extends Component {
     const fullotif = that.otif(activeOrders, completeOrders, null, null).toFixed(3);
 
     const setup = days.map(function(dayTxt, dayIdx){
-      const types = activeOrders.map((x) => x.type).concat(completeOrders.map((x) => x.type));
+      const types = activeOrders.map((x) => x.type).concat(completeOrders.map((x) => x.type)).sort();
       const distinctTypes = [...new Set(types)];
 
       const obj = distinctTypes.map((type) => { 
