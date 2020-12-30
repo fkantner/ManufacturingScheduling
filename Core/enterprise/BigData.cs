@@ -25,7 +25,7 @@ namespace Core.Enterprise
     {
       _workcenterBreakdowns = new Dictionary<string, (DayTime, DayTime)>();
       _workcenterNonconformance = new Dictionary<string, (int, int)>();
-      _schedule = Core.Configuration.BigDataSchedule;
+      _schedule = Core.Configuration.Instance.BigDataSchedule;
       _WC_counter = 0;
       _order_counter = 0;
     }

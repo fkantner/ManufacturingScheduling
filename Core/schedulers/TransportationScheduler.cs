@@ -29,7 +29,7 @@ namespace Core.Schedulers
       CargoID = null;
       Destination = null;
       TransportTime = 0;
-      _schedule = (Schedule) Configuration.TransportationSchedule;
+      _schedule = (Schedule) Configuration.Instance.TransportationSchedule;
     }
 
     public void ScheduleNextStep(IAcceptWorkorders current_location)

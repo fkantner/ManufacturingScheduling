@@ -27,7 +27,7 @@ namespace Core.Schedulers
 
     public int ChooseNextWoId(string machineName, ICustomQueue queue)
     {
-      Schedule schedule = (Schedule) Configuration.MachineSchedule;
+      Schedule schedule = (Schedule) Configuration.Instance.MachineSchedule;
       int proposed = schedule switch
       {
         _ => queue.FirstId().Value

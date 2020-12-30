@@ -22,7 +22,7 @@ namespace Core.Schedulers
     {
       if(currentOp.Type == Op.OpTypes.ShippingOp) { return "customer"; }
 
-      EnterpriseSchedule schedule = (EnterpriseSchedule) Configuration.EnterpriseSchedule;
+      EnterpriseSchedule schedule = (EnterpriseSchedule) Configuration.Instance.EnterpriseSchedule;
       return schedule switch
       {
         _ => GetFirstValidDestination(woid, currentOp)

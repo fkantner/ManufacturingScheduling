@@ -18,6 +18,9 @@ namespace simulationCode
             Console.WriteLine("Hello Simulation");
             DayTime dt = new DayTime();
 
+            Console.WriteLine("Updating Configuration");
+            Configuration.Initialize("default",0,0,0,0,0);
+
             Console.WriteLine("Creating Customer and Enterprise");
             Customer customer = new Customer();
             Enterprise ent = new Enterprise(customer);
@@ -57,7 +60,7 @@ namespace simulationCode
             }
             customer.Work(dt); // Load Workorders into Enterprise
 
-            SaveToFile("default", 0, sn);
+            SaveToFile(Configuration.Instance.TestFilename, 0, sn);
 
             Console.WriteLine("Starting Simulation");
             for(int i = 1; i < Configuration.MinutesForProgramToTest; i++)
@@ -77,7 +80,7 @@ namespace simulationCode
                     Console.Write(".");
                 }
                 
-                SaveToFile("default", i, sn);
+                SaveToFile(Configuration.Instance.TestFilename, i, sn);
             }
             Console.WriteLine(".");
             Console.WriteLine("Finished with Simulation");

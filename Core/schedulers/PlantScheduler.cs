@@ -17,7 +17,7 @@ namespace Core.Schedulers
     public PlantScheduler(IMes mes)
     {
       _mes = mes;
-      _schedule = (PlantSchedule) Configuration.PlantSchedule;
+      _schedule = (PlantSchedule) Configuration.Instance.PlantSchedule;
     }
 
     public string ValidateDestinationForTransport(int? woid, string location, string destination)

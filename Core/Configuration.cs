@@ -1,6 +1,6 @@
 namespace Core
 {
-  public static class Configuration
+  public sealed class Configuration
   {
     // Program Settings
     public static readonly string ResultFileName = "../ui-api/public/data/test.json";
@@ -12,12 +12,38 @@ namespace Core
     // DayTime Settings
     public static readonly int MinutesInDay = 24*60; // 1440 minutes
 
+    private static Configuration instance = null;
+    public static Configuration Instance 
+    {
+      get { return instance; }
+    }
+
+    public static Configuration Initialize(string test, int eS, int mS, int pS, int tS, int bdS)
+    {
+      if (instance == null) { 
+        instance = new Configuration(test, eS, mS, pS, tS, bdS);
+      }
+
+      return instance;
+    }
+
+    private Configuration(string test, int eS, int mS, int pS, int tS, int bdS)
+    {
+      EnterpriseSchedule = eS;
+      MachineSchedule = mS;
+      PlantSchedule = pS;
+      TransportationSchedule = tS;
+      BigDataSchedule = bdS;
+      TestFilename = test;
+    }
+
     // Schedule Settings
-    public static readonly int EnterpriseSchedule = 0;
-    public static readonly int MachineSchedule = 0;
-    public static readonly int PlantSchedule = 0;
-    public static readonly int TransportationSchedule = 0;
-    public static readonly int BigDataSchedule = 0;
+    public readonly int EnterpriseSchedule;
+    public readonly int MachineSchedule;
+    public readonly int PlantSchedule;
+    public readonly int TransportationSchedule;
+    public readonly int BigDataSchedule;
+    public readonly string TestFilename;
 
   }
 }
