@@ -20,10 +20,8 @@ namespace Core
 
     public static Configuration Initialize(string test, int eS, int mS, int pS, int tS, int bdS)
     {
-      if (instance == null) { 
-        instance = new Configuration(test, eS, mS, pS, tS, bdS);
-      }
-
+      // I am not protecting this, as I will need to override the settings with each iteration.
+      instance = new Configuration(test, eS, mS, pS, tS, bdS);
       return instance;
     }
 
