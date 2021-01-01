@@ -10,7 +10,8 @@ class App extends Component {
       loaded: false,
       index: 0,
       error: null,
-      items: {}
+      items: {},
+      test: 'Default'
     };
     this.getData = this.getData.bind(this);
     this.reset = this.reset.bind(this);
@@ -21,7 +22,8 @@ class App extends Component {
       loaded: false,
       index: 0,
       error: null,
-      items: {}
+      items: {},
+      test: 'Default'
     });
   }
 
@@ -35,6 +37,7 @@ class App extends Component {
         index: index,
         loaded: true,
         items: data,
+        test: test
       });
     })
     .catch((error) => {
@@ -46,7 +49,7 @@ class App extends Component {
   }
   
   componentDidMount() {
-    this.getData("default", 0);
+    this.getData("Default", 0);
   }
 
   render () {
@@ -62,7 +65,7 @@ class App extends Component {
     
     return (
       <div className="App">
-        <Menu handleDataChange={this.getData} index={this.state.index} />
+        <Menu handleDataChange={this.getData} index={this.state.index} test={this.state.test} />
         <Simulation node={index} options={items} />
       </div>
     );

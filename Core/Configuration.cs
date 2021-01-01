@@ -25,6 +25,12 @@ namespace Core
       return instance;
     }
 
+    public static Configuration Initialize(Core.Test test)
+    {
+      instance = new Configuration(test.Name, test.EnterpriseSchedule, test.MachineSchedule, test.PlantSchedule, test.TransportationSchedule, test.BigDataSchedule);
+      return instance;
+    }
+
     private Configuration(string test, int eS, int mS, int pS, int tS, int bdS)
     {
       EnterpriseSchedule = eS;

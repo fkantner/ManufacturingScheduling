@@ -1,45 +1,20 @@
 import React, { Component } from 'react';
-import * as foo from './Functions.js';
 
-function LastButton(props) {
-  const notAtFront = props.node > 0;
-  const hidden = props.hide;
-  if (notAtFront || hidden){
-    return (<button key={"last"} className="lastButton" onClick={() => props.onClick(props.node - 1)}>{"<="}</button>);
+function OptionPaginationButton(props) {
+  const hide = props.hide;
+  const hideBecauseOfIndex = props.hideForIndex;
+  if (hide || hideBecauseOfIndex)
+  {
+    return (<button key={props.buttonName} className={props.buttonName + "Button"} onClick={() => props.onClick(props.newIndex)}>{props.symbol}</button>);
   }
-  else { return <button className="disabled hidden" >{"<="}</button> }
-}
-
-function NextButton(props) {
-  const notAtEnd = props.node < props.length - 1;
-  const hidden = props.hide;
-  if (notAtEnd || hidden) {
-    return (<button key={"next"} className="nextButton" onClick={() => props.onClick(props.node + 1)}>{"=>"}</button>);
+  else
+  {
+    return <button className="disabled hidden">{props.symbol}</button>
   }
-  else { return <button className="disabled hidden" >{"=>"}</button> }
 }
 
-function GenerateOption(num) {
-  const minutesInDay = 24*60;
-  const day = (Math.floor(num / minutesInDay)) % 7;
-  const minute = num % minutesInDay;
-  return <option key={"select:" + num} value={num}>{foo.ParseDay(day) + "--" + foo.ParseTime(minute)}</option>
-}
-
-function GenerateOptions(max) {
-  let arry = [];
-  for(let i=0; i<max; i++){
-    arry.push(GenerateOption(i));
-  }
-  return arry;
-}
-
-function GenerateTestOptions(list) {
-  let arry = [];
-  list.forEach((x) => {
-    arry.push(<option key={"selectTest:" + x} value={x}>{x}</option>);
-  });
-  return arry;
+function OptionTestButton(props) {
+  return (<button key={props.testName} className={props.testName + "Button"} onClick={() => props.onClick(props.testName)}>{props.testName}</button>);
 }
 
 class Menu extends Component {
@@ -52,14 +27,16 @@ class Menu extends Component {
       length: 0,
       hideButtons: false,
       error: null,
-      test: 'default',
-      list: ['default']
+      test: this.props.test,
+      list: ['Default']
     };
     
     this.getCount();
     this.getTests();
     this.changeNode = this.changeNode.bind(this);
+    this.changeTest = this.changeTest.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleTestChange = this.handleTestChange.bind(this);
   }
 
   getCount() {
@@ -99,6 +76,11 @@ class Menu extends Component {
     this.handleDataChange(this.state.test, i);
     this.setState( { index: i, hideButtons: false }) ;
   }
+
+  changeTest(i) {
+    this.handleDataChange(i, this.state.index);
+    this.setState({ test: i });
+  }
  
   handleChange(event) {
     const newI = event.target.selectedIndex;
@@ -107,38 +89,123 @@ class Menu extends Component {
   }
 
   handleTestChange(event) {
-    const test = event.target.selectedTest;
+    const test = event.target.value;
     this.handleDataChange(test, this.state.index);
     this.setState( { test: test } );
   }
 
   render() {
+    const day = 60*24;
+
+    const testList = this.state.list.sort().map((test) => {
+      if(test === this.state.test){
+        return <button key={test} className="disabled">{test}</button>
+      }
+      return (
+        <OptionTestButton
+          key={test}
+          testName={test}
+          onClick={this.changeTest}
+        />
+      );
+    });
+
     return (
       <nav className='menu'>
         <div className='test_selectors'>
-          <select className="testSelect" value={this.state.test} onChange={this.handleTestChange} >
-            { GenerateTestOptions(this.state.list) }
-          </select>
+          {testList}
+          
         </div>
 
         <div className='node_selectors'>
-          
-          <LastButton 
-          node={this.state.index}
-          length={this.state.length}
-          hide={this.state.hideButtons}
-          onClick={this.changeNode}
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index > 0}
+            buttonName={"First"}
+            newIndex={0}
+            onClick={this.changeNode}
+            symbol={"First"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index > day}
+            buttonName={"lastDay"}
+            newIndex={this.state.index - day}
+            onClick={this.changeNode}
+            symbol={"-Day"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index > 60}
+            buttonName={"lastHour"}
+            newIndex={this.state.index - 60}
+            onClick={this.changeNode}
+            symbol={"-60"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index > 9}
+            buttonName={"last10"}
+            newIndex={this.state.index - 10}
+            onClick={this.changeNode}
+            symbol={"-10"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index > 0}
+            buttonName={"last"}
+            newIndex={this.state.index - 1}
+            onClick={this.changeNode}
+            symbol={"<="}
+          />
+                    
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index < this.state.length - 1}
+            buttonName={"next"}
+            newIndex={this.state.index + 1}
+            onClick={this.changeNode}
+            symbol={"=>"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index < this.state.length - 11}
+            buttonName={"next10"}
+            newIndex={this.state.index + 10}
+            onClick={this.changeNode}
+            symbol={"+10"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index < this.state.length - 61}
+            buttonName={"nextHour"}
+            newIndex={this.state.index + 60}
+            onClick={this.changeNode}
+            symbol={"+60"}
+          />
+
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index < this.state.length - (day + 1)}
+            buttonName={"nextDay"}
+            newIndex={this.state.index + day}
+            onClick={this.changeNode}
+            symbol={"+Day"}
           />
           
-          <select className="dayTimeSelect" value={this.state.index} onChange={this.handleChange} >
-            { GenerateOptions(this.state.length) }
-          </select>
-
-          <NextButton 
-          node={this.state.index}
-          length={this.state.length}
-          hide={this.state.hideButtons}
-          onClick={this.changeNode}
+          <OptionPaginationButton
+            hide={this.state.hideButtons}
+            hideForIndex={this.state.index < this.state.length - 1}
+            buttonName={"Last"}
+            newIndex={this.state.length - 1}
+            onClick={this.changeNode}
+            symbol={"Last"}
           />
 
         </div>

@@ -14,7 +14,7 @@ namespace Core.Workcenters
     // Public Properties
     public IWork CurrentWorkorder { get; private set; }
     public int EstTimeToComplete { get; private set; }
-    public ICustomQueue InputBuffer { get; }
+    public NeoQueue InputBuffer { get; }
     public Op.OpTypes LastType { get; private set; }
     public string Name { get; }
     public int SetupTime { get; private set; }
@@ -28,7 +28,7 @@ namespace Core.Workcenters
     public Machine(string name, Types type)
     {
       Name = name;
-      _scheduler = new MachineScheduler();
+      _scheduler = new MachineScheduler(this);
       _type = type;
       _validTypes = GetValidTypes(type);
 
