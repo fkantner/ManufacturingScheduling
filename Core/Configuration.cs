@@ -11,6 +11,7 @@ namespace Core
 
     // DayTime Settings
     public static readonly int MinutesInDay = 24*60; // 1440 minutes
+    public static readonly int MinutesBetweenNewOrders = 60;
 
     private static Configuration instance = null;
     public static Configuration Instance 

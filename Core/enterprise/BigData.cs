@@ -40,7 +40,7 @@ namespace Core.Enterprise
 
     public (Workorder.PoType, int)? GetNextOrder(int time)
     {
-      if (time % 60 == 0)
+      if (time % Configuration.MinutesBetweenNewOrders == 0)
       {
         int day = time / Configuration.MinutesInDay;
         if (day < 6) day = day + 1;
@@ -79,6 +79,7 @@ namespace Core.Enterprise
       return orig == next;
     }
 
+    //TODO Maybe improve BigData's breakdown schedule?
     private (DayTime, DayTime) GetWorkcenterDayTimeSet(int index)
     {
       //1440 mins / day

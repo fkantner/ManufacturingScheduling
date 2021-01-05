@@ -68,7 +68,6 @@ namespace Core.Workcenters
         {
           OutputBuffer.Enqueue(wo);
           _mes.Complete(wo.Id);
-          // TODO - Implement Notify Scheduler when WC done
         }
       }
 

@@ -120,6 +120,7 @@ namespace Core.Enterprise
 // private pure
     private DayTime NextDumpTime(DayTime currentDumpTime)
     {
+      //TODO Create configuration for ERP to update MES's
       return _schedule switch
       {
         _ => currentDumpTime.CreateTimestamp(24*60)

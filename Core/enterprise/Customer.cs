@@ -124,7 +124,7 @@ namespace Core.Enterprise
 // Private Methods
             private string ConvertTime(DayTime time)
             {
-                return time.Day.ToString(); // + ":" + time.Time;
+                return time.Day.ToString();
             }
         }
     }
