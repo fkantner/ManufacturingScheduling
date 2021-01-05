@@ -68,7 +68,6 @@ namespace Core.Resources.Virtual
 
     public void Add(IWork workorder)
     {
-      //TODO Investigate VirtualPlant Add(IWork)
       _original.Add(workorder);
       return;
     }
