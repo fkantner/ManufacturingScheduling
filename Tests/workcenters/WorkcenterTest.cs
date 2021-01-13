@@ -22,6 +22,9 @@ namespace Tests.Workcenters
     [SetUp]
     protected void SetUp()
     {
+      Test test = new Test("Default", 0, 0, 0, 0, 0);
+      Configuration.Initialize(test);
+      
       _workorder = Substitute.For<IWork>();
       _workorder.CurrentOpType.Returns(Op.OpTypes.DrillOpType1);
       _workorder.CurrentOpSetupTime.Returns(0);

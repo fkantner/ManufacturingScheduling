@@ -29,6 +29,9 @@ namespace Tests.Plant
     [SetUp]
     protected void SetUp()
     {
+      Test test = new Test("Default", 0, 0, 0, 0, 0);
+      Configuration.Initialize(test);
+      
       _mes = Substitute.For<IMes>();
       
       _start = Substitute.For<IAcceptWorkorders>();

@@ -20,6 +20,9 @@ namespace Tests.Workcenters
     [SetUp]
     protected void SetUp()
     {
+      Test test = new Test("Default", 0, 0, 0, 0, 0);
+      Configuration.Initialize(test);
+      
       IPlant plant = Substitute.For<IPlant>();
       ISchedulePlants ps = Substitute.For<ISchedulePlants>();
       plant.PlantScheduler.Returns(ps);
