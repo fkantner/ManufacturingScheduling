@@ -6,6 +6,7 @@ namespace simulationCode
     using Core.Resources;
     using Core.Plant;
     using Core.Enterprise;
+    using Core.Schedulers;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.IO;
@@ -15,11 +16,7 @@ namespace simulationCode
         public static void Main()
         {
             Console.WriteLine("Hello Simulation");
-            List<Test> tests = new List<Test>()
-            {
-                new Test("Default", 0, 0, 0, 0, 0),
-                new Test("T2", 0, 1, 0, 0, 0)
-            };
+            List<Test> tests = SimulationSetup.GenerateTests();
 
             tests.ForEach( test =>
             {

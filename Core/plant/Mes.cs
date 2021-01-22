@@ -41,6 +41,7 @@ namespace Core.Plant
     public string Name { get; }
     public Dictionary<int, IWork> Workorders { get; }
 
+// TODO Remove MesSchedule from Constructor, add to configuration.
 // Constructor
     public Mes(string name, MesSchedule schedule=(MesSchedule) 0)
     {

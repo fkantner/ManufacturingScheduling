@@ -99,7 +99,7 @@ namespace Core.Enterprise
         {
           int importantOp = 1;
           if(wo.CurrentOpIndex > importantOp){ importantOp = wo.CurrentOpIndex; }
-
+          //TODO Maybe improve plant selection for ERP. Enterprise Scheduler??
           if(plant.CanWorkOnType(wo.Operations[importantOp].Type))
           {
             // Only adding to Plant. Will update back to ERP from

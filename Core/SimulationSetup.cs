@@ -4,6 +4,7 @@ namespace simulationCode
   using Core.Resources;
   using Core.Plant;
   using Core.Workcenters;
+  using Core.Schedulers;
   using System.Collections.Generic;
 
   public static class SimulationSetup
@@ -99,5 +100,20 @@ namespace simulationCode
       return answer > max ? max : answer;
     }
      
+    public static List<Test> GenerateTests()
+    {
+      return new List<Test>()
+        {
+            new Test(
+              "Default", 
+              (int)EnterpriseSchedule.DEFAULT, 
+              (int)MachineScheduler.Schedule.DEFAULT, 
+              (int)PlantSchedule.DEFAULT, 
+              (int)TransportationScheduler.Schedule.DEFAULT, 
+              0
+            ),
+            new Test("T2", 0, 1, 0, 0, 0)
+        };
+    }
   }
 }
