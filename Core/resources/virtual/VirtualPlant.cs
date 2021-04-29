@@ -28,6 +28,7 @@ namespace Core.Resources.Virtual
       Workcenters = temp;
     }
 
+    public IEnterprise Enterprise { get { return null; } }
     public IMes Mes { get; }
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }

@@ -1,5 +1,6 @@
 namespace Core.Schedulers
 {
+  using System.Collections.Generic;
   using System.Linq;
   using Core.Enterprise;
   using Core.Resources;
@@ -9,6 +10,7 @@ namespace Core.Schedulers
   public interface IScheduleEnterprise
   {
     string SelectDestinationForExternalTransport(int woid, Op currentOp);
+    List<Rating<int>> GetWorkorderRatings();
   }
 
   public class EnterpriseScheduler : IScheduleEnterprise
@@ -16,6 +18,13 @@ namespace Core.Schedulers
     public EnterpriseScheduler(IErp erp)
     {
       _erp = erp;
+    }
+
+    public List<Rating<int>> GetWorkorderRatings()
+    {
+      List<Rating<int>> ratings = _erp.DueDates.Select(x => new Rating<int>(x.Key, (6-x.Value.Day)*10)).ToList();
+      
+      return ratings;
     }
 
     public string SelectDestinationForExternalTransport(int woid, Op currentOp)

@@ -112,7 +112,8 @@ namespace simulationCode
               (int)TransportationScheduler.Schedule.DEFAULT, 
               0
             ),
-            new Test("T2", 0, 1, 0, 0, 0)
+            new Test("T2", 0, 1, 0, 0, 0),
+            new Test("Basic", 0, (int)MachineScheduler.Schedule.BASIC_SCHEDULE, 0, 0, 0)
         };
     }
   }

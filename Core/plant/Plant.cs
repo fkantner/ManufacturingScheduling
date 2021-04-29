@@ -9,6 +9,7 @@ namespace Core.Plant
 
   public interface IPlant
   {
+    IEnterprise Enterprise { get; }
     IMes Mes { get; }
     string Name { get; }
     ISchedulePlants PlantScheduler { get; }
@@ -27,6 +28,7 @@ namespace Core.Plant
   public class Plant : IPlant
   {
 // Properties
+    public IEnterprise Enterprise { get { return _enterprise; } }
     public ITransportWork InternalTransportation { get; }
     public IMes Mes { get; }
     public string Name { get; }
@@ -53,8 +55,7 @@ namespace Core.Plant
         wc.AddPlant(this);
       }
       
-
-      PlantScheduler = (ISchedulePlants) new PlantScheduler(Mes);
+      PlantScheduler = (ISchedulePlants) new PlantScheduler(this);
       InternalTransportation = new Transportation(_dock, this);
     }
 
