@@ -9,7 +9,6 @@ namespace Core.Plant
 
   public interface IPlant
   {
-    IEnterprise Enterprise { get; }
     IMes Mes { get; }
     string Name { get; }
     ISchedulePlants PlantScheduler { get; }
@@ -21,6 +20,7 @@ namespace Core.Plant
     void Add(IWork workorder);
     bool CanWorkOnType(Op.OpTypes type);
     IReceive Dock();
+    IEnterprise GetEnterprise();
     Dictionary<IWork, string> ShipToOtherPlants();
     void Work(DayTime dt);
   }
@@ -28,7 +28,6 @@ namespace Core.Plant
   public class Plant : IPlant
   {
 // Properties
-    public IEnterprise Enterprise { get { return _enterprise; } }
     public ITransportWork InternalTransportation { get; }
     public IMes Mes { get; }
     public string Name { get; }
@@ -68,6 +67,11 @@ namespace Core.Plant
     public IReceive Dock()
     {
       return _dock;
+    }
+
+    public IEnterprise GetEnterprise()
+    {
+      return _enterprise;
     }
 
     public Dictionary<IWork, string> ShipToOtherPlants()

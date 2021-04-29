@@ -42,7 +42,7 @@ namespace Core.Schedulers
 
     public List<Rating<int>> GetWorkorderRatings()
     {
-      var woRatings = _plant.Enterprise.Scheduler.GetWorkorderRatings();
+      var woRatings = _plant.GetEnterprise().Scheduler.GetWorkorderRatings();
 
       string minKey = "";
       int minValue = 0;

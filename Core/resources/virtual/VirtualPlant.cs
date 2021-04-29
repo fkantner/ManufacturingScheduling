@@ -28,7 +28,6 @@ namespace Core.Resources.Virtual
       Workcenters = temp;
     }
 
-    public IEnterprise Enterprise { get { return null; } }
     public IMes Mes { get; }
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }
@@ -78,6 +77,8 @@ namespace Core.Resources.Virtual
       return _original.CanWorkOnType(type);
     }
 
+    public IEnterprise GetEnterprise() { return null; }
+    
     public void Work(DayTime dt)
     {
       return;
