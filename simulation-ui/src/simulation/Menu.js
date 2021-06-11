@@ -99,7 +99,7 @@ class Menu extends Component {
 
     const testList = this.state.list.sort().map((test) => {
       if(test === this.state.test){
-        return <button key={test} className="disabled">{test}</button>
+        return <span key={test} className="disabled">{test}</span>
       }
       return (
         <OptionTestButton

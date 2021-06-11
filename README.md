@@ -5,6 +5,8 @@ workcenters and process orders for a job shop simulation. Input would need to be
 handle the process orders through the workcenters as appropriate. 
 
 # Running:
-* First run backend with .Net Core Launch (I use the extension to run it.) This populates the test.json data file
-in the UI.
-* From simulation-ui, call npm start to start the UI server. This will run the UI on localhost:3000.
+* From Core folder, run the simulation tests: `dotnet run`
+* From api folder, start backend API server with: `rails s -p 3003`
+* From ui folder, start simulation-ui: `npm start`
+* UI can be accessed from `https://localhost:3000`
+* API can be accessed from `https://localhost:3003`

@@ -9,6 +9,7 @@ namespace simulationCode
     using Core.Schedulers;
     using Newtonsoft.Json;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
 
     public static class Program
@@ -17,9 +18,11 @@ namespace simulationCode
         {
             Console.WriteLine("Hello Simulation");
             List<Test> tests = SimulationSetup.GenerateTests();
+            Stopwatch sw = new Stopwatch();
 
             tests.ForEach( test =>
             {
+                sw.Start();
                 DayTime dt = new DayTime();
 
                 Console.WriteLine("Updating Configuration for {0}", test.Name);
@@ -88,8 +91,10 @@ namespace simulationCode
                 }
                 Console.WriteLine(".");
                 Console.WriteLine("Finished with Test {0}", test.Name);
-            }
-            );
+                sw.Stop();
+                Console.WriteLine("Time to Complete: {0}", sw.Elapsed);
+                sw.Reset();
+            });
 
             Console.WriteLine("Finished with All Simulations");
         }

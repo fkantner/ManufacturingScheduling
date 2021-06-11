@@ -9,6 +9,7 @@ namespace Core.Resources
     int Count { get; }
 
     bool Any();
+    bool Contains(int id);
     IWork Dequeue();
     bool Empty();
     void Enqueue(IWork wo);
@@ -43,6 +44,11 @@ namespace Core.Resources
     public bool Any()
     {
       return _min > 0;
+    }
+    
+    public bool Contains(int id)
+    {
+      return _dict.ContainsKey(id);
     }
 
     public IWork Dequeue()

@@ -16,6 +16,7 @@ namespace Core
     // Scheduler Settings
     public static readonly int MachineRatingIncreaseForSameTypeAsLastType = 5;
     public static readonly int PlantRatingIncreaseForRemainingInMachines = 5;
+    public static readonly int TransportRatingIncreaseForStayingPut = 10;
 
     private static Configuration instance = null;
     public static Configuration Instance 

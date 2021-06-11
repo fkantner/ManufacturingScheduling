@@ -1,5 +1,6 @@
 namespace Core.Schedulers
 {
+  using System.Collections.Generic;
   using System.Linq;
   using Core.Workcenters;
   using Core.Plant;
@@ -16,7 +17,9 @@ namespace Core.Schedulers
 
   public class TransportationScheduler : IScheduleTransport
   {
-    public enum Schedule { DEFAULT=0 };
+    public enum Schedule { DEFAULT=0, BASIC=1 };
+    private readonly IPlant _plant;
+    private readonly Schedule _schedule;
 
     public int? CargoID { get; private set; }
     public IAcceptWorkorders Destination { get; private set; }
@@ -35,12 +38,32 @@ namespace Core.Schedulers
     public void ScheduleNextStep(IAcceptWorkorders current_location)
     {
       CargoID = null;
-      if(current_location.OutputBuffer.Any())
+
+      if (_schedule == TransportationScheduler.Schedule.DEFAULT)
       {
-        CargoID = ChooseCargoByAlgorithm(current_location);
+        if(current_location.OutputBuffer.Any())
+        {
+          CargoID = ChooseCargoByAlgorithm(current_location);
+        }
+        Destination = ChooseWorkcenterByAlgorithm(current_location);
+      }
+      else
+      {
+        int? nextID = ChooseNextCargoByBasic(current_location);
+        if (!nextID.HasValue) { 
+          Destination = current_location; 
+        }
+        else if(current_location.OutputBuffer.Contains(nextID.Value))
+        {
+          CargoID = nextID;
+          Destination = ChooseWorkcenterByBasic(current_location);
+        }
+        else
+        {
+          Destination = _plant.Workcenters.Where(x => x.OutputBuffer.Contains(nextID.Value)).First();
+        }
       }
 
-      Destination = ChooseWorkcenterByAlgorithm(current_location);
       TransportTime = ShouldLeave(current_location) ? 0 : 5;
     }
 
@@ -72,12 +95,54 @@ namespace Core.Schedulers
       return _plant.PlantScheduler.ValidateWoForTransport(selected, current_location.Name);
     }
 
+    private int? ChooseNextCargoByBasic(IAcceptWorkorders current_location)
+    {
+      var ratings = _plant.PlantScheduler.GetWorkorderRatings();
+      ratings = ratings.Where(x => _plant.Workcenters.Select(y => y.OutputBuffer).Any(y => y.Contains(x.Object))).ToList();
+      ratings.Where(x => current_location.OutputBuffer.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.TransportRatingIncreaseForStayingPut);
+      ratings.Sort();
+      if(!ratings.Any()) { return null; }
+      return ratings.First().Object;
+    }
+
     private IAcceptWorkorders ChooseWorkcenterByAlgorithm(IAcceptWorkorders current_location)
     {
       return _schedule switch
       {
+        Schedule.BASIC => ChooseWorkcenterByBasic(current_location),
         _ => ChooseWorkcenterByDefault(current_location)
       };
+    }
+
+    private IAcceptWorkorders ChooseWorkcenterByBasic(IAcceptWorkorders current_location)
+    {
+      var wo = current_location.OutputBuffer.Find(CargoID.Value);
+      
+      List<IAcceptWorkorders> availableWcs = _plant.Workcenters
+          .Where(x => x.ReceivesType(wo.CurrentOpType))
+          .ToList();
+      
+      if(availableWcs.Count() == 1)
+      {
+        return availableWcs.First();
+      }
+
+      if(availableWcs.Count() == 0)
+      {
+        return null;
+      }
+
+      Dictionary<string, int>  adjustedWcs = availableWcs
+          .ToDictionary(x => x.Name, x => GetWorkcenterValue(x));
+      
+      var min = adjustedWcs.Values.Min();
+      var destinationName = adjustedWcs.Where((x) => x.Value == min).First().Key;
+      return availableWcs.First(x => x.Name == destinationName);
+    }
+
+    private int GetWorkcenterValue(IAcceptWorkorders workcenter)
+    {
+      return ((Machine)((Workcenter)workcenter).Machine).InputBuffer.Select(x => x.CurrentOpEstTimeToComplete + x.CurrentOpSetupTime).Sum();
     }
 
     private IAcceptWorkorders ChooseWorkcenterByDefault(IAcceptWorkorders current_location)
@@ -100,7 +165,5 @@ namespace Core.Schedulers
       return wo == null ? subject.OutputBuffer.Any() : subject.ReceivesType(wo.CurrentOpType);
     }
 
-    private readonly IPlant _plant;
-    private readonly Schedule _schedule;
   }
 }
