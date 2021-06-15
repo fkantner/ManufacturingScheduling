@@ -4,7 +4,6 @@ namespace Core.Schedulers
   using System.Collections.Generic;
   using Core.Plant;
   using Core.Resources;
-  using Core.Schedulers;
   using Core.Workcenters;
 
   public interface IScheduleMachines
@@ -54,16 +53,15 @@ namespace Core.Schedulers
       ratings = ratings.Where(x => passedIds.Contains(x.Object)).ToList();
 
       Core.Resources.Op.OpTypes last = _machine.LastType;
-      var increment = from wo in queue
+      var wosWithSameAsLastType = from wo in queue
         where ( wo.CurrentOpType == last )
         select wo.Id;
+      ratings.Where(x => wosWithSameAsLastType.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.MachineOpTypeVariable);
+      
+      ratings.Where(x => !wosWithSameAsLastType.Contains(x.Object)).ToList().ForEach(x => x.Value += GetWaitTime(x.Object) * Configuration.MachineWaitTimeVariable);
 
-      //Increasing the value for those with the last set.
-      ratings.Where(x => passedIds.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.MachineRatingIncreaseForSameTypeAsLastType);
-      
-      ratings.Sort();
-      
-      return ratings.First().Object;
+      int maxValue = ratings.Max(x => x.Value);
+      return ratings.First(x => x.Value == maxValue).Object;
     }
 
     private int GetIdToMatchLast<T>(T queue) where T : ICustomQueue, IEnumerable<IWork>
@@ -76,6 +74,18 @@ namespace Core.Schedulers
       if(!set.Any()) { return queue.FirstId().Value; }
       
       return set.First().Id;
+    }
+
+    private int GetWaitTime(int woid)
+    {
+      var wo = _plant.Mes.Workorders.First(x => x.Key == woid).Value;
+
+      if(wo.CurrentOpType == _machine.LastType)
+      {
+        return wo.CurrentOpSetupTime;
+      }
+
+      return 0;
     }
 
   }

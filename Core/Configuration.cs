@@ -14,6 +14,20 @@ namespace Core
     public static readonly int MinutesBetweenNewOrders = 60;
 
     // Scheduler Settings
+    public static readonly int EnterpriseDueDateVariable = 10;
+    public static readonly int EnterpriseTravelVariable = 10;
+    public static readonly int PlantOperationTimeVariable = 10;
+    public static readonly int PlantOperationCountVariable = 10;
+    public static readonly int MachineOpTypeVariable = 10;
+    public static readonly int MachineWaitTimeVariable = 10;
+    public static readonly int MachineDowntimeVariable = 10;
+    public static readonly int TransportJobStayVariable = 10;
+    public static readonly int TransportJobTransportStayVariable = 10;
+    public static readonly int TransportWCWaitVariable = 10;
+    public static readonly int TransportWCJobCountVariable = 10;
+    public static readonly int TransportWCAtCurrentPlantVariable = 10;
+
+    // Old variables
     public static readonly int MachineRatingIncreaseForSameTypeAsLastType = 5;
     public static readonly int PlantRatingIncreaseForRemainingInMachines = 5;
     public static readonly int TransportRatingIncreaseForStayingPut = 10;

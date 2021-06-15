@@ -99,10 +99,23 @@ namespace Core.Schedulers
     {
       var ratings = _plant.PlantScheduler.GetWorkorderRatings();
       ratings = ratings.Where(x => _plant.Workcenters.Select(y => y.OutputBuffer).Any(y => y.Contains(x.Object))).ToList();
-      ratings.Where(x => current_location.OutputBuffer.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.TransportRatingIncreaseForStayingPut);
-      ratings.Sort();
       if(!ratings.Any()) { return null; }
-      return ratings.First().Object;
+
+      ratings.Where(x => current_location.OutputBuffer.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.TransportJobTransportStayVariable);
+
+      ratings.Where(x => CanBeWorkedOnAtCurrentLocation(x.Object)).ToList().ForEach(x => x.Value += Configuration.TransportJobStayVariable);
+
+      int maxValue = ratings.Max(x => x.Value);
+      return ratings.First(x => x.Value == maxValue).Object;
+    }
+
+    private bool CanBeWorkedOnAtCurrentLocation(int woid)
+    {
+      var wo = Mes.Workorders.First(x => x.Key == woid).Value;
+
+      var wcName = Mes.LocationInventories.First(x => x.Value.Contains(wo)).Key;
+      var wc = Mes.Locations[wcName];
+      return wc.ReceivesType(wo.Operations[wo.CurrentOpIndex+1].Type);
     }
 
     private IAcceptWorkorders ChooseWorkcenterByAlgorithm(IAcceptWorkorders current_location)
@@ -132,17 +145,24 @@ namespace Core.Schedulers
         return null;
       }
 
-      Dictionary<string, int>  adjustedWcs = availableWcs
-          .ToDictionary(x => x.Name, x => GetWorkcenterValue(x));
-      
-      var min = adjustedWcs.Values.Min();
-      var destinationName = adjustedWcs.Where((x) => x.Value == min).First().Key;
-      return availableWcs.First(x => x.Name == destinationName);
+      List<Rating<IAcceptWorkorders>> wcRatings = availableWcs.Select(x => new Rating<IAcceptWorkorders>(x, 0)).ToList();
+
+      wcRatings.ForEach(x => x.Value += GetWorkcenterValue(x.Object) * Configuration.TransportWCWaitVariable);
+
+      wcRatings.ForEach(x => x.Value += GetWorkcenterJobCount((Workcenter)x.Object) * Configuration.TransportWCJobCountVariable);
+
+      var min = wcRatings.Min(x => x.Value);
+      return wcRatings.First(x => x.Value == min).Object;
     }
 
     private int GetWorkcenterValue(IAcceptWorkorders workcenter)
     {
       return ((Machine)((Workcenter)workcenter).Machine).InputBuffer.Select(x => x.CurrentOpEstTimeToComplete + x.CurrentOpSetupTime).Sum();
+    }
+
+    private int GetWorkcenterJobCount(Workcenter workcenter)
+    {
+      return ((Machine)workcenter.Machine).InputBuffer.Count();
     }
 
     private IAcceptWorkorders ChooseWorkcenterByDefault(IAcceptWorkorders current_location)

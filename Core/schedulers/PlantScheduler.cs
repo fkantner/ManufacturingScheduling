@@ -43,28 +43,14 @@ namespace Core.Schedulers
     public List<Rating<int>> GetWorkorderRatings()
     {
       var woRatings = _plant.GetEnterprise().Scheduler.GetWorkorderRatings();
+      //Filtering
+      var ids = _mes.Workorders.Keys;
+      var filteredRatings = woRatings.Where(x => ids.Contains(x.Object)).ToList();
 
-      string minKey = "";
-      int minValue = 0;
-      var wcs =_mes.LocationInventories.Keys;
-      foreach(string wc in wcs)
-      {
-        var vals = _mes.LocationInventories[wc];
-        var total = vals.Select(x => x.CurrentOpEstTimeToComplete).Sum();
-        if (string.IsNullOrEmpty(minKey) || total < minValue) 
-        {
-          minKey = wc;
-          minValue = total;
-        }
-      }
+      filteredRatings.ForEach(x => x.Value += GetRemainingOpTime(x.Object) * Configuration.PlantOperationTimeVariable);
+      filteredRatings.ForEach(x => x.Value += GetRemainingOpCount(x.Object) * Configuration.PlantOperationCountVariable);
 
-      var types = _mes.Locations[minKey].ListOfValidTypes();
-
-      var ids = _mes.Workorders.Where(x => types.Contains(x.Value.CurrentOpType)).Select(x => x.Key);
-
-      woRatings.Where(x => ids.Contains(x.Object)).ToList().ForEach(x => x.Value += Configuration.PlantRatingIncreaseForRemainingInMachines);
-
-      return woRatings;
+      return filteredRatings;
     }
 
     public int? ValidateWoForTransport(int? woid, string location)
@@ -78,6 +64,29 @@ namespace Core.Schedulers
     private readonly IMes _mes;
     private readonly PlantSchedule _schedule;
     private readonly IPlant _plant;
+
+    private int GetRemainingOpTime(int woid)
+    {
+      var wo = GetVirtualWorkorder(woid);
+      int time = 0;
+      for(int i = wo.CurrentOpIndex; i < wo.Operations.Count; i++)
+      {
+        time += wo.Operations[i].EstTimeToComplete;
+      }
+
+      return time;
+    }
+
+    private int GetRemainingOpCount(int woid)
+    {
+      var wo = GetVirtualWorkorder(woid);
+      return wo.Operations.Count - wo.CurrentOpIndex;
+    }
+
+    private Resources.Virtual.VirtualWorkorder GetVirtualWorkorder(int woid)
+    {
+      return (Resources.Virtual.VirtualWorkorder) _mes.Workorders.First(x => x.Key == woid).Value;
+    }
 
     private int? UseWoIfInMes(int? woid, string location)
     {
