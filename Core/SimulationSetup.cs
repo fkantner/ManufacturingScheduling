@@ -104,17 +104,22 @@ namespace simulationCode
     {
       return new List<Test>()
         {
-            new Test(
-              "Default", 
-              (int)EnterpriseSchedule.DEFAULT, 
-              (int)MachineScheduler.Schedule.DEFAULT, 
-              (int)PlantSchedule.DEFAULT, 
-              (int)TransportationScheduler.Schedule.DEFAULT, 
-              0
-            ),
-            new Test("T2", 0, 1, 0, 0, 0),
-            new Test("Basic", 0, (int)MachineScheduler.Schedule.BASIC_SCHEDULE, 0, 0, 0),
-            new Test("BasicT", 0, (int)MachineScheduler.Schedule.BASIC_SCHEDULE, 0, (int)TransportationScheduler.Schedule.BASIC, 0)
+          new Test("Default", Test.Schedule.DEFAULT, new Dictionary<string, int>()),
+          new Test("Match", Test.Schedule.MATCH, new Dictionary<string, int>()),
+          new Test("Basic", Test.Schedule.SCHEDULED, new Dictionary<string, int>{
+            {"EnterpriseDueDateVariable", 10},
+            {"EnterpriseTravelVariable", 10},
+            {"PlantOperationTimeVariable", 10},
+            {"PlantOperationCountVariable", 10},
+            {"MachineOpTypeVariable", 10},
+            {"MachineWaitTimeVariable", 10},
+            {"MachineDownTimeVariable", 10},
+            {"TransportJobStayVariable", 10},
+            {"TransportJobTransportStayVariable", 10},
+            {"TransportWCWaitVariable", 10},
+            {"TransportWCJobCountVariable", 10},
+            {"TransportWCAtCurrentPlantVariable", 10}
+          })
         };
     }
   }

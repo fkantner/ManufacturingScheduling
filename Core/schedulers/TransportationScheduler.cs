@@ -113,6 +113,8 @@ namespace Core.Schedulers
     {
       var wo = Mes.Workorders.First(x => x.Key == woid).Value;
 
+      if(wo.CurrentOpIndex+1 >= wo.Operations.Count){ return false; }
+
       var wcName = Mes.LocationInventories.First(x => x.Value.Contains(wo)).Key;
       var wc = Mes.Locations[wcName];
       return wc.ReceivesType(wo.Operations[wo.CurrentOpIndex+1].Type);

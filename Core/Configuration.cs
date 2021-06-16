@@ -3,7 +3,6 @@ namespace Core
   public sealed class Configuration
   {
     // Program Settings
-    public static readonly string ResultFileName = "../ui-api/public/data/test.json";
     public static readonly string ResultFolder = "../ui-api/public/data/";
     public static readonly int MinutesForProgramToTest = 24*60*7;
 
@@ -27,22 +26,10 @@ namespace Core
     public static readonly int TransportWCJobCountVariable = 10;
     public static readonly int TransportWCAtCurrentPlantVariable = 10;
 
-    // Old variables
-    public static readonly int MachineRatingIncreaseForSameTypeAsLastType = 5;
-    public static readonly int PlantRatingIncreaseForRemainingInMachines = 5;
-    public static readonly int TransportRatingIncreaseForStayingPut = 10;
-
     private static Configuration instance = null;
     public static Configuration Instance 
     {
       get { return instance; }
-    }
-
-    public static Configuration Initialize(string test, int eS, int mS, int pS, int tS, int bdS)
-    {
-      // I am not protecting this, as I will need to override the settings with each iteration.
-      instance = new Configuration(test, eS, mS, pS, tS, bdS);
-      return instance;
     }
 
     public static Configuration Initialize(Core.Test test)
