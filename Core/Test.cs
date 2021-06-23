@@ -50,5 +50,10 @@ namespace Core
       TransportationSchedule = transportation_schedule;
       BigDataSchedule = big_data_schedule;
     }
+
+    public bool Equals(Test other)
+    {
+      return Name == other.Name;
+    }
   }
 }

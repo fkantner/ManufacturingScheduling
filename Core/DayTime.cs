@@ -50,6 +50,11 @@ namespace Core
       return this.Day > other.Day || (this.Day == other.Day && this.Time > other.Time);
     }
 
+    public bool LteDay(DayTime other)
+    {
+      return this.Day <= other.Day;
+    }
+
     public void Next()
     {
       Time++;

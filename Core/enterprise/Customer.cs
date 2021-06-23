@@ -57,6 +57,15 @@ namespace Core.Enterprise
             Orders(false).First(x => x.Type == type).CompletePo(dayTime);
         }
 
+        public float Result()
+        {
+            int denominator = _orders.Count();
+            int ontime = Orders(true).Where( x => x.Complete.LteDay(x.Due)).Count();
+
+            return ((float) ontime) / denominator;
+        }
+
+
         public void Work(DayTime dayTime)
         {
             if (_enterprise == null) { return; }

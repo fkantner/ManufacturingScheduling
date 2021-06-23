@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Menu.css';
 
 function OptionPaginationButton(props) {
   const hide = props.hide;

@@ -13,18 +13,18 @@ namespace Core
     public static readonly int MinutesBetweenNewOrders = 60;
 
     // Scheduler Settings
-    public static readonly int EnterpriseDueDateVariable = 10;
-    public static readonly int EnterpriseTravelVariable = 10;
-    public static readonly int PlantOperationTimeVariable = 10;
-    public static readonly int PlantOperationCountVariable = 10;
-    public static readonly int MachineOpTypeVariable = 10;
-    public static readonly int MachineWaitTimeVariable = 10;
-    public static readonly int MachineDowntimeVariable = 10;
-    public static readonly int TransportJobStayVariable = 10;
-    public static readonly int TransportJobTransportStayVariable = 10;
-    public static readonly int TransportWCWaitVariable = 10;
-    public static readonly int TransportWCJobCountVariable = 10;
-    public static readonly int TransportWCAtCurrentPlantVariable = 10;
+    public static int EnterpriseDueDateVariable = 10;
+    public static int EnterpriseTravelVariable = 10;
+    public static int PlantOperationTimeVariable = 10;
+    public static int PlantOperationCountVariable = 10;
+    public static int MachineOpTypeVariable = 10;
+    public static int MachineWaitTimeVariable = 10;
+    public static int MachineDowntimeVariable = 10;
+    public static int TransportJobStayVariable = 10;
+    public static int TransportJobTransportStayVariable = 10;
+    public static int TransportWCWaitVariable = 10;
+    public static int TransportWCJobCountVariable = 10;
+    public static int TransportWCAtCurrentPlantVariable = 10;
 
     private static Configuration instance = null;
     public static Configuration Instance 
@@ -35,6 +35,22 @@ namespace Core
     public static Configuration Initialize(Core.Test test)
     {
       instance = new Configuration(test.Name, test.EnterpriseSchedule, test.MachineSchedule, test.PlantSchedule, test.TransportationSchedule, test.BigDataSchedule);
+      if(test.configOptions.Count > 0)
+      {
+        EnterpriseDueDateVariable = test.configOptions["EnterpriseDueDateVariable"];
+
+        EnterpriseTravelVariable = test.configOptions["EnterpriseTravelVariable"];
+        PlantOperationTimeVariable = test.configOptions["PlantOperationTimeVariable"];
+        PlantOperationCountVariable = test.configOptions["PlantOperationCountVariable"];
+        MachineOpTypeVariable = test.configOptions["MachineOpTypeVariable"];
+        MachineWaitTimeVariable = test.configOptions["MachineWaitTimeVariable"];
+        MachineDowntimeVariable = test.configOptions["MachineDowntimeVariable"];       
+        TransportJobStayVariable = test.configOptions["TransportJobStayVariable"];     
+        TransportJobTransportStayVariable = test.configOptions["TransportJobTransportStayVariable"];
+        TransportWCWaitVariable = test.configOptions["TransportWCWaitVariable"];
+        TransportWCJobCountVariable = test.configOptions["TransportWCJobCountVariable"];
+        TransportWCAtCurrentPlantVariable = test.configOptions["TransportWCAtCurrentPlantVariable"];
+      }
       return instance;
     }
 

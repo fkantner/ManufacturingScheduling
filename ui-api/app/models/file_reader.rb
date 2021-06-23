@@ -17,6 +17,7 @@ class FileReader
   end
 
   def list_types
-    return FOLDER.children.map{|x| File.basename(x).split('_')[0]}.uniq
+    #return FOLDER.children.map{|x| File.basename(x).split('_')[0]}.uniq
+    return FOLDER.children.map{|x| File.basename(x).rpartition('_').first}.uniq
   end
 end

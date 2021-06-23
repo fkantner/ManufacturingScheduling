@@ -5,6 +5,7 @@ namespace simulationCode
   using Core.Plant;
   using Core.Workcenters;
   using Core.Schedulers;
+  using System;
   using System.Collections.Generic;
 
   public static class SimulationSetup
@@ -100,27 +101,37 @@ namespace simulationCode
       return answer > max ? max : answer;
     }
      
-    public static List<Test> GenerateTests()
+    public static Test GenerateInitialTest()
     {
-      return new List<Test>()
-        {
-          new Test("Default", Test.Schedule.DEFAULT, new Dictionary<string, int>()),
-          new Test("Match", Test.Schedule.MATCH, new Dictionary<string, int>()),
-          new Test("Basic", Test.Schedule.SCHEDULED, new Dictionary<string, int>{
-            {"EnterpriseDueDateVariable", 10},
-            {"EnterpriseTravelVariable", 10},
-            {"PlantOperationTimeVariable", 10},
-            {"PlantOperationCountVariable", 10},
-            {"MachineOpTypeVariable", 10},
-            {"MachineWaitTimeVariable", 10},
-            {"MachineDownTimeVariable", 10},
-            {"TransportJobStayVariable", 10},
-            {"TransportJobTransportStayVariable", 10},
-            {"TransportWCWaitVariable", 10},
-            {"TransportWCJobCountVariable", 10},
-            {"TransportWCAtCurrentPlantVariable", 10}
-          })
-        };
+      const string delim = "_";
+      const int limit = 201;
+      var rand = new Random();
+      List<int> constants = new List<int>();
+
+      for(int i = 0; i<12; i++)
+      {
+        constants.Add(rand.Next(limit) - 100);
+      }
+
+      string testName = "test_";
+      constants.ForEach(x => testName += x.ToString() + delim);
+
+      var test = new Test(testName, Test.Schedule.SCHEDULED, new Dictionary<string, int>{
+        {"EnterpriseDueDateVariable",         constants[0]},
+        {"EnterpriseTravelVariable",          constants[1]},
+        {"PlantOperationTimeVariable",        constants[2]},
+        {"PlantOperationCountVariable",       constants[3]},
+        {"MachineOpTypeVariable",             constants[4]},
+        {"MachineWaitTimeVariable",           constants[5]},
+        {"MachineDowntimeVariable",           constants[6]},
+        {"TransportJobStayVariable",          constants[7]},
+        {"TransportJobTransportStayVariable", constants[8]},
+        {"TransportWCWaitVariable",           constants[9]},
+        {"TransportWCJobCountVariable",       constants[10]},
+        {"TransportWCAtCurrentPlantVariable", constants[11]}
+      });
+
+      return test;
     }
   }
 }
