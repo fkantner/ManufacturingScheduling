@@ -42,6 +42,8 @@ namespace simulationCode
 
       List<DayTime> routes = new List<DayTime>() 
       {
+        new DayTime((int) DayTime.Days.Sun, SIX_AM),
+        new DayTime((int) DayTime.Days.Sun, THREE_PM),
         new DayTime((int) DayTime.Days.Mon, SIX_AM),
         new DayTime((int) DayTime.Days.Mon, THREE_PM),
         new DayTime((int) DayTime.Days.Tue, SIX_AM),
@@ -52,6 +54,8 @@ namespace simulationCode
         new DayTime((int) DayTime.Days.Thu, THREE_PM),
         new DayTime((int) DayTime.Days.Fri, SIX_AM),
         new DayTime((int) DayTime.Days.Fri, THREE_PM),
+        new DayTime((int) DayTime.Days.Sat, SIX_AM),
+        new DayTime((int) DayTime.Days.Sat, THREE_PM)
       };
 
       for(int i=0; i<routes.Count; i++)
