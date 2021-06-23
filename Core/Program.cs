@@ -19,7 +19,15 @@ namespace simulationCode
         {
             Console.WriteLine("Hello Simulation");
             //List<Test> tests = SimulationSetup.GenerateTests();
-            Dictionary<Test, float> Results = new Dictionary<Test, float>();
+            Dictionary<string, float> Results;
+            try 
+            {
+                Results = ResultReader();
+            }
+            catch
+            {
+                Results = new Dictionary<string, float>();
+            }
 
             Test Default = new Test("Default", Test.Schedule.DEFAULT, new Dictionary<string, int>());
             Test Match = new Test("Match", Test.Schedule.MATCH, new Dictionary<string, int>());
@@ -30,15 +38,16 @@ namespace simulationCode
             {
                 Test test = SimulationSetup.GenerateInitialTest();
 
-                if(Results.Keys.Any(x => x.Equals(test)))
+                while(Results.Keys.Any(x => x.Equals(test.Name)))
                 {
-                    continue;
+                    test = SimulationSetup.GenerateInitialTest();
                 }
 
                 var result = RunTest(test);
-                Results[test] = result;
+                Results[test.Name] = result;
             }
 
+            SaveResultsToFile(Results);
             Console.WriteLine("Finished with All Simulations");
         }
 
@@ -130,19 +139,38 @@ namespace simulationCode
 
         static private void SaveToFile(string test, int time, SimulationNode simulationNode)
         {
-            string path = Configuration.ResultFolder;
-            string filename = path + test + "_" + time.ToString() + ".json";
-            if(File.Exists(filename))
+            string filename = test + "_" + time.ToString() + ".json";
+            FileSaver(filename, simulationNode);
+        }
+
+        static private void SaveResultsToFile(Dictionary<string, float> results)
+        {
+            string filename = "finalResults/results.json";
+            FileSaver(filename, results);
+        }
+
+        static private void FileSaver(string filename, Object obj)
+        {
+            string path = Configuration.ResultFolder + filename;
+            
+            if(File.Exists(path))
             {
-                File.Delete(filename);
+                File.Delete(path);
             }
 
-            StreamWriter writer = new StreamWriter(filename);
+            StreamWriter writer = new StreamWriter(path);
 
-            writer.WriteLine(ToJson(simulationNode));
+            writer.WriteLine(ToJson(obj));
 
             writer.Dispose();
             writer.Close();
+        }
+
+        static private Dictionary<string, float> ResultReader()
+        {
+            string path = Configuration.ResultFolder + "finalResults/results.json";
+
+            return JsonConvert.DeserializeObject<Dictionary<string, float>>(File.ReadAllText(path));
         }
     }
 }
