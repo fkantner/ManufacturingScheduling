@@ -11,7 +11,7 @@ namespace Core.Schedulers
     public IAcceptWorkorders Destination { get; }
     public IMes Mes { get; }
     public int TransportTime { get; }
-    public void ScheduleNextStep(IAcceptWorkorders current_location);
+    public void ScheduleNextStep(IAcceptWorkorders current_location, DayTime dt);
     public int? GetCargoID();
   }
 
@@ -35,7 +35,7 @@ namespace Core.Schedulers
       _schedule = (Schedule) Configuration.Instance.TransportationSchedule;
     }
 
-    public void ScheduleNextStep(IAcceptWorkorders current_location)
+    public void ScheduleNextStep(IAcceptWorkorders current_location, DayTime dt)
     {
       CargoID = null;
 
@@ -56,7 +56,7 @@ namespace Core.Schedulers
         else if(current_location.OutputBuffer.Contains(nextID.Value))
         {
           CargoID = nextID;
-          Destination = ChooseWorkcenterByBasic(current_location);
+          Destination = ChooseWorkcenterByBasic(current_location, dt);
         }
         else
         {
@@ -64,7 +64,7 @@ namespace Core.Schedulers
         }
       }
 
-      TransportTime = ShouldLeave(current_location) ? 0 : 5;
+      TransportTime = ShouldLeave(current_location) ? 0 : 3;
     }
 
     public int? GetCargoID()
@@ -124,12 +124,11 @@ namespace Core.Schedulers
     {
       return _schedule switch
       {
-        Schedule.BASIC => ChooseWorkcenterByBasic(current_location),
         _ => ChooseWorkcenterByDefault(current_location)
       };
     }
 
-    private IAcceptWorkorders ChooseWorkcenterByBasic(IAcceptWorkorders current_location)
+    private IAcceptWorkorders ChooseWorkcenterByBasic(IAcceptWorkorders current_location, DayTime dt)
     {
       var wo = current_location.OutputBuffer.Find(CargoID.Value);
       
@@ -144,17 +143,24 @@ namespace Core.Schedulers
 
       if(availableWcs.Count() == 0)
       {
-        return null;
+        return _plant.Dock();
       }
 
+      var additionalWcs = _plant.GetEnterprise().Plants.First(x => x.Name != _plant.Name).Workcenters.Where(x => x.ReceivesType(wo.CurrentOpType)).ToList();
+
       List<Rating<IAcceptWorkorders>> wcRatings = availableWcs.Select(x => new Rating<IAcceptWorkorders>(x, 0)).ToList();
+      wcRatings.AddRange(additionalWcs.Select(x => new Rating<IAcceptWorkorders>(x, Configuration.TransportWCAtCurrentPlantVariable)));
 
       wcRatings.ForEach(x => x.Value += GetWorkcenterValue(x.Object) * Configuration.TransportWCWaitVariable);
 
       wcRatings.ForEach(x => x.Value += GetWorkcenterJobCount((Workcenter)x.Object) * Configuration.TransportWCJobCountVariable);
 
+      wcRatings.ForEach(x => x.Value += (((Workcenter) x.Object).IsAboutToBreakdown(dt) ? 1 : 0) * Configuration.MachineDowntimeVariable);
+
       var min = wcRatings.Min(x => x.Value);
-      return wcRatings.First(x => x.Value == min).Object;
+      var wc = wcRatings.First(x => x.Value == min).Object;
+      if (!_plant.Workcenters.Contains(wc)) { return _plant.Dock(); }
+      return wc;
     }
 
     private int GetWorkcenterValue(IAcceptWorkorders workcenter)
@@ -169,17 +175,22 @@ namespace Core.Schedulers
 
     private IAcceptWorkorders ChooseWorkcenterByDefault(IAcceptWorkorders current_location)
     {
-      
-      IWork cargo = CargoID.HasValue ? current_location.OutputBuffer.Find(CargoID.Value) : null;
-      IAcceptWorkorders selected = _plant.Workcenters.FirstOrDefault(x => IsAppropriateWorkcenter(x, cargo));
+      if(CargoID.HasValue) // Transporting something
+      {
+        IWork cargo = current_location.OutputBuffer.Find(CargoID.Value);
+        IAcceptWorkorders selected = _plant.Workcenters.FirstOrDefault(x => IsAppropriateWorkcenter(x, cargo));
 
-      string selectedName = selected?.Name;
-      string new_selected = _plant.PlantScheduler.ValidateDestinationForTransport(CargoID, current_location.Name, selectedName);
-      
-      if(new_selected == selectedName) { return selected; }
-      if(new_selected == null) { return null; }
+        if( selected == null ) { return _plant.Dock(); }
 
-      return _plant.Workcenters.FirstOrDefault(x => x.Name == new_selected);
+        return selected;
+      }
+      else // Go to next destination
+      {
+        IAcceptWorkorders selected = _plant.Workcenters.FirstOrDefault(x => x.OutputBuffer.Any());
+        if( selected == null ) { return current_location; }
+        
+        return selected;
+      }
     }
 
     private bool IsAppropriateWorkcenter(IAcceptWorkorders subject, IWork wo)

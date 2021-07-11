@@ -53,6 +53,7 @@ namespace Core.Plant
     public void ReceiveFromExternal(IWork workorder)
     {
       OutputBuffer.Enqueue(workorder);
+      _mes.AddWorkorder(this.Name, workorder);
     }
 
     public void SetMes(IMes mes)

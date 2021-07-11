@@ -43,7 +43,7 @@ namespace Core.Plant
         if(HasADestination()){
           Arrive();
         }
-        UpdateSelfFromScheduler();
+        UpdateSelfFromScheduler(dayTime);
       }
       else if (IsAtLocation()) // Dropping off Cargo
       {
@@ -103,9 +103,9 @@ namespace Core.Plant
       TransportTime--;
     }
 
-    private void UpdateSelfFromScheduler()
+    private void UpdateSelfFromScheduler(DayTime dt)
     {
-      _scheduler.ScheduleNextStep(_current_location);
+      _scheduler.ScheduleNextStep(_current_location, dt);
       int? cargoId = _scheduler.GetCargoID();
 
       _destination = _scheduler.Destination;

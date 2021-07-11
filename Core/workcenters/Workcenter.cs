@@ -43,6 +43,11 @@ namespace Core.Workcenters
       return;
     }
 
+    public bool IsAboutToBreakdown(DayTime dayTime)
+    {
+      return _bigData.IsAboutToBreakdown(this.Name, dayTime);
+    }
+
     public List<Op.OpTypes> ListOfValidTypes()
     {
       return Machine.ListOfValidTypes();

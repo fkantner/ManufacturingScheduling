@@ -13,7 +13,7 @@ namespace Core.Plant
     string Name { get; }
     ISchedulePlants PlantScheduler { get; }
     List<IAcceptWorkorders> Workcenters { get; }
-    ITransportWork InternalTransportation { get; }
+    List<ITransportWork> InternalTransportation { get; }
     
     void Add(IEnterprise enterprise);
     void Add(IAcceptWorkorders workcenter);
@@ -28,7 +28,7 @@ namespace Core.Plant
   public class Plant : IPlant
   {
 // Properties
-    public ITransportWork InternalTransportation { get; }
+    public List<ITransportWork> InternalTransportation { get; }
     public IMes Mes { get; }
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }
@@ -55,7 +55,10 @@ namespace Core.Plant
       }
       
       PlantScheduler = (ISchedulePlants) new PlantScheduler(this);
-      InternalTransportation = new Transportation(_dock, this);
+      InternalTransportation = new List<ITransportWork>() {
+        new Transportation(_dock, this),  
+        new Transportation(_dock, this)
+      };
     }
 
 // Pure Methods
@@ -123,7 +126,7 @@ namespace Core.Plant
         wc.Work(dt);
       }
 
-      InternalTransportation.Work(dt);
+      InternalTransportation.ForEach(x => x.Work(dt) );
 
       Mes.Work(dt);
     }

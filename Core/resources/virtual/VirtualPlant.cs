@@ -15,7 +15,7 @@ namespace Core.Resources.Virtual
       Name = name;
       Mes = original.Mes;
       PlantScheduler = original.PlantScheduler;
-      InternalTransportation = null;
+      InternalTransportation = new List<ITransportWork>();
       
       _original = original;
       _dock = null;
@@ -32,7 +32,7 @@ namespace Core.Resources.Virtual
     public string Name { get; }
     public ISchedulePlants PlantScheduler { get; }
     public List<IAcceptWorkorders> Workcenters { get; }
-    public ITransportWork InternalTransportation { get; set; }
+    public List<ITransportWork> InternalTransportation { get; set; }
 
     public IReceive Dock()
     {

@@ -9,6 +9,7 @@ namespace Core.Enterprise
   {
     void AddWorkcenter(string wc);
     (Workorder.PoType, int)? GetNextOrder(int time);
+    bool IsAboutToBreakdown(string workcenterName, DayTime dayTime);
     DayTime IsBreakdown(string workcenterName, DayTime dayTime);
     bool IsNonConformance(string workcenterName);
   }
@@ -51,6 +52,12 @@ namespace Core.Enterprise
         return (type, day);
       }
       return null;
+    }
+
+    public bool IsAboutToBreakdown(string workcenterName, DayTime dayTime) // returns if will breakdown within the hour.
+    {
+      var set = _workcenterBreakdowns[workcenterName];
+      return dayTime.CreateTimestamp(60).GreaterThan(set.Item1) && dayTime.LessThan(set.Item2);
     }
 
     public DayTime IsBreakdown(string workcenterName, DayTime dayTime)

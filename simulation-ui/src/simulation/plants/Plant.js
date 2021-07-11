@@ -27,9 +27,15 @@ class Plant extends Component {
   BuildLeaf(options) {
     const cName = "plant_leaf " + options.type;
     const key = options.type + ":" + options.index;
+
+    var transports = options.transport.map(trans => {
+      return <Transport workcenter={options.wc} transport={trans} />
+    });
+
     return (
       <div className={cName} key={key}>
-        <Transport workcenter={options.wc} transport={options.transport} />
+        {transports}
+        
         {options.innerObj}
       </div>
     )
